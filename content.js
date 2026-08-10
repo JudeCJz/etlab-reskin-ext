@@ -328,104 +328,7 @@ function renderStats(el){
   }).catch(()=>setPct(0));
 }
 
-// ── TODAY'S SCHEDULE PREVIEW ──────────────────────────────────
-function renderSchedule(el){
-  if(!el)return;
-  el.innerHTML = '<div class="rk-sch-panel"><span class="rk-sch-title">Today\'s Classes</span><div class="rk-sch-list" id="rk-sch-list">Loading class schedule...</div></div>';
 
-  fetch(BASE_URL + '/student/timetable', {credentials: 'include'})
-    .then(r => r.text())
-    .then(html => {
-      const doc = new DOMParser().parseFromString(html, 'text/html');
-      const listEl = el.querySelector('#rk-sch-list');
-      if (!listEl) return;
-
-      const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-      const todayDay = dayNames[new Date().getDay()];
-      const targetDay = (todayDay === 'Sunday' || todayDay === 'Saturday') ? 'Monday' : todayDay;
-
-      let periods = [];
-      let foundRow = null;
-      
-      doc.querySelectorAll('table tr').forEach(tr => {
-        const firstCell = tr.querySelector('td, th');
-        if (firstCell && new RegExp('^\\s*' + targetDay + '\\s*$', 'i').test(firstCell.textContent)) {
-          foundRow = tr;
-        }
-      });
-
-      if (foundRow) {
-        const headers = [];
-        const table = foundRow.closest('table');
-        if (table) {
-          table.querySelectorAll('tr').forEach(tr => {
-            const ths = tr.querySelectorAll('th, td');
-            if (ths.length > 3 && headers.length === 0) {
-              ths.forEach(th => {
-                const txt = th.textContent.replace(/\s+/g, ' ').trim();
-                if (txt && !/day/i.test(txt)) headers.push(txt);
-              });
-            }
-          });
-        }
-
-        const cells = foundRow.querySelectorAll('td');
-        let cellIdx = 1;
-        for (let i = 1; i < cells.length; i++) {
-          const txt = cells[i].textContent.replace(/\s+/g, ' ').trim();
-          if (txt) {
-            const timeLabel = headers[i - 1] || ('Period ' + cellIdx);
-            periods.push({ name: txt, time: timeLabel });
-            cellIdx++;
-          }
-        }
-      }
-
-      if (periods.length > 0) {
-        const previewLabel = (todayDay === 'Sunday' || todayDay === 'Saturday') ? ' (Monday Preview)' : '';
-        el.querySelector('.rk-sch-title').textContent = 'Today\'s Classes' + previewLabel;
-        listEl.innerHTML = periods.map((p, idx) => 
-          '<div class="rk-sch-item">'
-            +'<div class="rk-sch-num">'+(idx+1)+'</div>'
-            +'<div class="rk-sch-info">'
-              +'<span class="rk-sch-name">'+esc(p.name)+'</span>'
-              +'<span class="rk-sch-time">'+esc(p.time)+'</span>'
-            +'</div>'
-          +'</div>'
-        ).join('');
-      } else {
-        listEl.innerHTML = '<div style="color:var(--text-m);font-size:0.72rem;padding:4px 0;">No classes scheduled for today.</div>';
-      }
-    })
-    .catch(() => {
-      const listEl = el.querySelector('#rk-sch-list');
-      if (listEl) listEl.innerHTML = '<div style="color:var(--text-m);font-size:0.72rem;padding:4px 0;">Schedule unavailable.</div>';
-    });
-}
-
-// ── STUDENT PORTAL RESOURCES ──────────────────────────────────
-function renderPortals(el){
-  if(!el)return;
-  const portals = [
-    { name: 'MITS Website', url: 'https://mgits.ac.in/', desc: 'Official college portal' },
-    { name: 'KTU Portal', url: 'https://app.ktu.edu.in/', desc: 'Student portal & exams' },
-    { name: 'MITS Library OPAC', url: 'http://117.239.253.203/', desc: 'Search library books' },
-    { name: 'Academic Calendar', url: 'https://mgits.ac.in/academics/academic-calendar/', desc: 'Syllabus & semester dates' }
-  ];
-
-  el.innerHTML = 
-    '<div class="rk-portals-panel">'
-      +'<span class="rk-portals-title">Student Resources</span>'
-      +'<div class="rk-portals-list">'
-        +portals.map(p => 
-          '<a href="'+p.url+'" target="_blank" rel="noopener noreferrer" class="rk-portal-item">'
-            +'<span class="rk-portal-name">'+esc(p.name)+'</span>'
-            +'<span class="rk-portal-desc">'+esc(p.desc)+'</span>'
-          +'</a>'
-        ).join('')
-      +'</div>'
-    +'</div>';
-}
 
 // ── FALLBACK LINKS ────────────────────────────────────────────
 const FALLBACK_LINKS=[
@@ -558,8 +461,6 @@ function extractDashboard(){
         +'<div class="rk-side-col">'
           +'<div class="rk-card" id="rk-cal"></div>'
           +'<div class="rk-card" id="rk-stats"></div>'
-          +'<div class="rk-card" id="rk-schedule"></div>'
-          +'<div class="rk-card" id="rk-portals"></div>'
         +'</div>'
       +'</div>';
 
@@ -624,8 +525,6 @@ function extractDashboard(){
     renderCal(cal,new Set());
     fetchHostelAbsent().then(abs=>{_calAbsent=abs;renderCalMonth(_calEl||cal);});
     renderStats(wrap.querySelector('#rk-stats'));
-    renderSchedule(wrap.querySelector('#rk-schedule'));
-    renderPortals(wrap.querySelector('#rk-portals'));
   });
 }
 
