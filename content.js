@@ -24,6 +24,9 @@ let _cachedLinks=null, _avatarCache=null, _theme='light', _globalClicked=false;
 let _calYear=new Date().getFullYear(), _calMonth=new Date().getMonth(), _calAbsent=new Set(), _calEl=null;
 let _hostelAbsentMonth=new Date().getMonth(), _hostelAbsentYear=new Date().getFullYear();
 let _origSidebarHTML=null; // saved before reskin so we can restore
+let _isInitialLoad=true;
+let _toggleFrame=0; // 0 to 9
+let _toggleInterval=null;
 
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DHDRS=['S','M','T','W','T','F','S'];
@@ -544,30 +547,71 @@ function apply(){
   reskinSidebar();
   removeFooter();
   if(isDash())extractDashboard();
-  // Add dashboard toggle
   addDashToggle();
+  animateToggle(9);
 }
 
-// ── DASHBOARD TOGGLE BUTTON (on the page itself) ──────────────
+// ── TOGGLE VISUALS & ANIMATIONS ──────────────────────────────
+function updateToggleVisual() {
+  const btn = document.getElementById('rk-page-toggle');
+  if (!btn) return;
+  const frameEl = btn.querySelector('.rk-toggle-frame');
+  if (frameEl) {
+    const pct = (_toggleFrame * 100 / 9).toFixed(3);
+    frameEl.style.backgroundPosition = pct + '% 0%';
+  }
+}
+
+function animateToggle(target){
+  const btn = document.getElementById('rk-page-toggle');
+  if (btn) {
+    btn.setAttribute('aria-checked', target === 9 ? 'true' : 'false');
+  }
+
+  // Respect prefers-reduced-motion
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reducedMotion || _isInitialLoad) {
+    _toggleFrame = target;
+    updateToggleVisual();
+    return;
+  }
+
+  if (_toggleInterval) {
+    clearInterval(_toggleInterval);
+    _toggleInterval = null;
+  }
+
+  _toggleInterval = setInterval(() => {
+    if (_toggleFrame < target) {
+      _toggleFrame++;
+    } else if (_toggleFrame > target) {
+      _toggleFrame--;
+    }
+
+    updateToggleVisual();
+
+    if (_toggleFrame === target) {
+      clearInterval(_toggleInterval);
+      _toggleInterval = null;
+    }
+  }, 40); // 9 steps * 40ms = ~360ms total duration
+}
+
+// ── DASHBOARD TOGGLE BUTTON (sprite sheet) ────────────────────
 function addDashToggle(){
   let btn=document.getElementById('rk-page-toggle');
   if(!btn){
-    btn=document.createElement('div');
+    btn=document.createElement('button');
     btn.id='rk-page-toggle';
+    btn.type='button';
+    btn.setAttribute('role', 'checkbox');
     btn.title='Toggle ETLab Reskin';
+    btn.innerHTML = '<div class="rk-toggle-frame" style="width:100%;height:100%;background-repeat:no-repeat;background-size:1000% 100%;background-position:0% 0%;"></div>';
     
-    let imgUrl;
     try {
-      imgUrl = chrome.runtime.getURL('icons/toggle.png');
-    } catch(e) {
-      imgUrl = '';
-    }
-
-    if (imgUrl) {
-      btn.innerHTML = '<img src="' + esc(imgUrl) + '" alt="Toggle Reskin" style="width:28px;height:28px;object-fit:contain;pointer-events:none;border-radius:0 !important;display:block;">';
-    } else {
-      btn.innerHTML = '<span style="font-size:18px;font-weight:bold;color:#3b82f6;">✦</span>';
-    }
+      const imgUrl = chrome.runtime.getURL('icons/toggle_sheet.png');
+      btn.querySelector('.rk-toggle-frame').style.backgroundImage = 'url(' + imgUrl + ')';
+    } catch(e) {}
     
     document.body.appendChild(btn);
     btn.addEventListener('click',()=>{
@@ -584,14 +628,9 @@ function addDashToggle(){
   }
 
   const isActive=document.documentElement.classList.contains('etlab-reskin-on');
-  btn.style.cssText='position:fixed;bottom:20px;right:20px;z-index:9999999;'+
-    'width:44px;height:44px;display:flex;align-items:center;justify-content:center;'+
-    'cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.18);transition:all 0.2s ease;'+
-    'border-radius:50% !important;'+
-    (isActive
-      ? 'background:var(--surface,#141a26);border:1px solid var(--bdr2,#2b3648);'
-      : 'background:#ffffff;border:1px solid #d1d5db;'
-    );
+  _toggleFrame = isActive ? 9 : 0;
+  btn.setAttribute('aria-checked', isActive ? 'true' : 'false');
+  updateToggleVisual();
 }
 
 function unapply(){
@@ -626,6 +665,7 @@ function unapply(){
 
   // Refresh dashboard toggle button styles so it stays styled for off state
   addDashToggle();
+  animateToggle(0);
 }
 
 // ── INIT ──────────────────────────────────────────────────────
@@ -636,6 +676,7 @@ function init(){
     chrome.storage.local.get({reskinEnabled:true,theme:'light'},r=>{
       syncTheme(r.theme||'light');
       if(r.reskinEnabled===false)unapply();
+      _isInitialLoad=false; // initial load finished, future updates will animate
     });
     chrome.storage.onChanged.addListener((changes,area)=>{
       if(area!=='local')return;

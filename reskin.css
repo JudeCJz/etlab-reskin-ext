@@ -582,3 +582,45 @@ td.rk-cc.event b { color: var(--red-t); font-weight: 700; }
 }
 .rk-att-footer { font-size: 0.68rem; font-weight: 600; }
 .rk-att-status { color: var(--green-t); }
+
+/* ── Redesign Toggle Button ─────────────────────────────── */
+#rk-page-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999999;
+  width: 88px !important;
+  height: 40px !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  cursor: pointer;
+  outline: none !important;
+  box-shadow: none !important;
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  display: block !important;
+  border-radius: 20px !important;
+}
+
+#rk-page-toggle:hover {
+  transform: scale(1.05);
+}
+
+#rk-page-toggle:active {
+  transform: scale(0.95);
+}
+
+#rk-page-toggle:focus-visible {
+  outline: 2px solid var(--blue, #3b82f6) !important;
+  outline-offset: 2px;
+}
+
+.rk-toggle-frame {
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: 1000% 100%;
+  background-position: 0% 0%;
+  pointer-events: none;
+}
