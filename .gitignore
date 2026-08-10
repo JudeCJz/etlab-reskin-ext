@@ -1,0 +1,8 @@
+# Reskin backups
+*.backup.*
+*.backup.js
+*.backup.css
+
+# OS files
+.DS_Store
+Thumbs.db

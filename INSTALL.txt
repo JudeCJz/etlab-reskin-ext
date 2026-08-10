@@ -1,0 +1,25 @@
+ETLab MITS Reskin - Local Install
+
+This is a client-side browser extension. It only runs on:
+https://mits.etlab.app/*
+
+Chrome or Edge install:
+1. Open chrome://extensions/ or edge://extensions/
+2. Turn on Developer mode.
+3. Click Load unpacked.
+4. Select this folder:
+   D:\VS\PROJECTS\FREE WORK\etlab-reskin-ext
+5. Open https://mits.etlab.app/ and log in normally.
+
+Use:
+- Press Alt+K to open universal search.
+- Use Up / Down to move through results.
+- Press Enter to open a selected result.
+- Press Esc to close search.
+- Click the floating blue search button (bottom-right) anytime.
+- The dashboard gets a unified academic + hostel calendar.
+
+Privacy:
+- The extension does not store your username or password.
+- It uses your normal ETLab browser session.
+- Hostel calendar data is fetched only from ETLab while you are logged in.

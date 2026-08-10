@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ETLab Reskin</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, 'Segoe UI', sans-serif;
+      background: #070b19;
+      color: #f8fafc;
+      width: 220px;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .top {
+      padding: 16px 16px 14px;
+      border-bottom: 1px solid rgba(37,99,235,0.18);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #2563eb, #4338ca);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .name {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #f8fafc;
+      letter-spacing: -0.01em;
+    }
+
+    .sub {
+      font-size: 0.68rem;
+      color: #64748b;
+      margin-top: 1px;
+    }
+
+    .toggle-row {
+      padding: 20px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .toggle-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #94a3b8;
+    }
+
+    .toggle-label.on { color: #f8fafc; }
+
+    /* Toggle switch */
+    .switch {
+      position: relative;
+      width: 46px;
+      height: 26px;
+      flex-shrink: 0;
+    }
+
+    .switch input { display: none; }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      background: rgba(37,99,235,0.15);
+      border: 1px solid rgba(37,99,235,0.25);
+      border-radius: 26px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .slider::before {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      left: 3px;
+      top: 3px;
+      background: #475569;
+      transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    input:checked + .slider {
+      background: rgba(37,99,235,0.35);
+      border-color: rgba(37,99,235,0.6);
+      box-shadow: 0 0 12px rgba(37,99,235,0.3);
+    }
+
+    input:checked + .slider::before {
+      background: linear-gradient(135deg, #2563eb, #4338ca);
+      transform: translateX(20px);
+      box-shadow: 0 2px 8px rgba(37,99,235,0.5);
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-right: 6px;
+      background: #ef4444;
+      vertical-align: middle;
+    }
+
+    .status-dot.active {
+      background: #10b981;
+      box-shadow: 0 0 6px rgba(16,185,129,0.5);
+      animation: glow 2s ease-in-out infinite;
+    }
+
+    @keyframes glow {
+      0%,100% { opacity:1; }
+      50%      { opacity:0.5; }
+    }
+
+    .status-bar {
+      padding: 8px 16px 14px;
+      font-size: 0.72rem;
+      color: #64748b;
+    }
+
+    .reload-hint {
+      margin-top: 4px;
+      font-size: 0.68rem;
+      color: #334155;
+    }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <div class="logo">✦</div>
+    <div>
+      <div class="name">ETLab Reskin</div>
+      <div class="sub">mits.etlab.app</div>
+    </div>
+  </div>
+
+  <div class="toggle-row">
+    <span class="toggle-label" id="toggle-label">Off</span>
+    <label class="switch">
+      <input type="checkbox" id="toggle">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="status-bar">
+    <span class="status-dot" id="status-dot"></span>
+    <span id="status-text">Reskin disabled</span>
+    <div class="reload-hint" id="reload-hint"></div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

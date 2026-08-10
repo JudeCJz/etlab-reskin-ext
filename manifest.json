@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "ETLab MITS Reskin",
+  "version": "1.0.0",
+  "description": "Premium dark reskin for mits.etlab.app with topbar search and unified calendar.",
+  "icons": {
+    "16":  "icons/icon16.png",
+    "48":  "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": ["storage"],
+  "host_permissions": ["*://*.etlab.app/*"],
+  "content_scripts": [
+    {
+      "matches":    ["*://*.etlab.app/*"],
+      "js":         ["content.js"],
+      "css":        ["reskin.css"],
+      "run_at":     "document_start",
+      "all_frames": false
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "ETLab Reskin"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/*"],
+      "matches":   ["*://*.etlab.app/*"]
+    }
+  ]
+}

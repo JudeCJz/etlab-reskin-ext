@@ -1,0 +1,751 @@
+/*
+ * ETLab MITS Reskin — content.js (clean rewrite)
+ * Auto-hide sidebar · Month-switching calendar · Dark/Light · Cached scraper
+ */
+'use strict';
+
+const BASE_URL = 'https://mits.etlab.app';
+
+const SKW = {
+  'attendance':['attendance','present','absent','percentage'],
+  'results':['results','marks','grades','cgpa','sgpa','score'],
+  'timetable':['timetable','schedule','routine','periods'],
+  'assignments':['assignments','homework','submission','due'],
+  'study materials':['materials','notes','pdf','books','syllabus'],
+  'materials':['materials','notes','pdf','books','syllabus'],
+  'user manual':['manual','guide','help'],
+  'hostel attendance':['hostel','warden','hostel attendance'],
+  'accounts':['fees','accounts','tuition','payment'],
+  'certificates':['certificate','bonafide','scholarship'],
+  'gate pass':['gate pass','out pass','security'],
+};
+
+let _cachedLinks=null, _avatarCache=null, _theme='light', _globalClicked=false;
+let _calYear=new Date().getFullYear(), _calMonth=new Date().getMonth(), _calAbsent=new Set(), _calEl=null;
+let _hostelAbsentMonth=new Date().getMonth(), _hostelAbsentYear=new Date().getFullYear();
+let _origSidebarHTML=null; // saved before reskin so we can restore
+
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DHDRS=['S','M','T','W','T','F','S'];
+const HMAP={'2026-7-12':'Karkidaka Vavu','2026-7-13':'1st Internal','2026-7-14':'1st Internal','2026-7-15':'Independence Day','2026-7-17':'1st Internal','2026-7-22':'Onam','2026-7-23':'Onam','2026-7-24':'Onam','2026-7-25':'Onam','2026-7-26':'Onam','2026-7-27':'Onam','2026-7-28':'Onam','2026-7-29':'Onam','2026-7-30':'Onam'};
+
+const SUN_ICO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
+const MOON_ICO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+
+const esc=v=>String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const absUrl=p=>/^https?:/i.test(p||'')?p:BASE_URL+(p||'');
+const isDash=()=>{const p=location.pathname;return p==='/'||p==='/student'||p==='/student/'||p.includes('/dashboard')||p.includes('/user/dashboard');};
+const getPrefs=cb=>{try{chrome.storage.local.get({starredTiles:[],tileColors:{}},d=>cb(d.starredTiles||[],d.tileColors||{}));}catch(e){cb([],{});}};
+const savePrefs=(s,c,cb)=>{try{chrome.storage.local.set({starredTiles:s,tileColors:c},cb);}catch(e){if(cb)cb();}};
+
+function nq(q){const s=(q||'').toLowerCase().trim();if(!s)return'';if(/attend/.test(s))return'attendance';if(/result|mark|grade|cgpa/.test(s))return'results';if(/assign/.test(s))return'assignments';if(/timetab|sched/.test(s))return'timetable';if(/mater|note|pdf/.test(s))return'materials';if(/fee|acc/.test(s))return'accounts';if(/hostel/.test(s))return'hostel attendance';return s;}
+
+function ico(t){t=(t||'').toLowerCase();
+  if(t.includes('dashboard')||t.includes('home'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>';
+  if(t.includes('hostel attend'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>';
+  if(t.includes('attend'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>';
+  if(t.includes('timetable')||t.includes('schedule'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>';
+  if(t.includes('assign'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>';
+  if(t.includes('material')||t.includes('note')||t.includes('manual'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/></svg>';
+  if(t.includes('result')||t.includes('cgpa'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"/><path d="M8.21 13.89 7 23l5-3 5 3-1.21-9.12"/></svg>';
+  if(t.includes('account')||t.includes('fee')||t.includes('wallet'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16"/><path d="M1 10h22"/></svg>';
+  if(t.includes('certificate'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18"/><path d="M7 7h10M7 12h10M7 17h6"/></svg>';
+  if(t.includes('gate'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>';
+  if(t.includes('quiz')||t.includes('exam'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>';
+  if(t.includes('hostel leave'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>';
+  if(t.includes('placement'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>';
+  if(t.includes('profile'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+  if(t.includes('message'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>';
+  if(t.includes('logout'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>';
+  if(t.includes('password')||t.includes('reset'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
+  if(t.includes('live')||t.includes('video'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14"/></svg>';
+  if(t.includes('project'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>';
+  if(t.includes('circular'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>';
+  if(t.includes('activity'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>';
+  if(t.includes('club'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
+  if(t.includes('mooc'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>';
+  if(t.includes('remark'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+  if(t.includes('survey'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>';
+  if(t.includes('challenge'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+  return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>';
+}
+
+// ── THEME ─────────────────────────────────────────────────────
+function syncTheme(theme){
+  _theme=(theme==='dark')?'dark':'light';
+  document.documentElement.classList.toggle('etlab-reskin-light',_theme==='light');
+  const iEl=document.querySelector('.rk-sb-theme-ico');
+  const lEl=document.querySelector('.rk-sb-theme-lbl');
+  if(iEl)iEl.innerHTML=_theme==='dark'?SUN_ICO:MOON_ICO;
+  if(lEl)lEl.textContent=_theme==='dark'?'Light Mode':'Dark Mode';
+}
+function cycleTheme(){
+  const n=_theme==='dark'?'light':'dark';
+  syncTheme(n);
+  try{chrome.storage.local.set({theme:n});}catch(e){}
+}
+
+// ── SIDEBAR ───────────────────────────────────────────────────
+function reskinSidebar(){
+  const sb=document.querySelector('#sidebar,.sidebar,#main-container>.sidebar');
+  if(!sb||sb.querySelector('.rk-sb-peek'))return;
+  // Save original sidebar HTML before we destroy it
+  if(!_origSidebarHTML) _origSidebarHTML=sb.innerHTML;
+  sb.classList.add('etlab-reskin-sidebar');
+
+  let userName='',logoutHref='/user/logout',profileHref='/student/profile';
+  const uNav=document.querySelector('#user-nav,.user-nav,.nav-user');
+  if(uNav){
+    const tog=uNav.querySelector('a.dropdown-toggle,.user-info,#user_info,.dropdown-toggle');
+    if(tog){
+      const cl=tog.cloneNode(true);
+      cl.querySelectorAll('span.badge,i,svg,img').forEach(e=>e.remove());
+      const raw=cl.textContent.replace(/logout|message|sent items|inbox/gi,'').trim();
+      const clean=raw.replace(/[^a-zA-Z\s.]/g,'').replace(/\s+/g,' ').trim();
+      if(clean.length>2)userName=clean;
+    }
+    uNav.querySelectorAll('a[href]').forEach(a=>{
+      const h=a.getAttribute('href')||'',tx=a.textContent.trim().toLowerCase();
+      if(h.includes('logout')||tx.includes('logout'))logoutHref=h;
+      if(h.includes('profile')||h.includes('user/view'))profileHref=h;
+    });
+    uNav.style.display='none';
+  }
+
+  const NAV=[
+    {t:'Dashboard',h:'/user/dashboard'},
+    {t:'Attendance',h:'/student/attendance'},
+    {t:'Results',h:'/student/results'},
+    {t:'TimeTable',h:'/student/timetable'},
+    {t:'Assignments',h:'/student/assignments'},
+    {t:'Materials',h:'/student/studymaterials'},
+    {t:'User Manual',h:'/student/usermanual'},
+  ];
+  const cur=location.pathname;
+  const curBase=cur.replace(/\/+\d+$/,'').replace(/\/+$/,'')||'/';
+  const isAct=h=>{
+    const base=h.split('?')[0].replace(/\/+\d+$/,'').replace(/\/+$/,'')||'/';
+    return cur===h||curBase===base||curBase.startsWith(base+'/');
+  };
+
+  const navHtml=NAV.map(l=>{
+    const active=isAct(l.h)?' rk-sb-active':'';
+    return '<a href="'+esc(l.h)+'" class="rk-sb-link'+active+'">'
+      +'<span class="rk-sb-ico">'+ico(l.t)+'</span>'
+      +'<span class="rk-sb-lbl">'+esc(l.t)+'</span>'
+      +'</a>';
+  }).join('');
+
+  sb.innerHTML=
+    '<div class="rk-sb-peek">'
+      +'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">'
+        +'<path d="M3 12h18M3 6h18M3 18h18"/>'
+      +'</svg>'
+    +'</div>'
+    +'<div class="rk-sb-inner">'
+      +'<a href="'+esc(profileHref)+'" class="rk-sb-profile">'
+        +'<div class="rk-sb-avatar" id="rk-sb-avatar">'+(userName?userName.charAt(0).toUpperCase():'S')+'</div>'
+        +'<span class="rk-sb-username">'+esc(userName||'Student')+'</span>'
+      +'</a>'
+      +'<div class="rk-sb-actions">'
+        +'<a href="/user/changepassword" class="rk-sb-act">'+ico('password')+'<span>Reset Password</span></a>'
+        +'<a href="'+esc(logoutHref)+'" class="rk-sb-act rk-sb-logout">'+ico('logout')+'<span>Logout</span></a>'
+      +'</div>'
+      +'<div class="rk-sb-sep"></div>'
+      +'<nav class="rk-sb-nav">'+navHtml+'</nav>'
+      +'<div class="rk-sb-sep" style="margin-top:auto"></div>'
+      +'<button type="button" class="rk-sb-theme" id="rk-theme-btn">'
+        +'<span class="rk-sb-theme-ico">'+(_theme==='dark'?SUN_ICO:MOON_ICO)+'</span>'
+        +'<span class="rk-sb-theme-lbl">'+(_theme==='dark'?'Light Mode':'Dark Mode')+'</span>'
+      +'</button>'
+    +'</div>';
+
+  sb.querySelector('#rk-theme-btn')?.addEventListener('click',e=>{e.preventDefault();cycleTheme();});
+  _loadAvatar(sb,userName);
+}
+
+function _loadAvatar(sb,uName){
+  const li=document.querySelector('#user-nav img,.user-nav img,img.profile_img,img.profile-pic,img.avatar,img[src*="user_photo"]');
+  const ls=li?.getAttribute('src')?.trim();
+  if(ls&&/avatar|profile|user|photo/i.test(ls)&&!/icon|logo|banner/i.test(ls)){_setAvatar(sb,absUrl(ls));return;}
+  if(_avatarCache?.url){_setAvatar(sb,_avatarCache.url);return;}
+  fetch(BASE_URL+'/student/profile',{credentials:'include',cache:'no-store'})
+    .then(r=>r.ok?r.text():'')
+    .then(html=>{
+      if(!html)return;
+      const doc=new DOMParser().parseFromString(html,'text/html');
+      const pick=doc.querySelector('img#photo,img.profile_img,img.profile-pic,img.avatar,img[src*="users/"],img[src*="user_photo"],img[src*="profile"]');
+      let url=pick?.getAttribute('src')||'';
+      if(!url){
+        doc.querySelectorAll('img[src]').forEach(img=>{
+          const s=img.getAttribute('src')||'';
+          if(/\/(users|profile|upload|avatar|student|photos?)/i.test(s)&&/\.(jpg|jpeg|png|webp)/i.test(s)&&!/logo|icon|banner/i.test(s)){
+            if(!url||s.length<url.length)url=s;
+          }
+        });
+      }
+      if(url){const full=absUrl(url);_avatarCache={url:full};_setAvatar(sb,full);}
+    }).catch(()=>{});
+}
+function _setAvatar(sb,url){
+  const av=sb.querySelector('#rk-sb-avatar');
+  if(av)av.innerHTML='<img src="'+esc(url)+'" alt="" style="width:100%;height:100%;object-fit:cover;display:block;">';
+}
+
+// ── HOSTEL ATTENDANCE ─────────────────────────────────────────
+async function fetchHostelAbsent(){
+  try{
+    const r=await fetch(BASE_URL+'/hostel/student/viewhostelattendance',{credentials:'include'});
+    if(!r.ok)return new Set();
+    const doc=new DOMParser().parseFromString(await r.text(),'text/html');
+    const days=new Set();
+    
+    // Parse month and year from the page header if possible
+    let parsedMonth = new Date().getMonth();
+    let parsedYear = new Date().getFullYear();
+    const headerEl = doc.querySelector('.calendar-container, .calendar, table, h3, h4, .widget-header');
+    if (headerEl) {
+      const txt = headerEl.textContent;
+      for (let m = 0; m < 12; m++) {
+        if (new RegExp(MONTHS[m], 'i').test(txt)) {
+          parsedMonth = m;
+          break;
+        }
+      }
+      const yMatch = txt.match(/\b(20\d{2})\b/);
+      if (yMatch) {
+        parsedYear = parseInt(yMatch[1], 10);
+      }
+    }
+    _hostelAbsentMonth = parsedMonth;
+    _hostelAbsentYear = parsedYear;
+
+    doc.querySelectorAll('.calendar-container td,.calendar td,table td').forEach(td=>{
+      if(/absent/i.test(td.textContent)){
+        const m=td.textContent.trim().match(/(\d{1,2})/);
+        if(m){const n=parseInt(m[1],10);if(n>=1&&n<=31)days.add(n);}
+      }
+    });
+    return days;
+  }catch{return new Set();}
+}
+
+// ── CALENDAR ──────────────────────────────────────────────────
+function buildCalGrid(year,month){
+  const firstDay=new Date(year,month,1).getDay();
+  const daysInMonth=new Date(year,month+1,0).getDate();
+  const grid=[];let week=Array(firstDay).fill('');
+  for(let d=1;d<=daysInMonth;d++){
+    week.push(String(d));
+    if(week.length===7){grid.push(week);week=[];}
+  }
+  if(week.length)grid.push([...week,...Array(7-week.length).fill('')]);
+  return grid;
+}
+
+function renderCalMonth(el){
+  if(!el)return;
+  const now=new Date(),todayD=now.getDate(),todayM=now.getMonth(),todayY=now.getFullYear();
+  const grid=buildCalGrid(_calYear,_calMonth);
+  let rows='';
+  grid.forEach(week=>{
+    rows+='<tr>';
+    week.forEach(d=>{
+      const n=+d;
+      const isToday=n===todayD&&_calMonth===todayM&&_calYear===todayY;
+      const key=_calYear+'-'+_calMonth+'-'+n;
+      const hol=n?HMAP[key]:null;
+      // Only show hostel absent for the month the data was actually fetched for
+      const habsent=n&&_calMonth===_hostelAbsentMonth&&_calYear===_hostelAbsentYear?_calAbsent.has(n):false;
+      let cls='rk-cc';
+      if(isToday)cls+=' today';
+      else if(hol||habsent)cls+=' event';
+      rows+='<td class="'+cls+'">'+(d?('<b>'+d+'</b>'+(hol?'<em>'+esc(hol)+'</em>':'')+(habsent?'<em class="abs">Hostel Absent</em>':'')):'' )+'</td>';
+    });
+    rows+='</tr>';
+  });
+  el.innerHTML=
+    '<div class="rk-cal-h">'
+      +'<button class="rk-cal-nav" id="rk-cal-prev">&#8249;</button>'
+      +'<span class="rk-cal-title">'+MONTHS[_calMonth]+' '+_calYear+'</span>'
+      +'<button class="rk-cal-nav" id="rk-cal-next">&#8250;</button>'
+    +'</div>'
+    +'<div class="rk-cal-leg">'
+      +'<span><i class="rk-dot-today"></i>Today</span>'
+      +'<span><i class="rk-dot-abs"></i>Holiday/Absent</span>'
+    +'</div>'
+    +'<table class="rk-cal"><thead><tr>'+DHDRS.map(d=>'<th>'+d+'</th>').join('')+'</tr></thead><tbody>'+rows+'</tbody></table>';
+
+  el.querySelector('#rk-cal-prev')?.addEventListener('click',e=>{
+    e.preventDefault();
+    if(--_calMonth<0){_calMonth=11;_calYear--;}
+    renderCalMonth(el);
+  });
+  el.querySelector('#rk-cal-next')?.addEventListener('click',e=>{
+    e.preventDefault();
+    if(++_calMonth>11){_calMonth=0;_calYear++;}
+    renderCalMonth(el);
+  });
+}
+
+function renderCal(el,absent){_calAbsent=absent||new Set();_calEl=el;renderCalMonth(el);}
+
+// ── ATTENDANCE BAR ────────────────────────────────────────────
+function renderStats(el){
+  el.innerHTML=
+    '<div class="rk-att-panel">'
+      +'<div class="rk-att-header">'
+        +'<span class="rk-att-title">Attendance</span>'
+        +'<span class="rk-att-percent" id="rk-att-pct">--%</span>'
+      +'</div>'
+      +'<div class="rk-att-track"><div class="rk-att-fill" id="rk-att-bar"></div></div>'
+      +'<div class="rk-att-footer"><span class="rk-att-status" id="rk-att-status">Loading...</span></div>'
+    +'</div>';
+
+  const setPct=pct=>{
+    const p=Math.min(Math.max(Math.round(pct),0),100);
+    const pE=el.querySelector('#rk-att-pct'),bE=el.querySelector('#rk-att-bar'),sE=el.querySelector('#rk-att-status');
+    if(pE)pE.textContent=p+'%';
+    if(bE){bE.style.width=p+'%';bE.style.background=p>=85?'#10b981':p>=75?'#f59e0b':'#ef4444';}
+    if(sE){
+      sE.textContent=p>=85?'Good Standing':p>=75?'Warning':'Critical';
+      sE.style.color=p>=85?'var(--green-t)':p>=75?'var(--amber-t)':'var(--red-t)';
+    }
+  };
+
+  fetch(BASE_URL+'/student/attendance',{credentials:'include'}).then(r=>r.text()).then(html=>{
+    const doc=new DOMParser().parseFromString(html,'text/html');
+    let pct=null;
+    doc.querySelectorAll('tr,div,p').forEach(row=>{
+      if(/total.*attendance|overall.*attendance|aggregate|total.*percentage/i.test(row.textContent)){
+        const m=row.textContent.match(/(\d{1,3}(?:\.\d+)?)\s*%/);
+        if(m&&parseFloat(m[1])<=100)pct=parseFloat(m[1]);
+      }
+    });
+    if(pct===null){doc.querySelectorAll('.badge,.label,b,strong,td').forEach(c=>{const m=c.textContent.trim().match(/^(\d{1,3}(?:\.\d+)?)\s*%$/);if(m){const v=parseFloat(m[1]);if(v<=100&&(pct===null||v>pct))pct=v;}});}
+    if(pct===null){const all=[...html.matchAll(/(\d{1,3}(?:\.\d+)?)\s*%/g)].map(m=>parseFloat(m[1])).filter(n=>n>=0&&n<=100);if(all.length)pct=Math.max(...all);}
+    setPct(pct??0);
+  }).catch(()=>setPct(0));
+}
+
+// ── TODAY'S SCHEDULE PREVIEW ──────────────────────────────────
+function renderSchedule(el){
+  if(!el)return;
+  el.innerHTML = '<div class="rk-sch-panel"><span class="rk-sch-title">Today\'s Classes</span><div class="rk-sch-list" id="rk-sch-list">Loading class schedule...</div></div>';
+
+  fetch(BASE_URL + '/student/timetable', {credentials: 'include'})
+    .then(r => r.text())
+    .then(html => {
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const listEl = el.querySelector('#rk-sch-list');
+      if (!listEl) return;
+
+      const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const todayDay = dayNames[new Date().getDay()];
+      const targetDay = (todayDay === 'Sunday' || todayDay === 'Saturday') ? 'Monday' : todayDay;
+
+      let periods = [];
+      let foundRow = null;
+      
+      doc.querySelectorAll('table tr').forEach(tr => {
+        const firstCell = tr.querySelector('td, th');
+        if (firstCell && new RegExp('^\\s*' + targetDay + '\\s*$', 'i').test(firstCell.textContent)) {
+          foundRow = tr;
+        }
+      });
+
+      if (foundRow) {
+        const headers = [];
+        const table = foundRow.closest('table');
+        if (table) {
+          table.querySelectorAll('tr').forEach(tr => {
+            const ths = tr.querySelectorAll('th, td');
+            if (ths.length > 3 && headers.length === 0) {
+              ths.forEach(th => {
+                const txt = th.textContent.replace(/\s+/g, ' ').trim();
+                if (txt && !/day/i.test(txt)) headers.push(txt);
+              });
+            }
+          });
+        }
+
+        const cells = foundRow.querySelectorAll('td');
+        let cellIdx = 1;
+        for (let i = 1; i < cells.length; i++) {
+          const txt = cells[i].textContent.replace(/\s+/g, ' ').trim();
+          if (txt) {
+            const timeLabel = headers[i - 1] || ('Period ' + cellIdx);
+            periods.push({ name: txt, time: timeLabel });
+            cellIdx++;
+          }
+        }
+      }
+
+      if (periods.length > 0) {
+        const previewLabel = (todayDay === 'Sunday' || todayDay === 'Saturday') ? ' (Monday Preview)' : '';
+        el.querySelector('.rk-sch-title').textContent = 'Today\'s Classes' + previewLabel;
+        listEl.innerHTML = periods.map((p, idx) => 
+          '<div class="rk-sch-item">'
+            +'<div class="rk-sch-num">'+(idx+1)+'</div>'
+            +'<div class="rk-sch-info">'
+              +'<span class="rk-sch-name">'+esc(p.name)+'</span>'
+              +'<span class="rk-sch-time">'+esc(p.time)+'</span>'
+            +'</div>'
+          +'</div>'
+        ).join('');
+      } else {
+        listEl.innerHTML = '<div style="color:var(--text-m);font-size:0.72rem;padding:4px 0;">No classes scheduled for today.</div>';
+      }
+    })
+    .catch(() => {
+      const listEl = el.querySelector('#rk-sch-list');
+      if (listEl) listEl.innerHTML = '<div style="color:var(--text-m);font-size:0.72rem;padding:4px 0;">Schedule unavailable.</div>';
+    });
+}
+
+// ── STUDENT PORTAL RESOURCES ──────────────────────────────────
+function renderPortals(el){
+  if(!el)return;
+  const portals = [
+    { name: 'MITS Website', url: 'https://mgits.ac.in/', desc: 'Official college portal' },
+    { name: 'KTU Portal', url: 'https://app.ktu.edu.in/', desc: 'Student portal & exams' },
+    { name: 'MITS Library OPAC', url: 'http://117.239.253.203/', desc: 'Search library books' },
+    { name: 'Academic Calendar', url: 'https://mgits.ac.in/academics/academic-calendar/', desc: 'Syllabus & semester dates' }
+  ];
+
+  el.innerHTML = 
+    '<div class="rk-portals-panel">'
+      +'<span class="rk-portals-title">Student Resources</span>'
+      +'<div class="rk-portals-list">'
+        +portals.map(p => 
+          '<a href="'+p.url+'" target="_blank" rel="noopener noreferrer" class="rk-portal-item">'
+            +'<span class="rk-portal-name">'+esc(p.name)+'</span>'
+            +'<span class="rk-portal-desc">'+esc(p.desc)+'</span>'
+          +'</a>'
+        ).join('')
+      +'</div>'
+    +'</div>';
+}
+
+// ── FALLBACK LINKS ────────────────────────────────────────────
+const FALLBACK_LINKS=[
+  {title:'Attendance',href:'/student/attendance'},
+  {title:'Results & CGPA',href:'/student/results'},
+  {title:'Timetable',href:'/student/timetable'},
+  {title:'Assignments',href:'/student/assignments'},
+  {title:'Study Materials',href:'/student/studymaterials'},
+  {title:'Academic Analysis',href:'/ktuacademics/student/studentacademics'},
+  {title:'Activity Points',href:'/activity/studentactivitypoint'},
+  {title:'Hostel Attendance',href:'/hostel/student/viewhostelattendance'},
+  {title:'Hostel Leaves',href:'/hostel/student/applyleave/25050'},
+  {title:'Accounts & Fees',href:'/fees/student/pay?ft=Y2Z6V2VQN0dNQ1RzaWFSc3M0bnNYUT09'},
+  {title:'Certificate Request',href:'/certificate/default/RequestCertificate'},
+  {title:'Challenge Courses',href:'/challengecourse/student/courses'},
+  {title:'Circulars',href:'/student/circulars'},
+  {title:'My Clubs',href:'/club/default/clubstudent'},
+  {title:'Downloads',href:'/certificate/certificateform/downloadcertificate'},
+  {title:'Exam Schedule',href:'/student/examschedule'},
+  {title:'Exam / Quiz',href:'/quiz/student'},
+  {title:'Gate Pass',href:'/user/viewgatepassrequest'},
+  {title:'Grievance',href:'/grievance/user/grievance'},
+  {title:'Homeworks',href:'/student/homework'},
+  {title:'Laboratory',href:'/laboratary/default/laboratary'},
+  {title:'Live Class',href:'/livetv/default/live'},
+  {title:'Module Test',href:'/student/moduletest'},
+  {title:'MOOC Certificates',href:'/mooc/mooccertificates'},
+  {title:'MOOC Registration',href:'/mooc/moocregistrations'},
+  {title:'Online Video Class',href:'/ktuacademics/student/onlinevideolink'},
+  {title:'Placements',href:'/student/dashboardplacement'},
+  {title:'Program Outcomes',href:'/student/programoutcome'},
+  {title:'Project',href:'/student/projects'},
+  {title:'Question Bank',href:'/questionbank/student/materials'},
+  {title:'Remarks',href:'/student/remarks'},
+  {title:'Series Exam',href:'/student/seriesexam'},
+  {title:'Subject',href:'/student/subject'},
+  {title:'Survey',href:'/survey/user/viewall'},
+  {title:'Tutorials',href:'/student/tutorial'},
+  {title:'Video Lectures',href:'/video/default/videos'},
+  {title:'Wallet',href:'/wallet/student/index?type=Y2Z6V2VQN0dNQ1RzaWFSc3M0bnNYUT09'},
+  {title:'End Semester Exam',href:'/universityexam/student/dashboard'},
+  {title:'User Manual',href:'/student/usermanual'},
+];
+
+// ── DASHBOARD TILES ───────────────────────────────────────────
+function extractDashboard(){
+  if(!isDash())return;
+  if(!_cachedLinks){
+    const scraped=[];
+    document.querySelectorAll('a[href]').forEach(a=>{
+      if(a.closest('#sidebar,.sidebar,.etlab-reskin-sidebar,#rk-wrap'))return;
+      const href=a.getAttribute('href')||'';
+      if(!href||href==='#'||href.startsWith('javascript:'))return;
+      const titleEl=a.querySelector('.title,span,p');
+      let title=(titleEl?titleEl.textContent:a.textContent).replace(/[\u2606\u2605\u25cf\u2715\u25c9]/g,'').replace(/\s+/g,' ').trim();
+      if(!title||title.length<2||title.length>50)return;
+      if(/^(x|view|home|dashboard|logout|login|messages|sent items|profile)$/i.test(title))return;
+      const half=Math.floor(title.length/2);
+      if(title.length>6&&title.slice(0,half)===title.slice(half))title=title.slice(0,half).trim();
+      if(!scraped.some(l=>l.href===href||l.title.toLowerCase()===title.toLowerCase()))scraped.push({href,title});
+    });
+    _cachedLinks=scraped.length>5?scraped:FALLBACK_LINKS;
+  }
+
+  document.getElementById('rk-wrap')?.remove();
+  document.querySelectorAll('#breadcrumbs,.breadcrumbs,.page-header,[class*="space-"],.ui-sortable').forEach(e=>{e.style.display='none';});
+  const container=document.querySelector('.main-content,#page-content,.page-content,#content,.span9,.col-md-9,.container-fluid');
+  if(!container)return;
+  Array.from(container.children).forEach(c=>{if(c.id!=='rk-wrap')c.style.display='none';});
+
+  const wrap=document.createElement('div');
+  wrap.id='rk-wrap';
+  container.insertBefore(wrap,container.firstChild);
+
+  getPrefs((starred,colors)=>{
+    const sorted=[..._cachedLinks].sort((a,b)=>{
+      const as=starred.includes(a.href),bs=starred.includes(b.href);
+      if(as&&!bs)return-1;if(!as&&bs)return 1;
+      return a.title.localeCompare(b.title);
+    });
+
+    const tilesHtml=sorted.map(l=>{
+      const COLOR_CLASSES = {
+        '#2563eb': 'blue',
+        '#10b981': 'green',
+        '#f59e0b': 'amber',
+        '#ec4899': 'pink',
+        '#8b5cf6': 'purple',
+        '#06b6d4': 'cyan'
+      };
+
+      const isStar=starred.includes(l.href);
+      const cc=colors[l.href]||'';
+      const clrClass=COLOR_CLASSES[cc] ? ' rk-c-' + COLOR_CLASSES[cc] : '';
+      const cStyle=cc && !COLOR_CLASSES[cc] ? 'border-left-color:'+cc+'!important;' : '';
+
+      return '<a href="'+esc(l.href)+'"'
+        +' class="rk-tile'+(isStar?' starred':'')+clrClass+'"'
+        +' data-t="'+esc(l.title.toLowerCase())+'"'
+        +' data-k="'+esc(l.href)+'"'
+        +' style="'+cStyle+'">'
+        +'<span class="rk-tile-ico">'+ico(l.title)+'</span>'
+        +'<span class="rk-tile-name">'+esc(l.title)+'</span>'
+        +'<span class="rk-tile-acts">'
+          +'<button type="button" class="rk-abtn rk-star'+(isStar?' rk-on':'')+'" data-k="'+esc(l.href)+'">'+(isStar?'\u2605':'\u2606')+'</button>'
+          +'<button type="button" class="rk-abtn rk-clr" data-k="'+esc(l.href)+'">\u25cf</button>'
+          +'<span class="rk-pal">'
+            +'<i class="rk-sw" data-c="#2563eb" style="background:#2563eb"></i>'
+            +'<i class="rk-sw" data-c="#10b981" style="background:#10b981"></i>'
+            +'<i class="rk-sw" data-c="#f59e0b" style="background:#f59e0b"></i>'
+            +'<i class="rk-sw" data-c="#ec4899" style="background:#ec4899"></i>'
+            +'<i class="rk-sw" data-c="#8b5cf6" style="background:#8b5cf6"></i>'
+            +'<i class="rk-sw" data-c="#06b6d4" style="background:#06b6d4"></i>'
+            +'<i class="rk-sw rk-sw-reset" data-c="">&#x2715;</i>'
+          +'</span>'
+        +'</span>'
+      +'</a>';
+    }).join('');
+
+    wrap.innerHTML=
+      '<div class="rk-search">'
+        +'<svg class="rk-search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">'
+          +'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>'
+        +'</svg>'
+        +'<input type="text" id="rk-sinput" placeholder="Search..." autocomplete="off" spellcheck="false">'
+        +'<button type="button" id="rk-sx" class="rk-sx" aria-label="Clear">&#x2715;</button>'
+      +'</div>'
+      +'<div class="rk-layout">'
+        +'<div class="rk-tiles-col"><div class="rk-tiles" id="rk-tiles">'+tilesHtml+'</div></div>'
+        +'<div class="rk-side-col">'
+          +'<div class="rk-card" id="rk-cal"></div>'
+          +'<div class="rk-card" id="rk-stats"></div>'
+          +'<div class="rk-card" id="rk-schedule"></div>'
+          +'<div class="rk-card" id="rk-portals"></div>'
+        +'</div>'
+      +'</div>';
+
+    const inp=wrap.querySelector('#rk-sinput');
+    const xBtn=wrap.querySelector('#rk-sx');
+    const doFilter=()=>{
+      const q=(inp.value||'').toLowerCase().trim();
+      const nqv=nq(q);
+      xBtn.style.display=q?'flex':'none';
+      wrap.querySelectorAll('.rk-tile').forEach(t=>{
+        const tt=t.getAttribute('data-t')||'';
+        if(!q){t.classList.remove('rk-hidden');return;}
+        const kws=SKW[tt]||[tt];
+        const ok=tt.includes(q)||tt.includes(nqv)||kws.some(k=>k.includes(q)||q.includes(k));
+        t.classList.toggle('rk-hidden',!ok);
+      });
+    };
+    inp.addEventListener('input',doFilter);
+    xBtn.addEventListener('click',()=>{inp.value='';doFilter();inp.focus();});
+
+    wrap.querySelectorAll('.rk-star').forEach(btn=>{
+      btn.addEventListener('click',e=>{
+        e.preventDefault();e.stopPropagation();
+        const k=btn.getAttribute('data-k');
+        let ns=[...starred];
+        if(ns.includes(k))ns=ns.filter(x=>x!==k);else ns.push(k);
+        savePrefs(ns,colors,extractDashboard);
+      });
+    });
+
+    wrap.querySelectorAll('.rk-clr').forEach(btn=>{
+      btn.addEventListener('click',e=>{
+        e.preventDefault();e.stopPropagation();
+        const pal=btn.nextElementSibling;if(!pal)return;
+        const open=pal.classList.contains('rk-pal-open');
+        wrap.querySelectorAll('.rk-pal').forEach(p=>p.classList.remove('rk-pal-open'));
+        if(!open)pal.classList.add('rk-pal-open');
+      });
+    });
+
+    wrap.querySelectorAll('.rk-sw').forEach(sw=>{
+      sw.addEventListener('click',e=>{
+        e.preventDefault();e.stopPropagation();
+        const tile=sw.closest('.rk-tile');if(!tile)return;
+        const k=tile.getAttribute('data-k');
+        const c=sw.getAttribute('data-c');
+        const nc={...colors};
+        if(c)nc[k]=c;else delete nc[k];
+        savePrefs(starred,nc,extractDashboard);
+      });
+    });
+
+    if(!_globalClicked){
+      _globalClicked=true;
+      document.addEventListener('click',e=>{
+        if(!e.target.closest('.rk-tile-acts'))
+          document.querySelectorAll('.rk-pal').forEach(p=>p.classList.remove('rk-pal-open'));
+      });
+    }
+
+    const cal=wrap.querySelector('#rk-cal');
+    renderCal(cal,new Set());
+    fetchHostelAbsent().then(abs=>{_calAbsent=abs;renderCalMonth(_calEl||cal);});
+    renderStats(wrap.querySelector('#rk-stats'));
+    renderSchedule(wrap.querySelector('#rk-schedule'));
+    renderPortals(wrap.querySelector('#rk-portals'));
+  });
+}
+
+// ── FOOTER ────────────────────────────────────────────────────
+function removeFooter(){
+  document.querySelectorAll('.footer,#footer').forEach(e=>e.remove());
+  document.querySelectorAll('body>div>div').forEach(e=>{
+    if(e.textContent?.includes('Etuwa Concepts')||e.textContent?.includes('Page Generated'))e.remove();
+  });
+}
+
+// ── APPLY / UNAPPLY ───────────────────────────────────────────
+function apply(){
+  document.documentElement.classList.add('etlab-reskin-on');
+  document.body?.classList.add('etlab-reskin-on');
+  document.body?.classList.toggle('rk-dash-page',isDash());
+  reskinSidebar();
+  removeFooter();
+  if(isDash())extractDashboard();
+  // Add dashboard toggle
+  addDashToggle();
+}
+
+// ── DASHBOARD TOGGLE BUTTON (on the page itself) ──────────────
+function addDashToggle(){
+  let btn=document.getElementById('rk-page-toggle');
+  if(!btn){
+    btn=document.createElement('div');
+    btn.id='rk-page-toggle';
+    btn.title='Toggle ETLab Reskin';
+    
+    let imgUrl;
+    try {
+      imgUrl = chrome.runtime.getURL('icons/toggle.png');
+    } catch(e) {
+      imgUrl = '';
+    }
+
+    if (imgUrl) {
+      btn.innerHTML = '<img src="' + esc(imgUrl) + '" alt="Toggle Reskin" style="width:28px;height:28px;object-fit:contain;pointer-events:none;border-radius:0 !important;display:block;">';
+    } else {
+      btn.innerHTML = '<span style="font-size:18px;font-weight:bold;color:#3b82f6;">✦</span>';
+    }
+    
+    document.body.appendChild(btn);
+    btn.addEventListener('click',()=>{
+      try{
+        chrome.storage.local.get({reskinEnabled:true},r=>{
+          const next=!r.reskinEnabled;
+          chrome.storage.local.set({reskinEnabled:next});
+        });
+      }catch(e){
+        const state=document.documentElement.classList.contains('etlab-reskin-on');
+        if(state)unapply();else apply();
+      }
+    });
+  }
+
+  const isActive=document.documentElement.classList.contains('etlab-reskin-on');
+  btn.style.cssText='position:fixed;bottom:20px;right:20px;z-index:9999999;'+
+    'width:44px;height:44px;display:flex;align-items:center;justify-content:center;'+
+    'cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.18);transition:all 0.2s ease;'+
+    'border-radius:50% !important;'+
+    (isActive
+      ? 'background:var(--surface,#141a26);border:1px solid var(--bdr2,#2b3648);'
+      : 'background:#ffffff;border:1px solid #d1d5db;'
+    );
+}
+
+function unapply(){
+  document.documentElement.classList.remove('etlab-reskin-on','etlab-reskin-light');
+  document.body?.classList.remove('etlab-reskin-on','rk-dash-page');
+
+  // Remove dashboard wrapper and restore hidden content
+  document.getElementById('rk-wrap')?.remove();
+  const container=document.querySelector('.main-content,#page-content,.page-content,#content,.span9,.col-md-9,.container-fluid');
+  if(container)Array.from(container.children).forEach(c=>{c.style.display='';});
+  document.querySelectorAll('#breadcrumbs,.breadcrumbs,.page-header,[class*="space-"],.ui-sortable').forEach(e=>{e.style.display='';});
+  document.querySelectorAll('.footer,#footer').forEach(e=>{e.style.display='';});
+
+  // Restore user nav
+  const userNav=document.querySelector('#user-nav,.user-nav,.nav-user');
+  if(userNav)userNav.style.display='';
+
+  // Restore original sidebar by replacing innerHTML with saved copy
+  const sidebar=document.querySelector('#sidebar,.sidebar,#main-container>.sidebar');
+  if(sidebar){
+    sidebar.classList.remove('etlab-reskin-sidebar');
+    if(_origSidebarHTML){
+      sidebar.innerHTML=_origSidebarHTML;
+    } else {
+      // Fallback: just remove our injected elements and unhide the rest
+      sidebar.querySelector('.rk-sb-peek')?.remove();
+      sidebar.querySelector('.rk-sb-inner')?.remove();
+      Array.from(sidebar.children).forEach(c=>{c.style.display='';});
+      sidebar.querySelectorAll('.nav-list,.submenu,.sidebar-shortcuts,.sidebar-toggle').forEach(el=>{el.style.display='';});
+    }
+  }
+
+  // Refresh dashboard toggle button styles so it stays styled for off state
+  addDashToggle();
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+function init(){
+  if(!location.hostname.endsWith('etlab.app'))return;
+  apply();
+  try{
+    chrome.storage.local.get({reskinEnabled:true,theme:'light'},r=>{
+      syncTheme(r.theme||'light');
+      if(r.reskinEnabled===false)unapply();
+    });
+    chrome.storage.onChanged.addListener((changes,area)=>{
+      if(area!=='local')return;
+      if('reskinEnabled' in changes)changes.reskinEnabled.newValue?apply():unapply();
+      if('theme' in changes)syncTheme(changes.theme.newValue);
+    });
+  }catch(e){}
+}
+
+document.readyState==='loading'
+  ?document.addEventListener('DOMContentLoaded',init)
+  :init();
