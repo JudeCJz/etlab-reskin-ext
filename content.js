@@ -625,12 +625,11 @@ function addDashToggle(){
         if(state)unapply();else apply();
       }
     });
+    const isActive=document.documentElement.classList.contains('etlab-reskin-on');
+    _toggleFrame = isActive ? 9 : 0;
+    btn.setAttribute('aria-checked', isActive ? 'true' : 'false');
+    updateToggleVisual();
   }
-
-  const isActive=document.documentElement.classList.contains('etlab-reskin-on');
-  _toggleFrame = isActive ? 9 : 0;
-  btn.setAttribute('aria-checked', isActive ? 'true' : 'false');
-  updateToggleVisual();
 }
 
 function unapply(){
