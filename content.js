@@ -534,7 +534,9 @@ function renderCalMonth(el, forceRefresh){
 
   el.innerHTML=
     '<div class="rk-cal-h">'
+      +'<button type="button" class="rk-cal-nav" id="rk-cal-prev" title="Previous Month">&#8249;</button>'
       +'<span class="rk-cal-title">'+MONTHS[_calMonth]+' '+_calYear+titleSuffix+'</span>'
+      +'<button type="button" class="rk-cal-nav" id="rk-cal-next" title="Next Month">&#8250;</button>'
     +'</div>'
     +'<div class="rk-cal-leg">'
       +'<span><i class="rk-dot-today"></i>Today</span>'
@@ -542,6 +544,29 @@ function renderCalMonth(el, forceRefresh){
     +'</div>'
     +'<table class="rk-cal"><thead><tr>'+DHDRS.map(d=>'<th>'+d+'</th>').join('')+'</tr></thead><tbody>'+rows+'</tbody></table>'
     +'<div class="rk-cal-preview" id="rk-cal-preview"></div>';
+
+  // Navigation handlers
+  el.querySelector('#rk-cal-prev')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    _calMonth--;
+    if (_calMonth < 0) {
+      _calMonth = 11;
+      _calYear--;
+    }
+    _calSelectedDay = null;
+    renderCalMonth(el, false);
+  });
+
+  el.querySelector('#rk-cal-next')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    _calMonth++;
+    if (_calMonth > 11) {
+      _calMonth = 0;
+      _calYear++;
+    }
+    _calSelectedDay = null;
+    renderCalMonth(el, false);
+  });
 
   const previewEl = el.querySelector('#rk-cal-preview');
 
