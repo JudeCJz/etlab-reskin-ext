@@ -113,10 +113,8 @@ function ico(t){t=(t||'').toLowerCase();
 function syncTheme(theme){
   _theme=(theme==='dark')?'dark':'light';
   document.documentElement.classList.toggle('etlab-reskin-light',_theme==='light');
-  const iEl=document.querySelector('.rk-sb-theme-ico');
-  const lEl=document.querySelector('.rk-sb-theme-lbl');
-  if(iEl)iEl.innerHTML=_theme==='dark'?SUN_ICO:MOON_ICO;
-  if(lEl)lEl.textContent=_theme==='dark'?'Light Mode':'Dark Mode';
+  const pill=document.querySelector('#rk-theme-pill');
+  if(pill) pill.innerHTML='<span class="rk-tp-ico">'+(_theme==='dark'?SUN_ICO:MOON_ICO)+'</span><span class="rk-tp-lbl">'+(_theme==='dark'?'Light':'Dark')+'</span>';
 }
 function cycleTheme(){
   const n=_theme==='dark'?'light':'dark';
@@ -211,14 +209,8 @@ function reskinSidebar(){
       +'</div>'
       +'<div class="rk-sb-sep"></div>'
       +'<nav class="rk-sb-nav">'+navHtml+'</nav>'
-      +'<div class="rk-sb-sep" style="margin-top:auto"></div>'
-      +'<button type="button" class="rk-sb-theme" id="rk-theme-btn">'
-        +'<span class="rk-sb-theme-ico">'+(_theme==='dark'?SUN_ICO:MOON_ICO)+'</span>'
-        +'<span class="rk-sb-theme-lbl">'+(_theme==='dark'?'Light Mode':'Dark Mode')+'</span>'
-      +'</button>'
     +'</div>';
 
-  sb.querySelector('#rk-theme-btn')?.addEventListener('click',e=>{e.preventDefault();cycleTheme();});
   _loadAvatar(sb,userName);
 }
 

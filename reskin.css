@@ -284,21 +284,6 @@ html.etlab-reskin-on .sidebar:hover .rk-sb-inner {
   color: var(--blue-t) !important; font-weight: 700;
 }
 
-/* Theme toggle button */
-.rk-sb-theme {
-  display: flex; align-items: center; gap: 9px;
-  padding: 8px 10px; margin: 4px 6px 8px;
-  background: transparent; border: 1px solid transparent;
-  border-radius: 6px !important;
-  color: var(--text-m) !important;
-  font: inherit; font-size: 0.73rem; font-weight: 600;
-  cursor: pointer; text-align: left; white-space: nowrap;
-  transition: background 0.14s, border-color 0.14s, color 0.14s;
-}
-.rk-sb-theme-ico { display: flex; align-items: center; }
-.rk-sb-theme-ico svg { width: 13px; height: 13px; stroke: currentColor; }
-.rk-sb-theme:hover { background: var(--hovbg); border-color: var(--hovbdr); color: var(--text-b) !important; }
-
 /* ══════════════════════════════════════════════════════
    DASHBOARD WRAPPER
    ══════════════════════════════════════════════════════ */
