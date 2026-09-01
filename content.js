@@ -899,19 +899,28 @@ function init(){
   // Clear all cached data so fresh ETLab values are fetched on every page load
   _calCache = {};
   _calLoading = {};
-  apply();
+
+  // Read stored preferences FIRST, then apply with correct theme
+  // This prevents the light-mode flash on pages where user chose dark
   try{
-    chrome.storage.local.get({reskinEnabled:true,theme:'light'},r=>{
-      syncTheme(r.theme||'light');
-      if(r.reskinEnabled===false)unapply();
-      _isInitialLoad=false; // initial load finished, future updates will animate
+    chrome.storage.local.get({reskinEnabled:true,theme:'dark'},r=>{
+      // Set theme before apply() so the first render is correct
+      _theme = (r.theme === 'light') ? 'light' : 'dark';
+      syncTheme(_theme);
+      if(r.reskinEnabled !== false){
+        apply();
+      }
+      _isInitialLoad=false;
     });
     chrome.storage.onChanged.addListener((changes,area)=>{
       if(area!=='local')return;
       if('reskinEnabled' in changes)changes.reskinEnabled.newValue?apply():unapply();
       if('theme' in changes)syncTheme(changes.theme.newValue);
     });
-  }catch(e){}
+  }catch(e){
+    // Fallback if chrome.storage is unavailable — apply with default theme
+    apply();
+  }
 }
 
 document.readyState==='loading'

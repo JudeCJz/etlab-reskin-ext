@@ -1,6 +1,6 @@
 /* ====================================================
    ETLab MITS Reskin — reskin.css  (clean rewrite)
-   Light / Dark · Sharp 0px Corners · Auto-hide Sidebar
+   Light / Dark · Soft Rounded UI · Auto-hide Sidebar
    ==================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -88,12 +88,12 @@ html.etlab-reskin-on.etlab-reskin-light {
    ══════════════════════════════════════════════════════ */
 html.etlab-reskin-on *,
 html.etlab-reskin-on *::before,
-html.etlab-reskin-on *::after { border-radius: 0 !important; box-sizing: border-box !important; }
+html.etlab-reskin-on *::after { box-sizing: border-box !important; }
 
 html.etlab-reskin-on { scrollbar-width: thin; scrollbar-color: var(--scroll) var(--scrolltrack); }
 html.etlab-reskin-on::-webkit-scrollbar { width:6px; height:6px; }
 html.etlab-reskin-on::-webkit-scrollbar-track { background: var(--scrolltrack); }
-html.etlab-reskin-on::-webkit-scrollbar-thumb { background: var(--scroll); }
+html.etlab-reskin-on::-webkit-scrollbar-thumb { background: var(--scroll); border-radius: 3px; }
 html.etlab-reskin-on::-webkit-scrollbar-thumb:hover { background: var(--blue); }
 
 html.etlab-reskin-on .footer,
@@ -213,6 +213,7 @@ html.etlab-reskin-on .sidebar:hover .rk-sb-inner {
   width: 30px; height: 30px; flex-shrink: 0;
   background: var(--avatar-bg);
   border: 1px solid var(--bdr3);
+  border-radius: 8px !important;
   display: flex; align-items: center; justify-content: center;
   color: #fff; font-weight: 800; font-size: 13px;
   overflow: hidden;
@@ -237,6 +238,7 @@ html.etlab-reskin-on .sidebar:hover .rk-sb-inner {
   color: var(--text-m) !important; text-decoration: none !important;
   font-size: 0.73rem; font-weight: 600;
   border: 1px solid transparent;
+  border-radius: 6px !important;
   white-space: nowrap;
   transition: background 0.14s, border-color 0.14s, color 0.14s;
 }
@@ -262,6 +264,7 @@ html.etlab-reskin-on .sidebar:hover .rk-sb-inner {
   color: var(--text-m) !important; text-decoration: none !important;
   font-size: 0.73rem; font-weight: 600;
   border: 1px solid transparent;
+  border-radius: 6px !important;
   white-space: nowrap;
   transition: background 0.14s, border-color 0.14s, color 0.14s, transform 0.12s;
 }
@@ -283,6 +286,7 @@ html.etlab-reskin-on .sidebar:hover .rk-sb-inner {
   display: flex; align-items: center; gap: 9px;
   padding: 8px 10px; margin: 4px 6px 8px;
   background: transparent; border: 1px solid transparent;
+  border-radius: 6px !important;
   color: var(--text-m) !important;
   font: inherit; font-size: 0.73rem; font-weight: 600;
   cursor: pointer; text-align: left; white-space: nowrap;
@@ -306,13 +310,14 @@ html.etlab-reskin-on .sidebar:hover .rk-sb-inner {
   -webkit-font-smoothing: antialiased;
   box-sizing: border-box !important;
 }
-#rk-wrap * { border-radius: 0 !important; }
+
 
 /* ── Search bar ──────────────────────────────────────── */
 .rk-search {
   display: flex; align-items: center; gap: 10px;
   background: var(--surface);
   border: 1px solid var(--bdr2);
+  border-radius: 8px !important;
   padding: 9px 14px;
   margin-bottom: 14px;
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -371,6 +376,7 @@ html.etlab-reskin-on .sidebar:hover .rk-sb-inner {
   background: var(--surface);
   border: 1px solid var(--bdr);
   border-left: 3px solid var(--bdr3);
+  border-radius: 8px !important;
   color: var(--text) !important; text-decoration: none !important;
   font-family: inherit;
   transition: background 0.16s, border-color 0.16s, box-shadow 0.16s, transform 0.16s;
@@ -418,6 +424,7 @@ html.etlab-reskin-on .sidebar:hover .rk-sb-inner {
   width: 16px; height: 16px;
   background: var(--surface2);
   border: 1px solid var(--bdr3);
+  border-radius: 4px !important;
   color: var(--text-m); font-size: 9px;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; padding: 0; line-height: 1; font-family: inherit;
@@ -433,6 +440,7 @@ html.etlab-reskin-on .sidebar:hover .rk-sb-inner {
   position: absolute; top: 22px; right: 0;
   background: var(--surface2);
   border: 1px solid var(--bdr3);
+  border-radius: 6px !important;
   padding: 4px; gap: 3px;
   box-shadow: 0 6px 16px var(--shadow);
   z-index: 100;
@@ -441,6 +449,7 @@ html.etlab-reskin-on .sidebar:hover .rk-sb-inner {
 
 .rk-sw {
   width: 13px; height: 13px; flex-shrink: 0;
+  border-radius: 3px !important;
   cursor: pointer; border: 1px solid rgba(255,255,255,0.15);
   font-style: normal; transition: transform 0.12s;
 }
@@ -497,6 +506,7 @@ html.etlab-reskin-light .rk-tile.rk-c-cyan   { --t-bg-tint: #ecfeff; }
 .rk-card {
   background: var(--surface);
   border: 1px solid var(--bdr);
+  border-radius: 8px !important;
   padding: 13px;
 }
 
@@ -511,6 +521,7 @@ html.etlab-reskin-light .rk-tile.rk-c-cyan   { --t-bg-tint: #ecfeff; }
 }
 .rk-cal-nav {
   background: transparent; border: 1px solid var(--bdr2);
+  border-radius: 5px !important;
   color: var(--text-m); font-size: 1rem; font-weight: 700;
   width: 22px; height: 22px;
   display: flex; align-items: center; justify-content: center;
@@ -526,8 +537,8 @@ html.etlab-reskin-light .rk-tile.rk-c-cyan   { --t-bg-tint: #ecfeff; }
   margin-bottom: 6px;
 }
 .rk-cal-leg span { display: flex; align-items: center; gap: 4px; }
-.rk-dot-today { width: 6px; height: 6px; background: var(--blue); display: inline-block; flex-shrink: 0; }
-.rk-dot-abs   { width: 6px; height: 6px; background: var(--red);  display: inline-block; flex-shrink: 0; }
+.rk-dot-today { width: 6px; height: 6px; background: var(--blue); border-radius: 50% !important; display: inline-block; flex-shrink: 0; }
+.rk-dot-abs   { width: 6px; height: 6px; background: var(--red);  border-radius: 50% !important; display: inline-block; flex-shrink: 0; }
 
 table.rk-cal { width: 100%; border-collapse: collapse; }
 table.rk-cal th {
@@ -552,9 +563,9 @@ table.rk-cal td em.abs {
   color: var(--amber-t); font-weight: 700;
 }
 
-td.rk-cc.today { background: var(--blue-bg); border: 1.5px solid var(--blue); }
+td.rk-cc.today { background: var(--blue-bg); border: 1.5px solid var(--blue); border-radius: 6px !important; }
 td.rk-cc.today b { color: var(--blue-t); font-weight: 800; }
-td.rk-cc.event { background: var(--blue-bg); }
+td.rk-cc.event { background: var(--blue-bg); border-radius: 6px !important; }
 td.rk-cc.event b { color: var(--text-s); font-weight: 700; }
 
 /* ── Attendance bar ─────────────────────────────────── */
@@ -574,10 +585,12 @@ td.rk-cc.event b { color: var(--text-s); font-weight: 700; }
   width: 100%; height: 10px;
   background: var(--track);
   border: 1px solid var(--bdr);
+  border-radius: 5px !important;
   overflow: hidden;
 }
 .rk-att-fill {
   height: 100%; width: 0%;
+  border-radius: 5px !important;
   transition: width 0.5s ease, background 0.4s;
 }
 .rk-att-footer { font-size: 0.68rem; font-weight: 600; }
