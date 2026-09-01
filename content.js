@@ -20,7 +20,7 @@ const SKW = {
   'gate pass':['gate pass','out pass','security'],
 };
 
-let _cachedLinks=null, _avatarCache=null, _theme='light', _globalClicked=false;
+let _cachedLinks=null, _avatarCache=null, _cachedUserName='', _theme='light', _globalClicked=false;
 let _calYear=new Date().getFullYear(), _calMonth=new Date().getMonth(), _calAbsent=new Set(), _calEl=null;
 let _hostelAbsentMonth=new Date().getMonth(), _hostelAbsentYear=new Date().getFullYear();
 let _origSidebarHTML=null; // saved before reskin so we can restore
@@ -139,7 +139,7 @@ function reskinSidebar(){
       cl.querySelectorAll('span.badge,i,svg,img').forEach(e=>e.remove());
       const raw=cl.textContent.replace(/logout|message|sent items|inbox/gi,'').trim();
       const clean=raw.replace(/[^a-zA-Z\s.]/g,'').replace(/\s+/g,' ').trim();
-      if(clean.length>2)userName=clean;
+      if(clean.length>2){userName=clean;_cachedUserName=clean;}
     }
     uNav.querySelectorAll('a[href]').forEach(a=>{
       const h=a.getAttribute('href')||'',tx=a.textContent.trim().toLowerCase();
@@ -757,6 +757,17 @@ const FALLBACK_LINKS=[
   {title:'User Manual',href:'/student/usermanual'},
 ];
 
+// ── PLAIN GREETER ─────────────────────────────────────────────
+function getGreetingText(name){
+  const hr=new Date().getHours();
+  const timeWord=hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';
+  if(name&&name.trim().length>1){
+    const first=name.trim().split(/\s+/)[0];
+    return timeWord+', '+first;
+  }
+  return timeWord;
+}
+
 // ── TILE CATEGORIZATION ───────────────────────────────────────
 function getTileCategory(title, href){
   const t=((title||'')+' '+(href||'')).toLowerCase();
@@ -844,7 +855,10 @@ function extractDashboard(){
     }).join('');
 
     wrap.innerHTML=
-      '<div class="rk-search-wrap">'
+      '<div class="rk-greeter">'
+        +'<h1 class="rk-greeter-title">'+esc(getGreetingText(_cachedUserName))+'</h1>'
+      +'</div>'
+      +'<div class="rk-search-wrap">'
         +'<div class="rk-search">'
           +'<div class="rk-search-badge">'
             +'<svg class="rk-search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">'
