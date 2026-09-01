@@ -543,7 +543,7 @@ html.etlab-reskin-light .rk-tile.rk-c-cyan   { --t-bg-tint: #ecfeff; }
 .rk-dot-today { width: 6px; height: 6px; background: var(--blue); border-radius: 50% !important; display: inline-block; flex-shrink: 0; }
 .rk-dot-abs   { width: 6px; height: 6px; background: var(--red);  border-radius: 50% !important; display: inline-block; flex-shrink: 0; }
 
-table.rk-cal { width: 100%; border-collapse: collapse; }
+table.rk-cal { width: 100%; border-collapse: separate; border-spacing: 2px; margin-top: 2px; }
 table.rk-cal th {
   text-align: center; color: var(--text-m);
   font-size: 0.63rem; font-weight: 700; padding: 4px 2px 6px;
@@ -551,7 +551,9 @@ table.rk-cal th {
 }
 table.rk-cal td {
   text-align: center; vertical-align: top;
-  padding: 4px 2px; height: 44px; width: 14.28%;
+  padding: 4px 2px; height: 42px; width: 14.28%;
+  border-radius: 6px !important;
+  transition: background 0.15s ease;
 }
 table.rk-cal td b {
   display: block; font-size: 0.75rem; font-weight: 500;
@@ -564,6 +566,14 @@ table.rk-cal td em {
 }
 table.rk-cal td em.abs {
   color: var(--amber-t); font-weight: 700;
+}
+
+td.rk-cc.rk-other-month {
+  opacity: 0.32;
+}
+td.rk-cc.rk-other-month b {
+  color: var(--text-m) !important;
+  font-weight: 400;
 }
 
 td.rk-cc.today { background: var(--blue-bg); border: 1.5px solid var(--blue); border-radius: 6px !important; }

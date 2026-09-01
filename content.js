@@ -470,12 +470,28 @@ function prefetchSurroundingMonths(currentYear, currentMonth) {
 function buildCalGrid(year,month){
   const firstDay=new Date(year,month,1).getDay();
   const daysInMonth=new Date(year,month+1,0).getDate();
-  const grid=[];let week=Array(firstDay).fill('');
+  const prevMonthDays=new Date(year,month,0).getDate();
+  const grid=[];let week=[];
+
+  // Previous month trailing days for top row
+  for(let i=firstDay-1;i>=0;i--){
+    week.push({ d: prevMonthDays - i, other: true });
+  }
+
+  // Current month days
   for(let d=1;d<=daysInMonth;d++){
-    week.push(String(d));
+    week.push({ d: d, other: false });
     if(week.length===7){grid.push(week);week=[];}
   }
-  if(week.length)grid.push([...week,...Array(7-week.length).fill('')]);
+
+  // Next month leading days
+  if(week.length){
+    let nextD=1;
+    while(week.length<7){
+      week.push({ d: nextD++, other: true });
+    }
+    grid.push(week);
+  }
   return grid;
 }
 
@@ -495,8 +511,12 @@ function renderCalMonth(el, forceRefresh){
   let rows='';
   grid.forEach(week=>{
     rows+='<tr>';
-    week.forEach(d=>{
-      const n=+d;
+    week.forEach(cell=>{
+      if(cell.other){
+        rows+='<td class="rk-cc rk-other-month"><b>'+cell.d+'</b></td>';
+        return;
+      }
+      const n=cell.d;
       const isToday=n===todayD&&_calMonth===todayM&&_calYear===todayY;
       const hol=cache?.holidays?.[n] || null;
       const cabsent=cache?.collegeAbsents?.has(n) || false;
@@ -505,12 +525,12 @@ function renderCalMonth(el, forceRefresh){
       if(isToday)cls+=' today';
       else if(hol||cabsent||habsent)cls+=' event';
 
-      let inner = d ? '<b>'+d+'</b>' : '';
+      let inner = '<b>'+n+'</b>';
       if(hol) inner += '<em>'+esc(hol)+'</em>';
       if(cabsent) inner += '<em class="abs">College Absent</em>';
       if(habsent) inner += '<em class="abs">Hostel Absent</em>';
 
-      rows+='<td class="'+cls+'">'+(d ? inner : '')+'</td>';
+      rows+='<td class="'+cls+'">'+inner+'</td>';
     });
     rows+='</tr>';
   });
