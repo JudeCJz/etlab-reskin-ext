@@ -637,7 +637,7 @@ td.rk-cc.event b { color: var(--text-s); font-weight: 700; }
   transition: width 0.4s ease;
 }
 
-/* ── Toggle Wrapper (holds toggle btn + theme pill) ──── */
+/* ── Toggle Wrapper (holds toggle btn + floating pill menu) ──── */
 #rk-toggle-wrap {
   position: fixed;
   bottom: 20px;
@@ -645,53 +645,98 @@ td.rk-cc.event b { color: var(--text-s); font-weight: 700; }
   z-index: 9999999;
   display: flex;
   align-items: center;
-  gap: 0;
 }
 
-/* ── Theme Pill (slides out on hover) ──────────────── */
-#rk-theme-pill {
+/* ── Pill Menu (slides out from behind the toggle button on hover) ── */
+#rk-pill-menu {
+  position: absolute;
+  right: 0;
+  height: 42px;
   display: flex;
   align-items: center;
-  gap: 5px;
-  padding: 0 12px 0 10px;
-  height: 36px;
+  gap: 2px;
   background: var(--surface, #141a26);
   border: 1px solid var(--bdr2, #2b3648);
-  border-right: none;
-  border-radius: 18px 0 0 18px !important;
-  color: var(--text-s, #e8f0fb);
-  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
-  font-size: 0.72rem;
-  font-weight: 600;
-  cursor: pointer;
+  border-radius: 24px !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+  padding: 0 54px 0 12px; /* 54px right padding to extend seamlessly behind 48px toggle button */
   white-space: nowrap;
   opacity: 0;
   max-width: 0;
   overflow: hidden;
-  transform: translateX(10px);
+  transform: translateX(12px) scale(0.96);
   pointer-events: none;
-  transition: max-width 0.25s ease, opacity 0.2s ease, transform 0.2s ease, padding 0.25s ease, background 0.15s, border-color 0.15s;
+  z-index: 1;
+  transition: max-width 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.22s ease,
+              transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              background 0.2s,
+              border-color 0.2s;
 }
 
-html.etlab-reskin-light #rk-theme-pill {
+html.etlab-reskin-light #rk-pill-menu {
   background: #ffffff;
   border-color: #d1d5db;
-  color: #374151;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
 }
 
-#rk-toggle-wrap:hover #rk-theme-pill {
-  max-width: 120px;
+html:not(.etlab-reskin-on) #rk-pill-menu {
+  background: #ffffff;
+  border-color: #d1d5db;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
+}
+
+#rk-toggle-wrap:hover #rk-pill-menu {
+  max-width: 260px;
   opacity: 1;
-  transform: translateX(0);
-  padding: 0 12px 0 10px;
+  transform: translateX(0) scale(1);
   pointer-events: auto;
 }
 
-#rk-theme-pill:hover {
-  background: var(--surfhov, #1a2233);
+.rk-pill-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  height: 30px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 15px !important;
+  color: var(--text-s, #e8f0fb) !important;
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 0.74rem;
+  font-weight: 600;
+  text-decoration: none !important;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
-html.etlab-reskin-light #rk-theme-pill:hover {
+
+html.etlab-reskin-light .rk-pill-btn,
+html:not(.etlab-reskin-on) .rk-pill-btn {
+  color: #374151 !important;
+}
+
+.rk-pill-btn:hover {
+  background: var(--surfhov, #1a2233);
+  border-color: var(--bdr3, #334155);
+}
+html.etlab-reskin-light .rk-pill-btn:hover,
+html:not(.etlab-reskin-on) .rk-pill-btn:hover {
   background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.rk-pill-sep {
+  width: 1px;
+  height: 18px;
+  background: var(--bdr2, #2b3648);
+  margin: 0 2px;
+  flex-shrink: 0;
+}
+html.etlab-reskin-light .rk-pill-sep,
+html:not(.etlab-reskin-on) .rk-pill-sep {
+  background: #e5e7eb;
 }
 
 .rk-tp-ico {
@@ -726,6 +771,7 @@ html.etlab-reskin-light #rk-theme-pill:hover {
   border-radius: 50% !important;
   padding: 0 !important;
   margin: 0 !important;
+  z-index: 2;
 }
 
 html.etlab-reskin-light #rk-page-toggle {
@@ -737,11 +783,6 @@ html.etlab-reskin-light #rk-page-toggle {
 html:not(.etlab-reskin-on) #rk-page-toggle {
   background: #ffffff;
   border-color: #d1d5db;
-}
-html:not(.etlab-reskin-on) #rk-theme-pill {
-  background: #ffffff;
-  border-color: #d1d5db;
-  color: #374151;
 }
 
 #rk-page-toggle:hover {

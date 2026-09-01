@@ -859,19 +859,46 @@ function addDashToggle(){
     wrap=document.createElement('div');
     wrap.id='rk-toggle-wrap';
 
-    // Theme toggle pill (slides out on hover)
-    const themePill=document.createElement('button');
-    themePill.id='rk-theme-pill';
-    themePill.type='button';
-    themePill.title='Toggle Light/Dark Mode';
-    themePill.innerHTML='<span class="rk-tp-ico">'+(_theme==='dark'?SUN_ICO:MOON_ICO)+'</span><span class="rk-tp-lbl">'+(_theme==='dark'?'Light':'Dark')+'</span>';
-    themePill.addEventListener('click',e=>{
+    // Floating Pill Menu (slides out behind toggle button on hover)
+    const pillMenu=document.createElement('div');
+    pillMenu.id='rk-pill-menu';
+
+    // Home button
+    const homeBtn=document.createElement('a');
+    homeBtn.id='rk-pill-home';
+    homeBtn.className='rk-pill-btn';
+    homeBtn.href='/user/dashboard';
+    homeBtn.title='Go to Dashboard';
+    homeBtn.innerHTML=
+      '<span class="rk-tp-ico">'
+        +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">'
+          +'<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>'
+          +'<polyline points="9 22 9 12 15 12 15 22"/>'
+        +'</svg>'
+      +'</span>'
+      +'<span class="rk-tp-lbl">Home</span>';
+    pillMenu.appendChild(homeBtn);
+
+    // Separator
+    const sep=document.createElement('span');
+    sep.className='rk-pill-sep';
+    pillMenu.appendChild(sep);
+
+    // Theme toggle button
+    const themeBtn=document.createElement('button');
+    themeBtn.id='rk-theme-pill';
+    themeBtn.className='rk-pill-btn';
+    themeBtn.type='button';
+    themeBtn.title='Toggle Light/Dark Mode';
+    themeBtn.innerHTML='<span class="rk-tp-ico">'+(_theme==='dark'?SUN_ICO:MOON_ICO)+'</span><span class="rk-tp-lbl">'+(_theme==='dark'?'Light':'Dark')+'</span>';
+    themeBtn.addEventListener('click',e=>{
       e.stopPropagation();
       cycleTheme();
-      // Update pill content
-      themePill.innerHTML='<span class="rk-tp-ico">'+(_theme==='dark'?SUN_ICO:MOON_ICO)+'</span><span class="rk-tp-lbl">'+(_theme==='dark'?'Light':'Dark')+'</span>';
+      themeBtn.innerHTML='<span class="rk-tp-ico">'+(_theme==='dark'?SUN_ICO:MOON_ICO)+'</span><span class="rk-tp-lbl">'+(_theme==='dark'?'Light':'Dark')+'</span>';
     });
-    wrap.appendChild(themePill);
+    pillMenu.appendChild(themeBtn);
+
+    wrap.appendChild(pillMenu);
 
     // Main toggle button
     const btn=document.createElement('button');
@@ -925,11 +952,11 @@ function addDashToggle(){
 
   // Update state
   const btn=wrap.querySelector('#rk-page-toggle');
-  const pill=wrap.querySelector('#rk-theme-pill');
+  const themeBtn=wrap.querySelector('#rk-theme-pill');
   const isActive=document.documentElement.classList.contains('etlab-reskin-on');
   if(btn) btn.setAttribute('aria-checked', isActive ? 'true' : 'false');
-  if(pill){
-    pill.innerHTML='<span class="rk-tp-ico">'+(_theme==='dark'?SUN_ICO:MOON_ICO)+'</span><span class="rk-tp-lbl">'+(_theme==='dark'?'Light':'Dark')+'</span>';
+  if(themeBtn){
+    themeBtn.innerHTML='<span class="rk-tp-ico">'+(_theme==='dark'?SUN_ICO:MOON_ICO)+'</span><span class="rk-tp-lbl">'+(_theme==='dark'?'Light':'Dark')+'</span>';
   }
 }
 
