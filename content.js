@@ -549,7 +549,7 @@ function renderCalMonth(el, forceRefresh){
 
 function renderCal(el){_calEl=el;renderCalMonth(el, true);}
 
-// ── ATTENDANCE BAR ────────────────────────────────────────────
+// ── STATS: ATTENDANCE & ACTIVITY POINTS ───────────────────────
 function renderStats(el){
   el.innerHTML=
     '<div class="rk-att-panel">'
@@ -562,6 +562,16 @@ function renderStats(el){
         +'<span class="rk-att-status" id="rk-att-status">Loading...</span>'
       +'</div>'
       +'<div class="rk-att-month-drop" id="rk-att-month-drop"></div>'
+    +'</div>'
+    +'<div class="rk-act-panel">'
+      +'<div class="rk-att-header">'
+        +'<span class="rk-att-title">Activity Points</span>'
+        +'<span class="rk-act-percent" id="rk-act-pts">-- / 100</span>'
+      +'</div>'
+      +'<div class="rk-att-track"><div class="rk-att-fill rk-act-fill" id="rk-act-bar"></div></div>'
+      +'<div class="rk-att-footer">'
+        +'<span class="rk-act-status" id="rk-act-status">Loading points...</span>'
+      +'</div>'
     +'</div>';
 
   const setDisplay=(tillPct, monthPct, monthLabel)=>{
@@ -574,7 +584,6 @@ function renderStats(el){
       sE.textContent=p>=85?'Good Standing':p>=75?'Warning':'Critical';
       sE.style.color=p>=85?'var(--green-t)':p>=75?'var(--amber-t)':'var(--red-t)';
     }
-    // Month dropdown (shown on hover)
     if(dropEl && monthPct!==null){
       const mp=Math.min(Math.max(Math.round(monthPct),0),100);
       const mColor=mp>=85?'#10b981':mp>=75?'#f59e0b':'#ef4444';
@@ -587,29 +596,48 @@ function renderStats(el){
     }
   };
 
-  // Fetch from ETLab's actual attendance page
+  const setActivityDisplay=(earned, target)=>{
+    const pts=Math.max(0, earned);
+    const tgt=target||100;
+    const pct=Math.min(100, Math.round((pts/tgt)*100));
+    const ptsEl=el.querySelector('#rk-act-pts');
+    const barEl=el.querySelector('#rk-act-bar');
+    const stEl=el.querySelector('#rk-act-status');
+    if(ptsEl) ptsEl.textContent = pts + ' / ' + tgt;
+    if(barEl){
+      barEl.style.width = pct + '%';
+      barEl.style.background = pts>=tgt ? '#10b981' : pts>=50 ? '#8b5cf6' : '#f59e0b';
+    }
+    if(stEl){
+      if(pts >= tgt){
+        stEl.textContent = '100 Point Target Reached 🎉';
+        stEl.style.color = 'var(--green-t)';
+      }else{
+        stEl.textContent = (tgt - pts) + ' points remaining to 100';
+        stEl.style.color = 'var(--text-m)';
+      }
+    }
+  };
+
+  // 1. Fetch live attendance
   fetch(BASE_URL+'/ktuacademics/student/attendance',{credentials:'include', cache:'no-store'}).then(r=>r.text()).then(html=>{
     const doc=new DOMParser().parseFromString(html,'text/html');
     let tillPct=null, monthPct=null, monthLabel='This Month';
 
-    // Primary: Parse table#itsthetable > tfoot for the exact values
     const footerCells = doc.querySelectorAll('table#itsthetable > tfoot th, table#itsthetable > tfoot td, table#itsthetable tfoot th, table#itsthetable tfoot td');
     footerCells.forEach(cell=>{
       const text = cell.textContent.trim();
-      // "% Till September\n96%"
       const tillMatch = text.match(/%\s*Till\s+(\w+)\s*[\n\r]+\s*(\d{1,3}(?:\.\d+)?)\s*%/i);
       if(tillMatch){
         tillPct = parseFloat(tillMatch[2]);
         monthLabel = 'Till ' + tillMatch[1];
       }
-      // "% For the month\n100%"
       const monthMatch = text.match(/%\s*For\s+the\s+month\s*[\n\r]+\s*(\d{1,3}(?:\.\d+)?)\s*%/i);
       if(monthMatch){
         monthPct = parseFloat(monthMatch[1]);
       }
     });
 
-    // Fallback: try parsing all tfoot content if specific patterns didn't match
     if(tillPct===null){
       const tfoot = doc.querySelector('table#itsthetable tfoot, table tfoot');
       if(tfoot){
@@ -618,7 +646,6 @@ function renderStats(el){
         if(tillM) { tillPct = parseFloat(tillM[2]); monthLabel = 'Till ' + tillM[1]; }
         const monM = tfText.match(/For\s+the\s+month\s*[:\s]*(\d{1,3}(?:\.\d+)?)\s*%/i);
         if(monM) monthPct = parseFloat(monM[1]);
-        // If still nothing, grab all percentages from tfoot
         if(tillPct===null){
           const allPcts = [...tfText.matchAll(/(\d{1,3}(?:\.\d+)?)\s*%/g)].map(m=>parseFloat(m[1])).filter(v=>v>=0&&v<=100);
           if(allPcts.length>=2){ monthPct=allPcts[0]; tillPct=allPcts[1]; }
@@ -627,7 +654,6 @@ function renderStats(el){
       }
     }
 
-    // Last resort fallback: look anywhere in the page for "total" or "overall" attendance
     if(tillPct===null){
       doc.querySelectorAll('tr,div,p,span,th,td').forEach(row=>{
         if(tillPct!==null) return;
@@ -641,6 +667,49 @@ function renderStats(el){
 
     setDisplay(tillPct??0, monthPct, monthLabel);
   }).catch(()=>setDisplay(0,null,null));
+
+  // 2. Fetch live KTU activity points
+  const actUrls = ['/activity/studentactivitypoint', '/ktuacademics/student/activitypoints', '/student/profile'];
+  const fetchActivity = (idx = 0) => {
+    if(idx >= actUrls.length){
+      setActivityDisplay(0, 100);
+      return;
+    }
+    fetch(BASE_URL + actUrls[idx], {credentials:'include', cache:'no-store'}).then(r => r.text()).then(html => {
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      let total = null;
+
+      // Check for total points rows/cells
+      doc.querySelectorAll('tr, div, p, span, th, td, b').forEach(el => {
+        if(total !== null) return;
+        const txt = el.textContent.trim();
+        const m = txt.match(/(?:Total|Earned|Approved|Cumulative)\s*(?:Activity)?\s*Points?\s*[:\-]?\s*(\d+(?:\.\d+)?)/i);
+        if(m) total = parseFloat(m[1]);
+      });
+
+      // If in a table with points column, sum up or find footer
+      if(total === null){
+        const footers = doc.querySelectorAll('tfoot td, tfoot th, tr.total td');
+        footers.forEach(f => {
+          if(total !== null) return;
+          const m = f.textContent.trim().match(/^(\d+(?:\.\d+)?)$/);
+          if(m) total = parseFloat(m[1]);
+        });
+      }
+
+      if(total !== null){
+        setActivityDisplay(Math.round(total), 100);
+      } else if(idx + 1 < actUrls.length) {
+        fetchActivity(idx + 1);
+      } else {
+        setActivityDisplay(0, 100);
+      }
+    }).catch(() => {
+      if(idx + 1 < actUrls.length) fetchActivity(idx + 1);
+      else setActivityDisplay(0, 100);
+    });
+  };
+  fetchActivity(0);
 }
 
 
@@ -687,6 +756,15 @@ const FALLBACK_LINKS=[
   {title:'End Semester Exam',href:'/universityexam/student/dashboard'},
   {title:'User Manual',href:'/student/usermanual'},
 ];
+
+// ── TILE CATEGORIZATION ───────────────────────────────────────
+function getTileCategory(title, href){
+  const t=((title||'')+' '+(href||'')).toLowerCase();
+  if(/hostel|mess|leave/i.test(t)) return 'hostel';
+  if(/placement|career|nss|club|activity|sport|mooc|internship|project/i.test(t)) return 'extra';
+  if(/account|fee|pay|receipt|certificate|gate pass|circular|grievance|feedback|manual|profile|password|survey|wallet|download/i.test(t)) return 'college';
+  return 'academic'; // default: study materials, assignments, homework, timetable, results, syllabus, exam, etc.
+}
 
 // ── DASHBOARD TILES ───────────────────────────────────────────
 function extractDashboard(){
@@ -739,11 +817,13 @@ function extractDashboard(){
       const cc=colors[l.href]||'';
       const clrClass=COLOR_CLASSES[cc] ? ' rk-c-' + COLOR_CLASSES[cc] : '';
       const cStyle=cc && !COLOR_CLASSES[cc] ? 'border-left-color:'+cc+'!important;' : '';
+      const cat=getTileCategory(l.title, l.href);
 
       return '<a href="'+esc(l.href)+'"'
         +' class="rk-tile'+(isStar?' starred':'')+clrClass+'"'
         +' data-t="'+esc(l.title.toLowerCase())+'"'
         +' data-k="'+esc(l.href)+'"'
+        +' data-cat="'+esc(cat)+'"'
         +' style="'+cStyle+'">'
         +'<span class="rk-tile-ico">'+ico(l.title)+'</span>'
         +'<span class="rk-tile-name">'+esc(l.title)+'</span>'
@@ -781,7 +861,17 @@ function extractDashboard(){
         +'</div>'
       +'</div>'
       +'<div class="rk-layout">'
-        +'<div class="rk-tiles-col"><div class="rk-tiles" id="rk-tiles">'+tilesHtml+'</div></div>'
+        +'<div class="rk-tiles-col">'
+          +'<div class="rk-cat-bar" id="rk-cat-bar">'
+            +'<button type="button" class="rk-cat-btn rk-cat-active" data-cat="all">All</button>'
+            +'<button type="button" class="rk-cat-btn" data-cat="academic">Academics</button>'
+            +'<button type="button" class="rk-cat-btn" data-cat="college">College</button>'
+            +'<button type="button" class="rk-cat-btn" data-cat="hostel">Hostel</button>'
+            +'<button type="button" class="rk-cat-btn" data-cat="extra">Activities & Career</button>'
+            +'<button type="button" class="rk-cat-btn" data-cat="starred">⭐ Favorites</button>'
+          +'</div>'
+          +'<div class="rk-tiles" id="rk-tiles">'+tilesHtml+'</div>'
+        +'</div>'
         +'<div class="rk-side-col">'
           +'<div class="rk-card" id="rk-cal"></div>'
           +'<div class="rk-card" id="rk-stats"></div>'
@@ -793,16 +883,33 @@ function extractDashboard(){
     const badge=wrap.querySelector('.rk-search-badge');
     if(badge) badge.addEventListener('click',()=>focusSearchPop());
 
+    let currentCat='all';
+    const catBtns=wrap.querySelectorAll('.rk-cat-btn');
+    catBtns.forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        catBtns.forEach(b=>b.classList.remove('rk-cat-active'));
+        btn.classList.add('rk-cat-active');
+        currentCat=btn.getAttribute('data-cat')||'all';
+        doFilter();
+      });
+    });
+
     const doFilter=()=>{
       const q=(inp.value||'').toLowerCase().trim();
       const nqv=nq(q);
       xBtn.style.display=q?'flex':'none';
       wrap.querySelectorAll('.rk-tile').forEach(t=>{
         const tt=t.getAttribute('data-t')||'';
-        if(!q){t.classList.remove('rk-hidden');return;}
+        const cat=t.getAttribute('data-cat')||'academic';
+        const isStar=t.classList.contains('starred');
+        const matchesCat=(currentCat==='all')||(currentCat==='starred'&&isStar)||(currentCat===cat);
+        if(!q){
+          t.classList.toggle('rk-hidden',!matchesCat);
+          return;
+        }
         const kws=SKW[tt]||[tt];
-        const ok=tt.includes(q)||tt.includes(nqv)||kws.some(k=>k.includes(q)||q.includes(k));
-        t.classList.toggle('rk-hidden',!ok);
+        const matchesSearch=tt.includes(q)||tt.includes(nqv)||kws.some(k=>k.includes(q)||q.includes(k));
+        t.classList.toggle('rk-hidden',!(matchesSearch && (currentCat==='all' || matchesCat)));
       });
     };
     inp.addEventListener('input',doFilter);
