@@ -114,7 +114,7 @@ function syncTheme(theme){
   _theme=(theme==='dark')?'dark':'light';
   document.documentElement.classList.toggle('etlab-reskin-light',_theme==='light');
   const pill=document.querySelector('#rk-theme-pill');
-  if(pill) pill.innerHTML='<span class="rk-tp-ico">'+(_theme==='dark'?SUN_ICO:MOON_ICO)+'</span><span class="rk-tp-lbl">'+(_theme==='dark'?'Light':'Dark')+'</span>';
+  if(pill) pill.innerHTML='<span class="rk-tp-ico">'+(_theme==='dark'?SUN_ICO:MOON_ICO)+'</span>';
 }
 function cycleTheme(){
   const n=_theme==='dark'?'light':'dark';
@@ -884,38 +884,67 @@ function addDashToggle(){
     const pillMenu=document.createElement('div');
     pillMenu.id='rk-pill-menu';
 
+    // Search button
+    const searchBtn=document.createElement('button');
+    searchBtn.id='rk-pill-search';
+    searchBtn.className='rk-pill-btn';
+    searchBtn.type='button';
+    searchBtn.title='Search';
+    searchBtn.innerHTML=
+      '<span class="rk-tp-ico">'
+        +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">'
+          +'<circle cx="11" cy="11" r="7"/><path d="m21 21-5-5"/>'
+        +'</svg>'
+      +'</span>';
+    searchBtn.addEventListener('click',e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      const inp=document.getElementById('rk-sinput');
+      if(inp){
+        inp.scrollIntoView({behavior:'smooth',block:'center'});
+        inp.focus();
+      }else{
+        location.href='/user/dashboard';
+      }
+    });
+    pillMenu.appendChild(searchBtn);
+
+    // Separator 1
+    const sep1=document.createElement('span');
+    sep1.className='rk-pill-sep';
+    pillMenu.appendChild(sep1);
+
     // Home button
     const homeBtn=document.createElement('a');
     homeBtn.id='rk-pill-home';
     homeBtn.className='rk-pill-btn';
     homeBtn.href='/user/dashboard';
-    homeBtn.title='Go to Dashboard';
+    homeBtn.title='Dashboard';
     homeBtn.innerHTML=
       '<span class="rk-tp-ico">'
-        +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">'
+        +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">'
           +'<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>'
           +'<polyline points="9 22 9 12 15 12 15 22"/>'
         +'</svg>'
-      +'</span>'
-      +'<span class="rk-tp-lbl">Home</span>';
+      +'</span>';
     pillMenu.appendChild(homeBtn);
 
-    // Separator
-    const sep=document.createElement('span');
-    sep.className='rk-pill-sep';
-    pillMenu.appendChild(sep);
+    // Separator 2
+    const sep2=document.createElement('span');
+    sep2.className='rk-pill-sep';
+    pillMenu.appendChild(sep2);
 
     // Theme toggle button
     const themeBtn=document.createElement('button');
     themeBtn.id='rk-theme-pill';
     themeBtn.className='rk-pill-btn';
     themeBtn.type='button';
-    themeBtn.title='Toggle Light/Dark Mode';
-    themeBtn.innerHTML='<span class="rk-tp-ico">'+(_theme==='dark'?SUN_ICO:MOON_ICO)+'</span><span class="rk-tp-lbl">'+(_theme==='dark'?'Light':'Dark')+'</span>';
+    themeBtn.title='Toggle Theme';
+    themeBtn.innerHTML='<span class="rk-tp-ico">'+(_theme==='dark'?SUN_ICO:MOON_ICO)+'</span>';
     themeBtn.addEventListener('click',e=>{
       e.stopPropagation();
       cycleTheme();
-      themeBtn.innerHTML='<span class="rk-tp-ico">'+(_theme==='dark'?SUN_ICO:MOON_ICO)+'</span><span class="rk-tp-lbl">'+(_theme==='dark'?'Light':'Dark')+'</span>';
+      themeBtn.innerHTML='<span class="rk-tp-ico">'+(_theme==='dark'?SUN_ICO:MOON_ICO)+'</span>';
     });
     pillMenu.appendChild(themeBtn);
 
@@ -977,7 +1006,7 @@ function addDashToggle(){
   const isActive=document.documentElement.classList.contains('etlab-reskin-on');
   if(btn) btn.setAttribute('aria-checked', isActive ? 'true' : 'false');
   if(themeBtn){
-    themeBtn.innerHTML='<span class="rk-tp-ico">'+(_theme==='dark'?SUN_ICO:MOON_ICO)+'</span><span class="rk-tp-lbl">'+(_theme==='dark'?'Light':'Dark')+'</span>';
+    themeBtn.innerHTML='<span class="rk-tp-ico">'+(_theme==='dark'?SUN_ICO:MOON_ICO)+'</span>';
   }
 }
 

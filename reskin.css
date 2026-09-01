@@ -740,12 +740,12 @@ td.rk-cc.event b { color: var(--text-s); font-weight: 700; }
   height: 42px;
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 3px;
   background: var(--surface, #141a26);
   border: 1px solid var(--bdr2, #2b3648);
   border-radius: 24px !important;
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
-  padding: 0 54px 0 12px; /* 54px right padding to extend seamlessly behind 48px toggle button */
+  padding: 0 54px 0 8px; /* 54px right padding to extend seamlessly behind 48px toggle button */
   white-space: nowrap;
   opacity: 0;
   max-width: 0;
@@ -773,7 +773,7 @@ html:not(.etlab-reskin-on) #rk-pill-menu {
 
 /* Only expand pill on hover when reskin is enabled */
 html.etlab-reskin-on #rk-toggle-wrap:hover #rk-pill-menu {
-  max-width: 260px;
+  max-width: 190px;
   opacity: 1;
   transform: translateX(0) scale(1);
   pointer-events: auto;
@@ -782,20 +782,17 @@ html.etlab-reskin-on #rk-toggle-wrap:hover #rk-pill-menu {
 .rk-pill-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 10px;
+  justify-content: center;
+  width: 30px;
   height: 30px;
+  padding: 0;
   background: transparent;
   border: 1px solid transparent;
-  border-radius: 15px !important;
+  border-radius: 50% !important;
   color: var(--text-s, #e8f0fb) !important;
-  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
-  font-size: 0.74rem;
-  font-weight: 600;
-  text-decoration: none !important;
   cursor: pointer;
-  white-space: nowrap;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  text-decoration: none !important;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.12s;
 }
 
 html.etlab-reskin-light .rk-pill-btn {
@@ -805,6 +802,7 @@ html.etlab-reskin-light .rk-pill-btn {
 .rk-pill-btn:hover {
   background: var(--surfhov, #1a2233);
   border-color: var(--bdr3, #334155);
+  transform: scale(1.1);
 }
 html.etlab-reskin-light .rk-pill-btn:hover {
   background: #f3f4f6;
@@ -813,9 +811,9 @@ html.etlab-reskin-light .rk-pill-btn:hover {
 
 .rk-pill-sep {
   width: 1px;
-  height: 18px;
+  height: 16px;
   background: var(--bdr2, #2b3648);
-  margin: 0 2px;
+  margin: 0 1px;
   flex-shrink: 0;
 }
 html.etlab-reskin-light .rk-pill-sep {
@@ -825,15 +823,13 @@ html.etlab-reskin-light .rk-pill-sep {
 .rk-tp-ico {
   display: flex;
   align-items: center;
+  justify-content: center;
   flex-shrink: 0;
 }
 .rk-tp-ico svg {
-  width: 14px;
-  height: 14px;
+  width: 15px;
+  height: 15px;
   stroke: currentColor;
-}
-.rk-tp-lbl {
-  flex-shrink: 0;
 }
 
 /* ── Redesign Toggle Button ─────────────────────────────── */
