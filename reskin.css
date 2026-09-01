@@ -118,9 +118,24 @@ html.etlab-reskin-on .user-nav,
 html.etlab-reskin-on .nav-user { display: none !important; }
 
 /* ══════════════════════════════════════════════════════
-   PAGE BACKGROUND
+   PAGE BACKGROUND WITH AMBIENT DOTTED GRID CANVAS
    ══════════════════════════════════════════════════════ */
 body.rk-dash-page,
+html.etlab-reskin-on body {
+  background-color: var(--bg) !important;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1.2px, transparent 1.2px) !important;
+  background-size: 20px 20px !important;
+  background-attachment: fixed !important;
+}
+
+html.etlab-reskin-light body.rk-dash-page,
+html.etlab-reskin-light body {
+  background-color: var(--bg) !important;
+  background-image: radial-gradient(rgba(0, 0, 0, 0.06) 1.2px, transparent 1.2px) !important;
+  background-size: 20px 20px !important;
+  background-attachment: fixed !important;
+}
+
 body.rk-dash-page #main-container,
 body.rk-dash-page .main-container,
 body.rk-dash-page .main-content,
@@ -129,7 +144,7 @@ body.rk-dash-page .page-content,
 body.rk-dash-page #content,
 body.rk-dash-page .container-fluid,
 body.rk-dash-page .row-fluid {
-  background: var(--bg) !important;
+  background: transparent !important;
 }
 
 body.rk-dash-page #breadcrumbs,
@@ -536,9 +551,7 @@ html.etlab-reskin-light .rk-greeter-name {
   display: flex;
   align-items: stretch;
   padding: 0 !important;
-  background-color: var(--surface);
-  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
-  background-size: 10px 10px;
+  background: var(--surface);
   border: 1px solid var(--bdr);
   border-radius: 10px !important;
   color: var(--text) !important;
@@ -550,8 +563,7 @@ html.etlab-reskin-light .rk-greeter-name {
 }
 
 html.etlab-reskin-light .rk-tile {
-  background-color: #ffffff;
-  background-image: radial-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+  background: #ffffff;
   border-color: #e2e8f0;
 }
 
