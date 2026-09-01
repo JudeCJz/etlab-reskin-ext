@@ -564,14 +564,77 @@ function renderStats(el){
   fetch(BASE_URL+'/student/attendance',{credentials:'include', cache:'no-store'}).then(r=>r.text()).then(html=>{
     const doc=new DOMParser().parseFromString(html,'text/html');
     let pct=null;
-    doc.querySelectorAll('tr,div,p').forEach(row=>{
-      if(/total.*attendance|overall.*attendance|aggregate|total.*percentage/i.test(row.textContent)){
-        const m=row.textContent.match(/(\d{1,3}(?:\.\d+)?)\s*%/);
-        if(m&&parseFloat(m[1])<=100)pct=parseFloat(m[1]);
+
+    // Method 1: Look for a row/element with "total attendance" or "overall" keywords
+    doc.querySelectorAll('tr,div,p,span,td,th').forEach(row=>{
+      if(pct!==null) return;
+      const txt = row.textContent.replace(/\s+/g,' ').trim();
+      if(/total\s*(attendance|percentage)|overall\s*(attendance|percentage)|aggregate\s*%?|total\s*%/i.test(txt)){
+        const m=txt.match(/(\d{1,3}(?:\.\d+)?)\s*%/);
+        if(m&&parseFloat(m[1])<=100) pct=parseFloat(m[1]);
       }
     });
-    if(pct===null){doc.querySelectorAll('.badge,.label,b,strong,td').forEach(c=>{const m=c.textContent.trim().match(/^(\d{1,3}(?:\.\d+)?)\s*%$/);if(m){const v=parseFloat(m[1]);if(v<=100&&(pct===null||v>pct))pct=v;}});}
-    if(pct===null){const all=[...html.matchAll(/(\d{1,3}(?:\.\d+)?)\s*%/g)].map(m=>parseFloat(m[1])).filter(n=>n>=0&&n<=100);if(all.length)pct=Math.max(...all);}
+
+    // Method 2: Parse ETLab's subject-wise attendance table and compute average
+    if(pct===null){
+      const tables = doc.querySelectorAll('table');
+      for(const table of tables){
+        const rows = table.querySelectorAll('tbody tr, tr');
+        const pcts = [];
+        rows.forEach(tr=>{
+          const cells = tr.querySelectorAll('td');
+          // Look for percentage in the last few cells of each row
+          for(let i=cells.length-1;i>=Math.max(0,cells.length-3);i--){
+            const cellText = cells[i]?.textContent?.trim() || '';
+            const m = cellText.match(/^(\d{1,3}(?:\.\d+)?)\s*%?$/);
+            if(m){
+              const v = parseFloat(m[1]);
+              if(v>=0 && v<=100) pcts.push(v);
+              break;
+            }
+          }
+        });
+        // If we found multiple subject percentages, average them
+        if(pcts.length >= 2){
+          pct = pcts.reduce((a,b)=>a+b,0) / pcts.length;
+          break;
+        }
+      }
+    }
+
+    // Method 3: Look for the last row (total/footer) in any table
+    if(pct===null){
+      doc.querySelectorAll('table').forEach(table=>{
+        if(pct!==null) return;
+        const allRows = table.querySelectorAll('tr');
+        if(allRows.length < 2) return;
+        const lastRow = allRows[allRows.length-1];
+        const lastRowText = lastRow.textContent.trim();
+        // Check if last row has "total" keyword
+        if(/total|overall|aggregate/i.test(lastRowText)){
+          const m = lastRowText.match(/(\d{1,3}(?:\.\d+)?)\s*%/);
+          if(m && parseFloat(m[1])<=100) pct = parseFloat(m[1]);
+        }
+      });
+    }
+
+    // Method 4: Look in badges/labels but pick the most reasonable value
+    // (avoid 100% from unrelated elements — prefer values < 100)
+    if(pct===null){
+      let candidates = [];
+      doc.querySelectorAll('.badge,.label,b,strong').forEach(c=>{
+        const m=c.textContent.trim().match(/^(\d{1,3}(?:\.\d+)?)\s*%$/);
+        if(m){
+          const v=parseFloat(m[1]);
+          if(v>=0 && v<=100) candidates.push(v);
+        }
+      });
+      // Prefer values that aren't exactly 0 or 100 (likely real attendance)
+      const realistic = candidates.filter(v => v > 0 && v < 100);
+      if(realistic.length) pct = realistic.reduce((a,b)=>a+b,0) / realistic.length;
+      else if(candidates.length) pct = candidates[0];
+    }
+
     setPct(pct??0);
   }).catch(()=>setPct(0));
 }
