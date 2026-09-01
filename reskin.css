@@ -690,13 +690,13 @@ html.etlab-reskin-light #rk-pill-menu {
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
 }
 
+/* Hide pill completely when reskin is disabled */
 html:not(.etlab-reskin-on) #rk-pill-menu {
-  background: #ffffff;
-  border-color: #d1d5db;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
+  display: none !important;
 }
 
-#rk-toggle-wrap:hover #rk-pill-menu {
+/* Only expand pill on hover when reskin is enabled */
+html.etlab-reskin-on #rk-toggle-wrap:hover #rk-pill-menu {
   max-width: 260px;
   opacity: 1;
   transform: translateX(0) scale(1);
@@ -722,8 +722,7 @@ html:not(.etlab-reskin-on) #rk-pill-menu {
   transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 
-html.etlab-reskin-light .rk-pill-btn,
-html:not(.etlab-reskin-on) .rk-pill-btn {
+html.etlab-reskin-light .rk-pill-btn {
   color: #374151 !important;
 }
 
@@ -731,8 +730,7 @@ html:not(.etlab-reskin-on) .rk-pill-btn {
   background: var(--surfhov, #1a2233);
   border-color: var(--bdr3, #334155);
 }
-html.etlab-reskin-light .rk-pill-btn:hover,
-html:not(.etlab-reskin-on) .rk-pill-btn:hover {
+html.etlab-reskin-light .rk-pill-btn:hover {
   background: #f3f4f6;
   border-color: #d1d5db;
 }
@@ -744,8 +742,7 @@ html:not(.etlab-reskin-on) .rk-pill-btn:hover {
   margin: 0 2px;
   flex-shrink: 0;
 }
-html.etlab-reskin-light .rk-pill-sep,
-html:not(.etlab-reskin-on) .rk-pill-sep {
+html.etlab-reskin-light .rk-pill-sep {
   background: #e5e7eb;
 }
 
