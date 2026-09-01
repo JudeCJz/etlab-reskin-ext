@@ -957,7 +957,8 @@ function extractDashboard(){
             +'<path d="M 84,6 C 68,6 58,15 54,25 C 49,38 39,40 32,40 C 22,40 16,38 12,28 C 9,20 5,22 4,28 C 2,36 4,46 14,50 L 84,50 Z"/>'
           +'</svg>'
           +'<div class="rk-search-body">'
-            +'<input type="text" id="rk-sinput" placeholder="Search..." autocomplete="off" spellcheck="false">'
+            +'<input type="text" id="rk-sinput" placeholder="Search tiles, subjects, keywords..." autocomplete="off" spellcheck="false">'
+            +'<kbd class="rk-search-kbd" id="rk-skbd" title="Press / to search">/</kbd>'
             +'<button type="button" id="rk-sx" class="rk-sx" aria-label="Clear">&#x2715;</button>'
           +'</div>'
         +'</div>'
@@ -972,6 +973,7 @@ function extractDashboard(){
 
     const inp=wrap.querySelector('#rk-sinput');
     const xBtn=wrap.querySelector('#rk-sx');
+    const kbd=wrap.querySelector('#rk-skbd');
     const badge=wrap.querySelector('.rk-search-badge');
     if(badge) badge.addEventListener('click',()=>focusSearchPop());
 
@@ -979,6 +981,7 @@ function extractDashboard(){
       const q=(inp.value||'').toLowerCase().trim();
       const nqv=nq(q);
       xBtn.style.display=q?'flex':'none';
+      if(kbd) kbd.style.display=q?'none':'flex';
       wrap.querySelectorAll('.rk-tile').forEach(t=>{
         const tt=t.getAttribute('data-t')||'';
         if(!q){t.classList.remove('rk-hidden');return;}
