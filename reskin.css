@@ -44,8 +44,9 @@ html.etlab-reskin-on {
   --scrolltrack: #0a0e16;
   --s-body:      var(--surface);
   --s-body-text: var(--text-s);
-  --s-badge:     var(--surface2);
-  --s-badge-ico: var(--blue-b);
+  --s-badge:     #1e293b;
+  --s-badge-bdr: #3b82f6;
+  --s-badge-ico: #93c5fd;
   --s-place:     var(--text-m);
   --s-bdr:       var(--bdr2);
 }
@@ -89,8 +90,9 @@ html.etlab-reskin-on.etlab-reskin-light {
   --scrolltrack: #e5e7eb;
   --s-body:      var(--surface);
   --s-body-text: var(--text-s);
-  --s-badge:     var(--surface2);
-  --s-badge-ico: var(--blue);
+  --s-badge:     #e0e7ff;
+  --s-badge-bdr: #818cf8;
+  --s-badge-ico: #4338ca;
   --s-place:     var(--text-m);
   --s-bdr:       var(--bdr2);
 }
@@ -367,29 +369,30 @@ html.etlab-reskin-on .sidebar:hover .rk-sb-inner {
   width: 44px;
   height: 32px;
   background: var(--s-badge);
-  border: 1px solid var(--s-bdr);
+  border: 1.5px solid var(--s-badge-bdr);
   border-radius: 6px 6px 18px 18px !important;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 3;
-  box-shadow: 0 2px 8px var(--shadow);
-  transition: transform 0.18s ease, border-color 0.2s, background 0.18s;
+  box-shadow: 0 4px 12px var(--shadow), 0 0 10px rgba(59, 130, 246, 0.2);
+  transition: transform 0.18s ease, border-color 0.2s, background 0.18s, box-shadow 0.2s;
 }
 
 .rk-search:focus-within .rk-search-badge {
-  transform: translateY(-1px) scale(1.04);
-  border-color: var(--blue);
+  transform: translateY(-1px) scale(1.05);
+  border-color: var(--blue-b);
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
 }
 
 .rk-search-badge .rk-search-ico {
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
   stroke: var(--s-badge-ico);
   transition: stroke 0.15s;
 }
 .rk-search:focus-within .rk-search-badge .rk-search-ico {
-  stroke: var(--blue-b);
+  stroke: #ffffff;
 }
 
 .rk-search-scoop {
@@ -410,8 +413,7 @@ html.etlab-reskin-on .sidebar:hover .rk-sb-inner {
   height: 42px;
   background: var(--s-body);
   border: 1px solid var(--s-bdr);
-  border-left: none;
-  border-radius: 0 21px 21px 0 !important;
+  border-radius: 21px !important;
   display: flex;
   align-items: center;
   padding: 0 16px 0 84px;
