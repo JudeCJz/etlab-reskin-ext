@@ -1148,7 +1148,7 @@ function addDashToggle(){
 
     let imgUrl = '';
     try {
-      imgUrl = chrome.runtime.getURL('icons/toggle.png');
+      imgUrl = chrome.runtime.getURL('icons/icon128.png');
     } catch(e) {}
 
     if (imgUrl) {
