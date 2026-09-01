@@ -599,18 +599,11 @@ td.rk-cc.event b { color: var(--text-s); font-weight: 700; }
 .rk-att-footer { font-size: 0.68rem; font-weight: 600; }
 .rk-att-status { color: var(--green-t); }
 
-/* ── Attendance month dropdown (hover reveal) ──────── */
+/* ── Attendance month section (always visible) ─────── */
 .rk-att-month-drop {
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: max-height 0.25s ease, opacity 0.2s ease, margin-top 0.25s ease;
-  margin-top: 0;
-}
-.rk-att-panel:hover .rk-att-month-drop {
-  max-height: 80px;
-  opacity: 1;
-  margin-top: 4px;
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px solid var(--bdr);
 }
 .rk-att-month-row {
   display: flex;
