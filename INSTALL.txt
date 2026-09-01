@@ -1,25 +1,26 @@
-ETLab MITS Reskin - Local Install
+ETLab MITS Reskin v1.2.0 - Local Install Guide
 
-This is a client-side browser extension. It only runs on:
-https://mits.etlab.app/*
+This is a 100% client-side browser extension for https://mits.etlab.app/
 
-Chrome or Edge install:
-1. Open chrome://extensions/ or edge://extensions/
-2. Turn on Developer mode.
-3. Click Load unpacked.
-4. Select this folder:
-   D:\VS\PROJECTS\FREE WORK\etlab-reskin-ext
-5. Open https://mits.etlab.app/ and log in normally.
+Installation (Chrome / Edge / Brave):
+1. Open chrome://extensions/ (or edge://extensions/)
+2. Turn on "Developer mode" (top-right toggle).
+3. Click "Load unpacked" (top-left button).
+4. Select this unzipped folder (or load the release ZIP in Kiwi/Lemur browser on Android).
+5. Open https://mits.etlab.app/user/dashboard
 
-Use:
-- Press Alt+K to open universal search.
-- Use Up / Down to move through results.
-- Press Enter to open a selected result.
-- Press Esc to close search.
-- Click the floating blue search button (bottom-right) anytime.
-- The dashboard gets a unified academic + hostel calendar.
+Keyboard Shortcuts:
+- Press "/" or Ctrl+K / Cmd+K to open smart search.
+- Press Esc to close search and popovers.
 
-Privacy:
-- The extension does not store your username or password.
-- It uses your normal ETLab browser session.
-- Hostel calendar data is fetched only from ETLab while you are logged in.
+Features:
+- Concept 7 Dual-Tone Split Badge action tiles.
+- 8 high-contrast glowing tile color themes.
+- Live attendance & KTU activity point progress meter.
+- Unified academic calendar with interactive date previews.
+- Dark and Light mode toggle via extension popup or floating button.
+
+Privacy & Security:
+- Zero data collection, no telemetry, no external servers.
+- Uses your active ETLab browser session.
+- Passwords and credentials are never touched.
