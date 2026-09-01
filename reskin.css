@@ -717,20 +717,118 @@ html.etlab-reskin-light .rk-sw { border-color: rgba(0,0,0,0.15); }
   font-size: 8px; color: var(--text-s); border-color: var(--bdr3);
 }
 
-/* ── Colored Tile Styles ────────────────────────────────── */
-.rk-tile.rk-c-blue   .rk-tile-ico { color: #3b82f6 !important; background: rgba(59, 130, 246, 0.14) !important; border-right-color: rgba(59, 130, 246, 0.25) !important; }
-.rk-tile.rk-c-green  .rk-tile-ico { color: #10b981 !important; background: rgba(16, 185, 129, 0.14) !important; border-right-color: rgba(16, 185, 129, 0.25) !important; }
-.rk-tile.rk-c-amber  .rk-tile-ico { color: #f59e0b !important; background: rgba(245, 158, 11, 0.14) !important; border-right-color: rgba(245, 158, 11, 0.25) !important; }
-.rk-tile.rk-c-pink   .rk-tile-ico { color: #ec4899 !important; background: rgba(236, 72, 153, 0.14) !important; border-right-color: rgba(236, 72, 153, 0.25) !important; }
-.rk-tile.rk-c-purple .rk-tile-ico { color: #8b5cf6 !important; background: rgba(139, 92, 246, 0.14) !important; border-right-color: rgba(139, 92, 246, 0.25) !important; }
-.rk-tile.rk-c-cyan   .rk-tile-ico { color: #06b6d4 !important; background: rgba(6, 182, 212, 0.14) !important; border-right-color: rgba(6, 182, 212, 0.25) !important; }
+/* ── 8 Vibrant & High-Contrast Tile Colors ─────────────────── */
+.rk-tile.rk-c-blue {
+  border-color: rgba(59, 130, 246, 0.4) !important;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, var(--surface) 80%) !important;
+}
+.rk-tile.rk-c-blue .rk-tile-ico {
+  color: #60a5fa !important;
+  background: rgba(59, 130, 246, 0.25) !important;
+  border-right-color: rgba(59, 130, 246, 0.45) !important;
+}
+.rk-tile.rk-c-blue:hover {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.35), 0 0 16px rgba(59, 130, 246, 0.25) !important;
+}
 
-.rk-tile.rk-c-blue:hover   { border-color: #3b82f6 !important; box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25) !important; }
-.rk-tile.rk-c-green:hover  { border-color: #10b981 !important; box-shadow: 0 6px 20px rgba(16, 185, 129, 0.25) !important; }
-.rk-tile.rk-c-amber:hover  { border-color: #f59e0b !important; box-shadow: 0 6px 20px rgba(245, 158, 11, 0.25) !important; }
-.rk-tile.rk-c-pink:hover   { border-color: #ec4899 !important; box-shadow: 0 6px 20px rgba(236, 72, 153, 0.25) !important; }
-.rk-tile.rk-c-purple:hover { border-color: #8b5cf6 !important; box-shadow: 0 6px 20px rgba(139, 92, 246, 0.25) !important; }
-.rk-tile.rk-c-cyan:hover   { border-color: #06b6d4 !important; box-shadow: 0 6px 20px rgba(6, 182, 212, 0.25) !important; }
+.rk-tile.rk-c-cyan {
+  border-color: rgba(6, 182, 212, 0.4) !important;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.12) 0%, var(--surface) 80%) !important;
+}
+.rk-tile.rk-c-cyan .rk-tile-ico {
+  color: #22d3ee !important;
+  background: rgba(6, 182, 212, 0.25) !important;
+  border-right-color: rgba(6, 182, 212, 0.45) !important;
+}
+.rk-tile.rk-c-cyan:hover {
+  border-color: #06b6d4 !important;
+  box-shadow: 0 8px 24px rgba(6, 182, 212, 0.35), 0 0 16px rgba(6, 182, 212, 0.25) !important;
+}
+
+.rk-tile.rk-c-emerald {
+  border-color: rgba(16, 185, 129, 0.4) !important;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, var(--surface) 80%) !important;
+}
+.rk-tile.rk-c-emerald .rk-tile-ico {
+  color: #34d399 !important;
+  background: rgba(16, 185, 129, 0.25) !important;
+  border-right-color: rgba(16, 185, 129, 0.45) !important;
+}
+.rk-tile.rk-c-emerald:hover {
+  border-color: #10b981 !important;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.35), 0 0 16px rgba(16, 185, 129, 0.25) !important;
+}
+
+.rk-tile.rk-c-amber {
+  border-color: rgba(245, 158, 11, 0.4) !important;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, var(--surface) 80%) !important;
+}
+.rk-tile.rk-c-amber .rk-tile-ico {
+  color: #fbbf24 !important;
+  background: rgba(245, 158, 11, 0.25) !important;
+  border-right-color: rgba(245, 158, 11, 0.45) !important;
+}
+.rk-tile.rk-c-amber:hover {
+  border-color: #f59e0b !important;
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.35), 0 0 16px rgba(245, 158, 11, 0.25) !important;
+}
+
+.rk-tile.rk-c-orange {
+  border-color: rgba(249, 115, 22, 0.4) !important;
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.12) 0%, var(--surface) 80%) !important;
+}
+.rk-tile.rk-c-orange .rk-tile-ico {
+  color: #fb923c !important;
+  background: rgba(249, 115, 22, 0.25) !important;
+  border-right-color: rgba(249, 115, 22, 0.45) !important;
+}
+.rk-tile.rk-c-orange:hover {
+  border-color: #f97316 !important;
+  box-shadow: 0 8px 24px rgba(249, 115, 22, 0.35), 0 0 16px rgba(249, 115, 22, 0.25) !important;
+}
+
+.rk-tile.rk-c-crimson {
+  border-color: rgba(239, 68, 68, 0.4) !important;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, var(--surface) 80%) !important;
+}
+.rk-tile.rk-c-crimson .rk-tile-ico {
+  color: #f87171 !important;
+  background: rgba(239, 68, 68, 0.25) !important;
+  border-right-color: rgba(239, 68, 68, 0.45) !important;
+}
+.rk-tile.rk-c-crimson:hover {
+  border-color: #ef4444 !important;
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.35), 0 0 16px rgba(239, 68, 68, 0.25) !important;
+}
+
+.rk-tile.rk-c-magenta {
+  border-color: rgba(255, 0, 127, 0.4) !important;
+  background: linear-gradient(135deg, rgba(255, 0, 127, 0.12) 0%, var(--surface) 80%) !important;
+}
+.rk-tile.rk-c-magenta .rk-tile-ico {
+  color: #ff3399 !important;
+  background: rgba(255, 0, 127, 0.25) !important;
+  border-right-color: rgba(255, 0, 127, 0.45) !important;
+}
+.rk-tile.rk-c-magenta:hover {
+  border-color: #ff007f !important;
+  box-shadow: 0 8px 24px rgba(255, 0, 127, 0.35), 0 0 16px rgba(255, 0, 127, 0.25) !important;
+}
+
+.rk-tile.rk-c-violet {
+  border-color: rgba(139, 92, 246, 0.4) !important;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, var(--surface) 80%) !important;
+}
+.rk-tile.rk-c-violet .rk-tile-ico {
+  color: #a78bfa !important;
+  background: rgba(139, 92, 246, 0.25) !important;
+  border-right-color: rgba(139, 92, 246, 0.45) !important;
+}
+.rk-tile.rk-c-violet:hover {
+  border-color: #8b5cf6 !important;
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.35), 0 0 16px rgba(139, 92, 246, 0.25) !important;
+}
 
 
 

@@ -900,18 +900,20 @@ function extractDashboard(){
 
     const tilesHtml=sorted.map(l=>{
       const COLOR_CLASSES = {
-        '#2563eb': 'blue',
-        '#10b981': 'green',
-        '#f59e0b': 'amber',
-        '#ec4899': 'pink',
-        '#8b5cf6': 'purple',
-        '#06b6d4': 'cyan'
+        '#3b82f6': 'blue',     // Electric Blue
+        '#06b6d4': 'cyan',     // Neon Cyan
+        '#10b981': 'emerald',  // Vivid Emerald
+        '#f59e0b': 'amber',    // Gold Amber
+        '#f97316': 'orange',   // Radiant Orange
+        '#ef4444': 'crimson',  // Fiery Crimson
+        '#ff007f': 'magenta',  // Hot Magenta
+        '#8b5cf6': 'violet'    // Cyber Violet
       };
 
       const isStar=starred.includes(l.href);
       const cc=colors[l.href]||'';
       const clrClass=COLOR_CLASSES[cc] ? ' rk-c-' + COLOR_CLASSES[cc] : '';
-      const cStyle=cc && !COLOR_CLASSES[cc] ? 'border-left-color:'+cc+'!important;' : '';
+      const cStyle=cc && !COLOR_CLASSES[cc] ? 'border-color:'+cc+'!important;' : '';
       const cat=getTileCategory(l.title, l.href);
 
       return '<a href="'+esc(l.href)+'"'
@@ -926,13 +928,15 @@ function extractDashboard(){
           +'<button type="button" class="rk-abtn rk-star'+(isStar?' rk-on':'')+'" data-k="'+esc(l.href)+'">'+(isStar?'\u2605':'\u2606')+'</button>'
           +'<button type="button" class="rk-abtn rk-clr" data-k="'+esc(l.href)+'">\u25cf</button>'
           +'<span class="rk-pal">'
-            +'<i class="rk-sw" data-c="#2563eb" style="background:#2563eb"></i>'
-            +'<i class="rk-sw" data-c="#10b981" style="background:#10b981"></i>'
-            +'<i class="rk-sw" data-c="#f59e0b" style="background:#f59e0b"></i>'
-            +'<i class="rk-sw" data-c="#ec4899" style="background:#ec4899"></i>'
-            +'<i class="rk-sw" data-c="#8b5cf6" style="background:#8b5cf6"></i>'
-            +'<i class="rk-sw" data-c="#06b6d4" style="background:#06b6d4"></i>'
-            +'<i class="rk-sw rk-sw-reset" data-c="">&#x2715;</i>'
+            +'<i class="rk-sw" data-c="#3b82f6" style="background:#3b82f6" title="Electric Blue"></i>'
+            +'<i class="rk-sw" data-c="#06b6d4" style="background:#06b6d4" title="Neon Cyan"></i>'
+            +'<i class="rk-sw" data-c="#10b981" style="background:#10b981" title="Vivid Emerald"></i>'
+            +'<i class="rk-sw" data-c="#f59e0b" style="background:#f59e0b" title="Gold Amber"></i>'
+            +'<i class="rk-sw" data-c="#f97316" style="background:#f97316" title="Radiant Orange"></i>'
+            +'<i class="rk-sw" data-c="#ef4444" style="background:#ef4444" title="Fiery Crimson"></i>'
+            +'<i class="rk-sw" data-c="#ff007f" style="background:#ff007f" title="Hot Magenta"></i>'
+            +'<i class="rk-sw" data-c="#8b5cf6" style="background:#8b5cf6" title="Cyber Violet"></i>'
+            +'<i class="rk-sw rk-sw-reset" data-c="" title="Reset">&#x2715;</i>'
           +'</span>'
         +'</span>'
       +'</a>';
