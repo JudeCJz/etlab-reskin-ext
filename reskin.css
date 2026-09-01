@@ -513,55 +513,6 @@ html.etlab-reskin-light .rk-greeter-name {
 }
 @media (max-width: 1100px) { .rk-layout { grid-template-columns: 1fr; } }
 
-/* ── Category Filter Bar ────────────────────────────── */
-.rk-cat-bar {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 12px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  padding-bottom: 2px;
-}
-.rk-cat-bar::-webkit-scrollbar { display: none; }
-
-.rk-cat-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background: var(--surface);
-  border: 1px solid var(--bdr);
-  border-radius: 14px !important;
-  padding: 5px 12px;
-  font-family: inherit;
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--text-m);
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
-}
-
-.rk-cat-ico {
-  width: 12px;
-  height: 12px;
-  fill: currentColor;
-  flex-shrink: 0;
-}
-
-.rk-cat-btn:hover {
-  background: var(--surfhov);
-  color: var(--text-s);
-  border-color: var(--bdr2);
-}
-
-.rk-cat-btn.rk-cat-active {
-  background: var(--blue-bg) !important;
-  color: var(--blue-t) !important;
-  border-color: var(--blue) !important;
-  font-weight: 700;
-}
-
 /* ── Tiles grid ─────────────────────────────────────── */
 .rk-tiles {
   display: grid;

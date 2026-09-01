@@ -959,17 +959,7 @@ function extractDashboard(){
         +'</div>'
       +'</div>'
       +'<div class="rk-layout">'
-        +'<div class="rk-tiles-col">'
-          +'<div class="rk-cat-bar" id="rk-cat-bar">'
-            +'<button type="button" class="rk-cat-btn rk-cat-active" data-cat="all">All</button>'
-            +'<button type="button" class="rk-cat-btn" data-cat="academic">Academics</button>'
-            +'<button type="button" class="rk-cat-btn" data-cat="college">College</button>'
-            +'<button type="button" class="rk-cat-btn" data-cat="hostel">Hostel</button>'
-            +'<button type="button" class="rk-cat-btn" data-cat="extra">Activities & Career</button>'
-            +'<button type="button" class="rk-cat-btn" data-cat="starred"><svg class="rk-cat-ico" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Favorites</button>'
-          +'</div>'
-          +'<div class="rk-tiles" id="rk-tiles">'+tilesHtml+'</div>'
-        +'</div>'
+        +'<div class="rk-tiles-col"><div class="rk-tiles" id="rk-tiles">'+tilesHtml+'</div></div>'
         +'<div class="rk-side-col">'
           +'<div class="rk-card" id="rk-cal"></div>'
           +'<div class="rk-card" id="rk-stats"></div>'
@@ -981,33 +971,16 @@ function extractDashboard(){
     const badge=wrap.querySelector('.rk-search-badge');
     if(badge) badge.addEventListener('click',()=>focusSearchPop());
 
-    let currentCat='all';
-    const catBtns=wrap.querySelectorAll('.rk-cat-btn');
-    catBtns.forEach(btn=>{
-      btn.addEventListener('click',()=>{
-        catBtns.forEach(b=>b.classList.remove('rk-cat-active'));
-        btn.classList.add('rk-cat-active');
-        currentCat=btn.getAttribute('data-cat')||'all';
-        doFilter();
-      });
-    });
-
     const doFilter=()=>{
       const q=(inp.value||'').toLowerCase().trim();
       const nqv=nq(q);
       xBtn.style.display=q?'flex':'none';
       wrap.querySelectorAll('.rk-tile').forEach(t=>{
         const tt=t.getAttribute('data-t')||'';
-        const cat=t.getAttribute('data-cat')||'academic';
-        const isStar=t.classList.contains('starred');
-        const matchesCat=(currentCat==='all')||(currentCat==='starred'&&isStar)||(currentCat===cat);
-        if(!q){
-          t.classList.toggle('rk-hidden',!matchesCat);
-          return;
-        }
+        if(!q){t.classList.remove('rk-hidden');return;}
         const kws=SKW[tt]||[tt];
-        const matchesSearch=tt.includes(q)||tt.includes(nqv)||kws.some(k=>k.includes(q)||q.includes(k));
-        t.classList.toggle('rk-hidden',!(matchesSearch && (currentCat==='all' || matchesCat)));
+        const ok=tt.includes(q)||tt.includes(nqv)||kws.some(k=>k.includes(q)||q.includes(k));
+        t.classList.toggle('rk-hidden',!ok);
       });
     };
     inp.addEventListener('input',doFilter);
