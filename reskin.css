@@ -177,11 +177,14 @@ html.etlab-reskin-on #sidebar .sidebar-toggle { display: none !important; }
   height: 46px; min-height: 46px; flex-shrink: 0;
   border-bottom: 1px solid var(--bdr);
   cursor: default;
-  transition: opacity 0.2s;
+  overflow: hidden;
+  transition: height 0.2s ease, min-height 0.2s ease, opacity 0.2s ease, border-width 0.2s ease;
 }
 .rk-sb-peek svg { stroke: var(--text-m) !important; }
 html.etlab-reskin-on #sidebar:hover .rk-sb-peek,
-html.etlab-reskin-on .sidebar:hover .rk-sb-peek { opacity: 0.3; }
+html.etlab-reskin-on .sidebar:hover .rk-sb-peek {
+  height: 0; min-height: 0; opacity: 0; border-bottom-width: 0;
+}
 
 /* Inner panel (hidden when collapsed, shown on hover) */
 .rk-sb-inner {
