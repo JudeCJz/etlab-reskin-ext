@@ -24,6 +24,7 @@ let _cachedLinks=null, _avatarCache=null, _theme='light', _globalClicked=false;
 let _calYear=new Date().getFullYear(), _calMonth=new Date().getMonth(), _calAbsent=new Set(), _calEl=null;
 let _hostelAbsentMonth=new Date().getMonth(), _hostelAbsentYear=new Date().getFullYear();
 let _origSidebarHTML=null; // saved before reskin so we can restore
+let _isInitialLoad=true;
 
 
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -277,7 +278,7 @@ function parseHostelAbsentFromDoc(doc) {
 
 async function fetchHostelAbsentFor(year, month) {
   try {
-    const baseRes = await fetch(BASE_URL + '/hostel/student/viewhostelattendance', {credentials: 'include'});
+    const baseRes = await fetch(BASE_URL + '/hostel/student/viewhostelattendance', {credentials: 'include', cache: 'no-store'});
     if (!baseRes.ok) return new Set();
     const htmlText = await baseRes.text();
     const doc = new DOMParser().parseFromString(htmlText, 'text/html');
@@ -401,12 +402,13 @@ async function fetchCollegeCalendarFor(year, month) {
     const parts = key.split('-').map(Number);
     if (parts.length === 3) {
       const [hY, hM, hD] = parts;
-      if (hY === year && (hM === m1 || hM === month)) {
+      if (hY === year && hM === m1) {
         data.holidays[hD] = HMAP[key];
       }
     }
   }
 
+  // Always parse the live page DOM first (has current ETLab data)
   if (isDash()) {
     parseCollegeDoc(document, data);
   }
@@ -421,7 +423,7 @@ async function fetchCollegeCalendarFor(year, month) {
 
   for (const url of urls) {
     try {
-      const r = await fetch(url, { credentials: 'include' });
+      const r = await fetch(url, { credentials: 'include', cache: 'no-store' });
       if (r.ok) {
         const text = await r.text();
         const doc = new DOMParser().parseFromString(text, 'text/html');
@@ -433,9 +435,9 @@ async function fetchCollegeCalendarFor(year, month) {
   return data;
 }
 
-async function fetchEventsAndAbsentsFor(year, month) {
+async function fetchEventsAndAbsentsFor(year, month, forceRefresh) {
   const key = year + '-' + month;
-  if (_calCache[key]) return _calCache[key];
+  if (!forceRefresh && _calCache[key]) return _calCache[key];
   if (_calLoading[key]) return _calLoading[key];
 
   _calLoading[key] = (async () => {
@@ -477,11 +479,14 @@ function buildCalGrid(year,month){
   return grid;
 }
 
-function renderCalMonth(el){
+function renderCalMonth(el, forceRefresh){
   if(!el)return;
   const now=new Date(),todayD=now.getDate(),todayM=now.getMonth(),todayY=now.getFullYear();
-  _calYear = todayY;
-  _calMonth = todayM;
+  // Only reset to current month on first render, not on re-renders
+  if (_calYear === undefined || _calYear === null) {
+    _calYear = todayY;
+    _calMonth = todayM;
+  }
   const grid=buildCalGrid(_calYear,_calMonth);
   const key = _calYear + '-' + _calMonth;
   const cache = _calCache[key];
@@ -522,14 +527,15 @@ function renderCalMonth(el){
     +'</div>'
     +'<table class="rk-cal"><thead><tr>'+DHDRS.map(d=>'<th>'+d+'</th>').join('')+'</tr></thead><tbody>'+rows+'</tbody></table>';
 
-  if (!cache && !isLoading) {
-    fetchEventsAndAbsentsFor(_calYear, _calMonth).then(() => {
-      renderCalMonth(el);
+  // Always fetch fresh data on first load (forceRefresh), or if no cache exists
+  if (forceRefresh || (!cache && !isLoading)) {
+    fetchEventsAndAbsentsFor(_calYear, _calMonth, forceRefresh).then(() => {
+      renderCalMonth(el, false);
     });
   }
 }
 
-function renderCal(el){_calEl=el;renderCalMonth(el);}
+function renderCal(el){_calEl=el;renderCalMonth(el, true);}
 
 // ── ATTENDANCE BAR ────────────────────────────────────────────
 function renderStats(el){
@@ -554,7 +560,8 @@ function renderStats(el){
     }
   };
 
-  fetch(BASE_URL+'/student/attendance',{credentials:'include'}).then(r=>r.text()).then(html=>{
+  // Always fetch fresh attendance data (no-store) from the live ETLab page
+  fetch(BASE_URL+'/student/attendance',{credentials:'include', cache:'no-store'}).then(r=>r.text()).then(html=>{
     const doc=new DOMParser().parseFromString(html,'text/html');
     let pct=null;
     doc.querySelectorAll('tr,div,p').forEach(row=>{
@@ -889,6 +896,9 @@ function unapply(){
 // ── INIT ──────────────────────────────────────────────────────
 function init(){
   if(!location.hostname.endsWith('etlab.app'))return;
+  // Clear all cached data so fresh ETLab values are fetched on every page load
+  _calCache = {};
+  _calLoading = {};
   apply();
   try{
     chrome.storage.local.get({reskinEnabled:true,theme:'light'},r=>{
