@@ -848,11 +848,12 @@ function removeFooter(){
 }
 
 // ── APPLY / UNAPPLY ───────────────────────────────────────────
-// ── APPLY / UNAPPLY ───────────────────────────────────────────
 function apply(){
   document.documentElement.classList.add('etlab-reskin-on');
   document.body?.classList.add('etlab-reskin-on');
   document.body?.classList.toggle('rk-dash-page',isDash());
+  // Always re-apply the stored theme so dark/light persists across toggles
+  syncTheme(_theme);
   reskinSidebar();
   removeFooter();
   if(isDash())extractDashboard();
