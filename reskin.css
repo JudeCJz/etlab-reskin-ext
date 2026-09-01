@@ -313,11 +313,43 @@ html.etlab-reskin-on .sidebar:hover .rk-sb-inner {
 
 
 /* ── Search bar (Scooped Cradle Design) ───────────────── */
+@keyframes rk-search-pop-pulse {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.028);
+  }
+  65% {
+    transform: scale(0.995);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 .rk-search-wrap {
   position: relative;
   width: 100%;
   margin-bottom: 18px;
   padding-top: 6px;
+  transform-origin: center top;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.rk-search-wrap.rk-search-pop {
+  animation: rk-search-pop-pulse 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.rk-search-wrap.rk-search-pop .rk-search-body {
+  box-shadow: 0 0 0 4px var(--ring), 0 8px 30px rgba(59, 130, 246, 0.28) !important;
+  border-color: var(--blue) !important;
+}
+
+.rk-search-wrap.rk-search-pop .rk-search-badge {
+  border-color: var(--blue) !important;
+  transform: translateY(-2px) scale(1.08) !important;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35) !important;
 }
 
 .rk-search {

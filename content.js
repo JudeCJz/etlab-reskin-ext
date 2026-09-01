@@ -790,6 +790,9 @@ function extractDashboard(){
 
     const inp=wrap.querySelector('#rk-sinput');
     const xBtn=wrap.querySelector('#rk-sx');
+    const badge=wrap.querySelector('.rk-search-badge');
+    if(badge) badge.addEventListener('click',()=>focusSearchPop());
+
     const doFilter=()=>{
       const q=(inp.value||'').toLowerCase().trim();
       const nqv=nq(q);
@@ -804,6 +807,10 @@ function extractDashboard(){
     };
     inp.addEventListener('input',doFilter);
     xBtn.addEventListener('click',()=>{inp.value='';doFilter();inp.focus();});
+
+    if(location.hash==='#search'||location.search.includes('focus=search')){
+      setTimeout(focusSearchPop,150);
+    }
 
     wrap.querySelectorAll('.rk-star').forEach(btn=>{
       btn.addEventListener('click',e=>{
@@ -889,7 +896,7 @@ function addDashToggle(){
     searchBtn.id='rk-pill-search';
     searchBtn.className='rk-pill-btn';
     searchBtn.type='button';
-    searchBtn.title='Search';
+    searchBtn.title='Search (Ctrl+K)';
     searchBtn.innerHTML=
       '<span class="rk-tp-ico">'
         +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">'
@@ -899,13 +906,7 @@ function addDashToggle(){
     searchBtn.addEventListener('click',e=>{
       e.preventDefault();
       e.stopPropagation();
-      const inp=document.getElementById('rk-sinput');
-      if(inp){
-        inp.scrollIntoView({behavior:'smooth',block:'center'});
-        inp.focus();
-      }else{
-        location.href='/user/dashboard';
-      }
+      focusSearchPop();
     });
     pillMenu.appendChild(searchBtn);
 
@@ -1043,6 +1044,34 @@ function unapply(){
   // Refresh dashboard toggle button styles so it stays styled for off state
   addDashToggle();
 }
+
+function focusSearchPop(){
+  const searchWrap=document.querySelector('.rk-search-wrap');
+  const inp=document.getElementById('rk-sinput');
+  if(searchWrap&&inp){
+    searchWrap.classList.remove('rk-search-pop');
+    void searchWrap.offsetWidth;
+    searchWrap.classList.add('rk-search-pop');
+    searchWrap.scrollIntoView({behavior:'smooth',block:'center'});
+    setTimeout(()=>{
+      inp.focus();
+      inp.select();
+    },60);
+  }else{
+    location.href='/user/dashboard#search';
+  }
+}
+
+// ── KEYBOARD SHORTCUTS ────────────────────────────────────────
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){
+    e.preventDefault();
+    focusSearchPop();
+  }else if(e.key==='/'&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName)){
+    e.preventDefault();
+    focusSearchPop();
+  }
+});
 
 // ── INIT ──────────────────────────────────────────────────────
 function init(){
