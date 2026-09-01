@@ -747,6 +747,120 @@ td.rk-cc.today b { color: var(--blue-t); font-weight: 800; }
 td.rk-cc.event { background: var(--blue-bg); border-radius: 6px !important; }
 td.rk-cc.event b { color: var(--text-s); font-weight: 700; }
 
+td.rk-cc {
+  cursor: pointer;
+}
+td.rk-cc:hover:not(.rk-other-month) {
+  background: var(--hovbg);
+}
+td.rk-cc.selected {
+  outline: 2px solid var(--blue) !important;
+  outline-offset: -1px;
+  background: var(--blue-bg) !important;
+}
+
+/* ── Calendar Date Preview Panel ─────────────────────── */
+.rk-cal-preview {
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px 11px;
+  background: var(--surface2);
+  border: 1px solid var(--bdr2);
+  border-radius: 8px !important;
+  animation: rk-fade-down 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes rk-fade-down {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.rk-cal-preview.rk-cp-open {
+  display: flex;
+}
+
+.rk-cp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.rk-cp-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.rk-cp-date {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text-s);
+}
+
+.rk-cp-today-tag {
+  background: var(--blue-bg);
+  color: var(--blue-t);
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 10px !important;
+  border: 1px solid var(--blue-bdr);
+}
+
+.rk-cp-close {
+  background: transparent;
+  border: none;
+  color: var(--text-m);
+  font-size: 11px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px !important;
+  transition: color 0.12s;
+}
+.rk-cp-close:hover {
+  color: var(--text-s);
+}
+
+.rk-cp-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.rk-cp-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.72rem;
+  color: var(--text);
+  padding: 6px 9px;
+  border-radius: 6px !important;
+  background: var(--surface);
+  border: 1px solid var(--bdr);
+}
+.rk-cp-item b {
+  color: var(--text-s);
+  margin-right: 3px;
+}
+.rk-cp-icon {
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.rk-cp-hol {
+  border-left: 3px solid var(--blue) !important;
+}
+.rk-cp-abs {
+  border-left: 3px solid var(--red) !important;
+}
+.rk-cp-habs {
+  border-left: 3px solid var(--amber) !important;
+}
+
 /* ── Attendance bar ─────────────────────────────────── */
 .rk-att-panel { display: flex; flex-direction: column; gap: 10px; }
 

@@ -459,6 +459,8 @@ function prefetchSurroundingMonths(currentYear, currentMonth) {
 }
 
 // ── CALENDAR ──────────────────────────────────────────────────
+let _calSelectedDay = null;
+
 function buildCalGrid(year,month){
   const firstDay=new Date(year,month,1).getDay();
   const daysInMonth=new Date(year,month+1,0).getDate();
@@ -490,7 +492,6 @@ function buildCalGrid(year,month){
 function renderCalMonth(el, forceRefresh){
   if(!el)return;
   const now=new Date(),todayD=now.getDate(),todayM=now.getMonth(),todayY=now.getFullYear();
-  // Only reset to current month on first render, not on re-renders
   if (_calYear === undefined || _calYear === null) {
     _calYear = todayY;
     _calMonth = todayM;
@@ -510,19 +511,21 @@ function renderCalMonth(el, forceRefresh){
       }
       const n=cell.d;
       const isToday=n===todayD&&_calMonth===todayM&&_calYear===todayY;
+      const isSelected=_calSelectedDay===n;
       const hol=cache?.holidays?.[n] || null;
       const cabsent=cache?.collegeAbsents?.has(n) || false;
       const habsent=cache?.absents?.has(n) || false;
       let cls='rk-cc';
       if(isToday)cls+=' today';
-      else if(hol||cabsent||habsent)cls+=' event';
+      if(isSelected)cls+=' selected';
+      if(hol||cabsent||habsent)cls+=' event';
 
       let inner = '<b>'+n+'</b>';
       if(hol) inner += '<em>'+esc(hol)+'</em>';
       if(cabsent) inner += '<em class="abs">College Absent</em>';
       if(habsent) inner += '<em class="abs">Hostel Absent</em>';
 
-      rows+='<td class="'+cls+'">'+inner+'</td>';
+      rows+='<td class="'+cls+'" data-day="'+n+'" role="button" title="Click to view details">'+inner+'</td>';
     });
     rows+='</tr>';
   });
@@ -537,9 +540,85 @@ function renderCalMonth(el, forceRefresh){
       +'<span><i class="rk-dot-today"></i>Today</span>'
       +'<span><i class="rk-dot-abs"></i>Holiday/Absent</span>'
     +'</div>'
-    +'<table class="rk-cal"><thead><tr>'+DHDRS.map(d=>'<th>'+d+'</th>').join('')+'</tr></thead><tbody>'+rows+'</tbody></table>';
+    +'<table class="rk-cal"><thead><tr>'+DHDRS.map(d=>'<th>'+d+'</th>').join('')+'</tr></thead><tbody>'+rows+'</tbody></table>'
+    +'<div class="rk-cal-preview" id="rk-cal-preview"></div>';
 
-  // Always fetch fresh data on first load (forceRefresh), or if no cache exists
+  const previewEl = el.querySelector('#rk-cal-preview');
+
+  const updatePreview = (day) => {
+    if (!previewEl) return;
+    if (!day) {
+      previewEl.innerHTML = '';
+      previewEl.classList.remove('rk-cp-open');
+      return;
+    }
+    const dateObj = new Date(_calYear, _calMonth, day);
+    const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const dayName = dayNames[dateObj.getDay()];
+    const isToday = day === todayD && _calMonth === todayM && _calYear === todayY;
+    const hol = cache?.holidays?.[day] || null;
+    const cabsent = cache?.collegeAbsents?.has(day) || false;
+    const habsent = cache?.absents?.has(day) || false;
+    const isSunday = dateObj.getDay() === 0;
+
+    let itemsHtml = '';
+    if (hol) {
+      itemsHtml += '<div class="rk-cp-item rk-cp-hol"><span class="rk-cp-icon">🌴</span><div><b>Holiday:</b> '+esc(hol)+'</div></div>';
+    }
+    if (cabsent) {
+      itemsHtml += '<div class="rk-cp-item rk-cp-abs"><span class="rk-cp-icon">❌</span><div><b>College Attendance:</b> Marked Absent</div></div>';
+    }
+    if (habsent) {
+      itemsHtml += '<div class="rk-cp-item rk-cp-habs"><span class="rk-cp-icon">🛏️</span><div><b>Hostel Attendance:</b> Marked Absent / Leave</div></div>';
+    }
+    if (isSunday && !hol) {
+      itemsHtml += '<div class="rk-cp-item rk-cp-weekend"><span class="rk-cp-icon">☕</span><div><b>Weekend:</b> College Holiday</div></div>';
+    }
+    if (!hol && !cabsent && !habsent && !isSunday) {
+      itemsHtml += '<div class="rk-cp-item rk-cp-regular"><span class="rk-cp-icon">📚</span><div><b>College Working Day:</b> Regular classes</div></div>';
+    }
+
+    const todayBadge = isToday ? '<span class="rk-cp-today-tag">Today</span>' : '';
+
+    previewEl.innerHTML =
+      '<div class="rk-cp-header">'
+        +'<div class="rk-cp-title-wrap">'
+          +'<span class="rk-cp-date">'+dayName+', '+day+' '+MONTHS[_calMonth]+' '+_calYear+'</span>'
+          +todayBadge
+        +'</div>'
+        +'<button type="button" class="rk-cp-close" title="Close preview">&#x2715;</button>'
+      +'</div>'
+      +'<div class="rk-cp-list">'+itemsHtml+'</div>';
+
+    previewEl.classList.add('rk-cp-open');
+
+    previewEl.querySelector('.rk-cp-close')?.addEventListener('click', () => {
+      _calSelectedDay = null;
+      el.querySelectorAll('td.rk-cc.selected').forEach(td => td.classList.remove('selected'));
+      updatePreview(null);
+    });
+  };
+
+  if (_calSelectedDay) {
+    updatePreview(_calSelectedDay);
+  }
+
+  el.querySelectorAll('td.rk-cc[data-day]').forEach(td => {
+    td.addEventListener('click', () => {
+      const d = parseInt(td.getAttribute('data-day'), 10);
+      if (_calSelectedDay === d) {
+        _calSelectedDay = null;
+        td.classList.remove('selected');
+        updatePreview(null);
+      } else {
+        _calSelectedDay = d;
+        el.querySelectorAll('td.rk-cc.selected').forEach(cell => cell.classList.remove('selected'));
+        td.classList.add('selected');
+        updatePreview(d);
+      }
+    });
+  });
+
   if (forceRefresh || (!cache && !isLoading)) {
     fetchEventsAndAbsentsFor(_calYear, _calMonth, forceRefresh).then(() => {
       renderCalMonth(el, false);
