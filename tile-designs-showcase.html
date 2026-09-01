@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Tile Design Showcase — 20 Concepts</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f17;
+      --card-bg: #111722;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border: rgba(255, 255, 255, 0.08);
+      --accent: #3b82f6;
+      --accent-glow: rgba(59, 130, 246, 0.25);
+    }
+
+    html.light {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: rgba(0, 0, 0, 0.08);
+      --accent: #2563eb;
+      --accent-glow: rgba(37, 99, 235, 0.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 40px 24px 80px;
+      transition: background 0.25s, color 0.25s;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 36px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; }
+    p.sub { font-size: 0.9rem; color: var(--text-muted); margin-top: 4px; }
+
+    .theme-toggle {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .theme-toggle:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    /* Grid of Designs */
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 24px;
+    }
+
+    .design-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+    .design-card:hover {
+      border-color: rgba(59, 130, 246, 0.4);
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .design-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(59, 130, 246, 0.12);
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+    .design-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .design-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .tile-demo-box {
+      padding: 16px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Common Icon SVG */
+    .t-icon { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; }
+    .t-star { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; opacity: 0.6; cursor: pointer; }
+    .t-star:hover { fill: #f59e0b; stroke: #f59e0b; opacity: 1; }
+
+    /* ============================================================ */
+    /* 20 BUTTON CONCEPTS                                           */
+    /* ============================================================ */
+
+    /* 1. Minimal Bento Capsule */
+    .tile-concept-1 {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px;
+      background: rgba(59, 130, 246, 0.06);
+      border: 1px solid rgba(59, 130, 246, 0.16);
+      border-radius: 12px;
+      font-size: 0.84rem; font-weight: 600; color: var(--text);
+      text-decoration: none; cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .tile-concept-1:hover {
+      background: rgba(59, 130, 246, 0.15);
+      border-color: #3b82f6;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.2);
+    }
+    .tile-concept-1 .left { display: flex; align-items: center; gap: 12px; }
+    .tile-concept-1 .ico-wrap {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: rgba(59, 130, 246, 0.18);
+      display: flex; align-items: center; justify-content: center; color: #60a5fa;
+    }
+
+    /* 2. Sleek Floating Pill */
+    .tile-concept-2 {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 18px;
+      background: #151d2c;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 30px;
+      font-size: 0.84rem; font-weight: 600; color: var(--text);
+      cursor: pointer; transition: all 0.2s;
+    }
+    html.light .tile-concept-2 { background: #f1f5f9; }
+    .tile-concept-2:hover {
+      border-color: #3b82f6;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3), 0 0 0 1px #3b82f6;
+      transform: scale(1.02);
+    }
+    .tile-concept-2 .left { display: flex; align-items: center; gap: 10px; }
+
+    /* 3. Left Gradient Notch */
+    .tile-concept-3 {
+      position: relative; display: flex; align-items: center; justify-content: space-between;
+      padding: 13px 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-left: 4px solid #3b82f6;
+      border-radius: 8px;
+      font-size: 0.84rem; font-weight: 600; color: var(--text);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .tile-concept-3:hover {
+      background: rgba(59, 130, 246, 0.08);
+      border-left-width: 6px;
+      border-left-color: #60a5fa;
+      transform: translateX(3px);
+    }
+    .tile-concept-3 .left { display: flex; align-items: center; gap: 10px; }
+
+    /* 4. Frosted Glassmorphism Tile */
+    .tile-concept-4 {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 13px 16px;
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      font-size: 0.84rem; font-weight: 600; color: var(--text);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .tile-concept-4:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+    .tile-concept-4 .left { display: flex; align-items: center; gap: 10px; }
+
+    /* 5. Modern Fintech Card (Icon Right Angle) */
+    .tile-concept-5 {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px;
+      background: #141b29;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      font-size: 0.84rem; font-weight: 600; color: var(--text);
+      cursor: pointer; transition: all 0.2s;
+    }
+    html.light .tile-concept-5 { background: #f8fafc; border-color: #e2e8f0; }
+    .tile-concept-5:hover {
+      border-color: #3b82f6;
+      background: #182234;
+      transform: translateY(-2px);
+    }
+    .tile-concept-5 .arrow { opacity: 0; transform: translateX(-4px); transition: all 0.2s; color: #3b82f6; }
+    .tile-concept-5:hover .arrow { opacity: 1; transform: translateX(0); }
+    .tile-concept-5 .left { display: flex; align-items: center; gap: 10px; }
+
+    /* 6. Neon Border Glow */
+    .tile-concept-6 {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 13px 16px;
+      background: #0d131f;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 10px;
+      font-size: 0.84rem; font-weight: 600; color: var(--text);
+      box-shadow: 0 0 12px rgba(59, 130, 246, 0.08) inset;
+      cursor: pointer; transition: all 0.25s;
+    }
+    .tile-concept-6:hover {
+      border-color: #3b82f6;
+      box-shadow: 0 0 18px rgba(59, 130, 246, 0.35), 0 0 12px rgba(59, 130, 246, 0.15) inset;
+      transform: translateY(-1px);
+    }
+    .tile-concept-6 .left { display: flex; align-items: center; gap: 10px; color: #93c5fd; }
+
+    /* 7. Dual Tone Split Badge */
+    .tile-concept-7 {
+      display: flex; align-items: stretch;
+      background: #131a27;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .tile-concept-7:hover { border-color: #3b82f6; transform: translateY(-2px); }
+    .tile-concept-7 .badge-side {
+      background: #1e293b;
+      padding: 12px 14px;
+      display: flex; align-items: center; justify-content: center;
+      color: #38bdf8;
+      border-right: 1px solid var(--border);
+    }
+    .tile-concept-7 .text-side {
+      flex: 1; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between;
+      font-size: 0.84rem; font-weight: 600;
+    }
+
+    /* 8. Chamfered Cyber Edge */
+    .tile-concept-8 {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 13px 18px;
+      background: #111827;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+      font-size: 0.84rem; font-weight: 600; color: var(--text);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .tile-concept-8:hover {
+      background: #1f2937;
+      border-color: #38bdf8;
+      transform: translateY(-2px);
+    }
+    .tile-concept-8 .left { display: flex; align-items: center; gap: 10px; }
+
+    /* 9. Soft Pill With Subtitle */
+    .tile-concept-9 {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .tile-concept-9:hover {
+      background: rgba(59, 130, 246, 0.06);
+      border-color: rgba(59, 130, 246, 0.3);
+    }
+    .tile-concept-9 .left { display: flex; align-items: center; gap: 12px; }
+    .tile-concept-9 .txt-wrap { display: flex; flex-direction: column; }
+    .tile-concept-9 .title { font-size: 0.84rem; font-weight: 700; color: var(--text); }
+    .tile-concept-9 .sub-txt { font-size: 0.68rem; color: var(--text-muted); }
+
+    /* 10. Gradient Border Shimmer */
+    .tile-concept-10 {
+      position: relative;
+      background: #111827;
+      border-radius: 10px;
+      padding: 1px;
+      cursor: pointer;
+      background: linear-gradient(135deg, rgba(59,130,246,0.5), rgba(147,51,234,0.1), rgba(255,255,255,0.05));
+      transition: all 0.2s;
+    }
+    .tile-concept-10:hover {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+      transform: translateY(-2px);
+    }
+    .tile-concept-10 .inner {
+      background: #0f172a;
+      border-radius: 9px;
+      padding: 12px 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 0.84rem; font-weight: 600; color: var(--text);
+    }
+    .tile-concept-10 .left { display: flex; align-items: center; gap: 10px; }
+
+    /* 11. Ultra-Clean Line Item */
+    .tile-concept-11 {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 12px;
+      background: transparent;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.86rem; font-weight: 600; color: var(--text);
+      cursor: pointer; transition: all 0.15s;
+    }
+    .tile-concept-11:hover {
+      background: rgba(255, 255, 255, 0.03);
+      padding-left: 18px;
+      border-bottom-color: #3b82f6;
+      color: #60a5fa;
+    }
+    .tile-concept-11 .left { display: flex; align-items: center; gap: 12px; }
+
+    /* 12. Segmented Pill Tag */
+    .tile-concept-12 {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px;
+      background: #151c28;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 8px;
+      font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .tile-concept-12:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      background: #1b2434;
+    }
+    .tile-concept-12 .tag {
+      font-size: 0.62rem; font-weight: 700; text-transform: uppercase;
+      background: rgba(59, 130, 246, 0.15); color: #60a5fa;
+      padding: 2px 6px; border-radius: 4px;
+    }
+    .tile-concept-12 .left { display: flex; align-items: center; gap: 10px; }
+
+    /* 13. High-Contrast Monolith */
+    .tile-concept-13 {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px;
+      background: #000000;
+      border: 1px solid #27272a;
+      border-radius: 6px;
+      font-size: 0.84rem; font-weight: 700; color: #ffffff;
+      cursor: pointer; transition: all 0.2s;
+    }
+    html.light .tile-concept-13 { background: #ffffff; color: #000000; border-color: #e4e4e7; }
+    .tile-concept-13:hover {
+      border-color: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+    }
+    .tile-concept-13 .left { display: flex; align-items: center; gap: 10px; }
+
+    /* 14. Floating Glass Bubble */
+    .tile-concept-14 {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 18px;
+      background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.15), rgba(15, 23, 42, 0.6));
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 16px;
+      font-size: 0.84rem; font-weight: 600;
+      cursor: pointer; transition: all 0.25s;
+    }
+    .tile-concept-14:hover {
+      border-color: #3b82f6;
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.25);
+      transform: translateY(-2px) scale(1.01);
+    }
+    .tile-concept-14 .left { display: flex; align-items: center; gap: 10px; }
+
+    /* 15. Subtle Inner Shadow Inset */
+    .tile-concept-15 {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 13px 16px;
+      background: #0e141f;
+      border: 1px solid rgba(0, 0, 0, 0.4);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      font-size: 0.84rem; font-weight: 600;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .tile-concept-15:hover {
+      background: #141c2c;
+      border-color: rgba(59, 130, 246, 0.4);
+      color: #93c5fd;
+    }
+    .tile-concept-15 .left { display: flex; align-items: center; gap: 10px; }
+
+    /* 16. Scooped Ticket Corner */
+    .tile-concept-16 {
+      position: relative;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 13px 18px;
+      background: #131a26;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.84rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .tile-concept-16::before {
+      content: ''; position: absolute; left: -6px; top: 50%; transform: translateY(-50%);
+      width: 10px; height: 10px; border-radius: 50%; background: var(--bg); border: 1px solid var(--border);
+    }
+    .tile-concept-16:hover {
+      background: #1a2333;
+      border-color: #3b82f6;
+      transform: translateY(-1px);
+    }
+    .tile-concept-16 .left { display: flex; align-items: center; gap: 10px; }
+
+    /* 17. Dot Grid Tech Tile */
+    .tile-concept-17 {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 13px 16px;
+      background-color: #111722;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+      background-size: 10px 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.84rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .tile-concept-17:hover {
+      border-color: #38bdf8;
+      background-color: #172030;
+      transform: translateY(-2px);
+    }
+    .tile-concept-17 .left { display: flex; align-items: center; gap: 10px; }
+
+    /* 18. Rainbow Accent Underline */
+    .tile-concept-18 {
+      position: relative;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px;
+      background: #141b27;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.84rem; font-weight: 600;
+      cursor: pointer; overflow: hidden; transition: all 0.2s;
+    }
+    .tile-concept-18::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, #3b82f6, #10b981, #f59e0b);
+      opacity: 0.4; transition: opacity 0.2s;
+    }
+    .tile-concept-18:hover::after { opacity: 1; height: 3px; }
+    .tile-concept-18:hover { background: #1a2434; transform: translateY(-2px); }
+    .tile-concept-18 .left { display: flex; align-items: center; gap: 10px; }
+
+    /* 19. Micro Action Pill */
+    .tile-concept-19 {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 0.8rem; font-weight: 600;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .tile-concept-19:hover {
+      background: #3b82f6;
+      border-color: #3b82f6;
+      color: #ffffff;
+      transform: scale(1.03);
+    }
+    .tile-concept-19 .left { display: flex; align-items: center; gap: 8px; }
+
+    /* 20. Futuristic Cyber Chip */
+    .tile-concept-20 {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px;
+      background: #0d121c;
+      border: 1px solid #1e293b;
+      border-left: 2px solid #06b6d4;
+      border-right: 2px solid #06b6d4;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .tile-concept-20:hover {
+      background: #131b2a;
+      border-color: #06b6d4;
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+      transform: translateY(-2px);
+    }
+    .tile-concept-20 .left { display: flex; align-items: center; gap: 10px; color: #22d3ee; }
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div>
+        <h1>20 Dashboard Tile Concepts</h1>
+        <p class="sub">Browse, hover, toggle theme, and choose your preferred design for the dashboard tiles.</p>
+      </div>
+      <button class="theme-toggle" id="themeToggle">☀️ Switch Theme</button>
+    </header>
+
+    <div class="showcase-grid">
+
+      <!-- Concept 1 -->
+      <div class="design-card">
+        <div class="card-meta">
+          <span class="design-number">Concept 01</span>
+          <span class="design-name">Minimal Bento Capsule</span>
+        </div>
+        <div class="tile-demo-box">
+          <div class="tile-concept-1">
+            <div class="left">
+              <div class="ico-wrap">
+                <svg class="t-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              </div>
+              <span>Exam Schedule</span>
+            </div>
+            <svg class="t-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+        </div>
+        <p class="design-desc">Dedicated rounded icon container with soft accent tint and smooth hover elevation.</p>
+      </div>
+
+      <!-- Concept 2 -->
+      <div class="design-card">
+        <div class="card-meta">
+          <span class="design-number">Concept 02</span>
+          <span class="design-name">Sleek Floating Pill</span>
+        </div>
+        <div class="tile-demo-box">
+          <div class="tile-concept-2">
+            <div class="left">
+              <svg class="t-icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              <span>Study Materials</span>
+            </div>
+            <svg class="t-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+        </div>
+        <p class="design-desc">Full 30px pill capsule with subtle outline scale on hover.</p>
+      </div>
+
+      <!-- Concept 3 -->
+      <div class="design-card">
+        <div class="card-meta">
+          <span class="design-number">Concept 03</span>
+          <span class="design-name">Left Gradient Notch</span>
+        </div>
+        <div class="tile-demo-box">
+          <div class="tile-concept-3">
+            <div class="left">
+              <svg class="t-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>Timetable</span>
+            </div>
+            <svg class="t-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+        </div>
+        <p class="design-desc">Left edge color bar that expands on hover with a slight horizontal nudge.</p>
+      </div>
+
+      <!-- Concept 4 -->
+      <div class="design-card">
+        <div class="card-meta">
+          <span class="design-number">Concept 04</span>
+          <span class="design-name">Frosted Glassmorphism</span>
+        </div>
+        <div class="tile-demo-box">
+          <div class="tile-concept-4">
+            <div class="left">
+              <svg class="t-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <span>Assignments</span>
+            </div>
+            <svg class="t-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+        </div>
+        <p class="design-desc">Translucent background with backdrop blur and soft glass border reflection.</p>
+      </div>
+
+      <!-- Concept 5 -->
+      <div class="design-card">
+        <div class="card-meta">
+          <span class="design-number">Concept 05</span>
+          <span class="design-name">Modern Fintech Card</span>
+        </div>
+        <div class="tile-demo-box">
+          <div class="tile-concept-5">
+            <div class="left">
+              <svg class="t-icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              <span>Results & CGPA</span>
+            </div>
+            <span class="arrow">→</span>
+          </div>
+        </div>
+        <p class="design-desc">Clean banking-grade tile with a smooth animated trailing arrow on hover.</p>
+      </div>
+
+      <!-- Concept 6 -->
+      <div class="design-card">
+        <div class="card-meta">
+          <span class="design-number">Concept 06</span>
+          <span class="design-name">Neon Border Glow</span>
+        </div>
+        <div class="tile-demo-box">
+          <div class="tile-concept-6">
+            <div class="left">
+              <svg class="t-icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span>Activity Points</span>
+            </div>
+            <svg class="t-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+        </div>
+        <p class="design-desc">Dual inner and outer neon cyan/blue glow with luminous border on hover.</p>
+      </div>
+
+      <!-- Concept 7 -->
+      <div class="design-card">
+        <div class="card-meta">
+          <span class="design-number">Concept 07</span>
+          <span class="design-name">Dual-Tone Split Badge</span>
+        </div>
+        <div class="tile-demo-box">
+          <div class="tile-concept-7">
+            <div class="badge-side">
+              <svg class="t-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            </div>
+            <div class="text-side">
+              <span>Exam Schedule</span>
+              <svg class="t-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+          </div>
+        </div>
+        <p class="design-desc">Distinct icon compartment on the left separated by an internal divider.</p>
+      </div>
+
+      <!-- Concept 8 -->
+      <div class="design-card">
+        <div class="card-meta">
+          <span class="design-number">Concept 08</span>
+          <span class="design-name">Chamfered Cyber Edge</span>
+        </div>
+        <div class="tile-demo-box">
+          <div class="tile-concept-8">
+            <div class="left">
+              <svg class="t-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+              <span>Circulars & Notices</span>
+            </div>
+            <svg class="t-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+        </div>
+        <p class="design-desc">Angled corner cutouts (chamfers) for a techy sci-fi aesthetic.</p>
+      </div>
+
+      <!-- Concept 9 -->
+      <div class="design-card">
+        <div class="card-meta">
+          <span class="design-number">Concept 09</span>
+          <span class="design-name">Card with Micro-Subtitle</span>
+        </div>
+        <div class="tile-demo-box">
+          <div class="tile-concept-9">
+            <div class="left">
+              <svg class="t-icon" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              <div class="txt-wrap">
+                <span class="title">Accounts & Fees</span>
+                <span class="sub-txt">Receipts & Payment</span>
+              </div>
+            </div>
+            <svg class="t-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+        </div>
+        <p class="design-desc">Includes a contextual sub-label for enhanced clarity and information density.</p>
+      </div>
+
+      <!-- Concept 10 -->
+      <div class="design-card">
+        <div class="card-meta">
+          <span class="design-number">Concept 10</span>
+          <span class="design-name">Gradient Shimmer Border</span>
+        </div>
+        <div class="tile-demo-box">
+          <div class="tile-concept-10">
+            <div class="inner">
+              <div class="left">
+                <svg class="t-icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <span>Placements Hub</span>
+              </div>
+              <svg class="t-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+          </div>
+        </div>
+        <p class="design-desc">Animated gradient border wrapper that illuminates brightly on hover.</p>
+      </div>
+
+      <!-- Concept 11 -->
+      <div class="design-card">
+        <div class="card-meta">
+          <span class="design-number">Concept 11</span>
+          <span class="design-name">Minimalist Row Item</span>
+        </div>
+        <div class="tile-demo-box">
+          <div class="tile-concept-11">
+            <div class="left">
+              <svg class="t-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              <span>Hostel Attendance</span>
+            </div>
+            <span style="font-size:0.75rem;opacity:0.5">→</span>
+          </div>
+        </div>
+        <p class="design-desc">Borderless minimal list row with slide-right animation and bottom accent line.</p>
+      </div>
+
+      <!-- Concept 12 -->
+      <div class="design-card">
+        <div class="card-meta">
+          <span class="design-number">Concept 12</span>
+          <span class="design-name">Segmented Pill Tag</span>
+        </div>
+        <div class="tile-demo-box">
+          <div class="tile-concept-12">
+            <div class="left">
+              <svg class="t-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              <span>MOOC Courses</span>
+            </div>
+            <span class="tag">Online</span>
+          </div>
+        </div>
+        <p class="design-desc">Compact rounded rectangle featuring a category badge on the right.</p>
+      </div>
+
+      <!-- Concept 13 -->
+      <div class="design-card">
+        <div class="card-meta">
+          <span class="design-number">Concept 13</span>
+          <span class="design-name">High-Contrast Monolith</span>
+        </div>
+        <div class="tile-demo-box">
+          <div class="tile-concept-13">
+            <div class="left">
+              <svg class="t-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <span>Gate Pass Request</span>
+            </div>
+            <svg class="t-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+        </div>
+        <p class="design-desc">Pitch black card with sharp 6px rounding and crisp white accents.</p>
+      </div>
+
+      <!-- Concept 14 -->
+      <div class="design-card">
+        <div class="card-meta">
+          <span class="design-number">Concept 14</span>
+          <span class="design-name">Floating Glass Bubble</span>
+        </div>
+        <div class="tile-demo-box">
+          <div class="tile-concept-14">
+            <div class="left">
+              <svg class="t-icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span>Video Lectures</span>
+            </div>
+            <svg class="t-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+        </div>
+        <p class="design-desc">Radial gradient lighting with deep glass shadow and 16px soft curve.</p>
+      </div>
+
+      <!-- Concept 15 -->
+      <div class="design-card">
+        <div class="card-meta">
+          <span class="design-number">Concept 15</span>
+          <span class="design-name">Subtle Inset Shadow</span>
+        </div>
+        <div class="tile-demo-box">
+          <div class="tile-concept-15">
+            <div class="left">
+              <svg class="t-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              <span>Grievance Redressal</span>
+            </div>
+            <svg class="t-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+        </div>
+        <p class="design-desc">Tactile sunken button aesthetic using deep inner shadows.</p>
+      </div>
+
+      <!-- Concept 16 -->
+      <div class="design-card">
+        <div class="card-meta">
+          <span class="design-number">Concept 16</span>
+          <span class="design-name">Scooped Ticket Stub</span>
+        </div>
+        <div class="tile-demo-box">
+          <div class="tile-concept-16">
+            <div class="left">
+              <svg class="t-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+              <span>Certificate Request</span>
+            </div>
+            <svg class="t-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+        </div>
+        <p class="design-desc">Boarding pass / ticket stub cutout along the left boundary.</p>
+      </div>
+
+      <!-- Concept 17 -->
+      <div class="design-card">
+        <div class="card-meta">
+          <span class="design-number">Concept 17</span>
+          <span class="design-name">Dot Grid Mesh</span>
+        </div>
+        <div class="tile-demo-box">
+          <div class="tile-concept-17">
+            <div class="left">
+              <svg class="t-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              <span>User Manual</span>
+            </div>
+            <svg class="t-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+        </div>
+        <p class="design-desc">Subtle matrix dot pattern embossed into the background texture.</p>
+      </div>
+
+      <!-- Concept 18 -->
+      <div class="design-card">
+        <div class="card-meta">
+          <span class="design-number">Concept 18</span>
+          <span class="design-name">Gradient Base Glow</span>
+        </div>
+        <div class="tile-demo-box">
+          <div class="tile-concept-18">
+            <div class="left">
+              <svg class="t-icon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <span>My Clubs</span>
+            </div>
+            <svg class="t-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+        </div>
+        <p class="design-desc">Clean card with a tricolor bottom gradient bar that lights up on hover.</p>
+      </div>
+
+      <!-- Concept 19 -->
+      <div class="design-card">
+        <div class="card-meta">
+          <span class="design-number">Concept 19</span>
+          <span class="design-name">Micro Action Capsule</span>
+        </div>
+        <div class="tile-demo-box">
+          <div class="tile-concept-19">
+            <div class="left">
+              <svg class="t-icon" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+              <span>Exam / Quiz</span>
+            </div>
+            <span>Start</span>
+          </div>
+        </div>
+        <p class="design-desc">Ultra-compact rounded action capsule that fills solid with accent on hover.</p>
+      </div>
+
+      <!-- Concept 20 -->
+      <div class="design-card">
+        <div class="card-meta">
+          <span class="design-number">Concept 20</span>
+          <span class="design-name">Futuristic HUD Chip</span>
+        </div>
+        <div class="tile-demo-box">
+          <div class="tile-concept-20">
+            <div class="left">
+              <svg class="t-icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+              <span>End Sem Exam</span>
+            </div>
+            <span style="font-size:0.65rem;color:#06b6d4;">[RUN]</span>
+          </div>
+        </div>
+        <p class="design-desc">Cyberpunk HUD terminal chip with mono typography and double side notches.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const toggle = document.getElementById('themeToggle');
+    toggle.addEventListener('click', () => {
+      document.documentElement.classList.toggle('light');
+      document.documentElement.classList.toggle('dark');
+    });
+  </script>
+</body>
+</html>

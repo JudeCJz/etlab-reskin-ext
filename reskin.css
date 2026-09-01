@@ -513,59 +513,121 @@ html.etlab-reskin-light .rk-greeter-name {
 }
 @media (max-width: 1100px) { .rk-layout { grid-template-columns: 1fr; } }
 
-/* ── Tiles grid ─────────────────────────────────────── */
+/* ── Concept 7: Dual-Tone Split Badge Tiles with Dotted Texture ── */
 .rk-tiles {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  gap: 9px;
 }
 @media (max-width: 1200px) { .rk-tiles { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 600px)  { .rk-tiles { grid-template-columns: 1fr; } }
 
 .rk-tile {
   position: relative;
-  display: flex; align-items: center; gap: 11px;
-  padding: 14px 15px;
-  background: var(--surface);
+  display: flex;
+  align-items: stretch;
+  padding: 0 !important;
+  background-color: var(--surface);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 10px 10px;
   border: 1px solid var(--bdr);
-  border-left: 3px solid var(--bdr3);
-  border-radius: 8px !important;
-  color: var(--text) !important; text-decoration: none !important;
+  border-radius: 10px !important;
+  color: var(--text) !important;
+  text-decoration: none !important;
   font-family: inherit;
-  transition: background 0.16s, border-color 0.16s, box-shadow 0.16s, transform 0.16s;
   overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
 }
-.rk-tile.starred  { border-left-color: var(--amber) !important; background: var(--star-bg); }
+
+html.etlab-reskin-light .rk-tile {
+  background-color: #ffffff;
+  background-image: radial-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+  border-color: #e2e8f0;
+}
+
+.rk-tile.starred {
+  border-color: rgba(245, 158, 11, 0.45) !important;
+}
+.rk-tile.starred .rk-tile-ico {
+  color: var(--amber-t) !important;
+  background: rgba(245, 158, 11, 0.12) !important;
+  border-right-color: rgba(245, 158, 11, 0.25) !important;
+}
+
 .rk-tile.rk-hidden { display: none !important; }
 
 .rk-tile:hover {
-  background: var(--surfhov);
-  border-color: var(--bdr2);
-  transform: translateY(-1px);
-  box-shadow: 0 3px 10px var(--shadow);
+  background-color: var(--surface2);
+  border-color: var(--blue);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), 0 0 12px rgba(59, 130, 246, 0.18);
 }
 
+html.etlab-reskin-light .rk-tile:hover {
+  background-color: #f8fafc;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08), 0 0 10px rgba(37, 99, 235, 0.14);
+}
+
+/* Badge Side (Left Compartment) */
 .rk-tile-ico {
-  width: 24px; height: 24px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  color: var(--text-m);
-  transition: color 0.14s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border-right: 1px solid var(--bdr);
+  color: var(--blue-t);
+  flex-shrink: 0;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
-.rk-tile-ico svg { width: 20px; height: 20px; stroke: currentColor; }
-.rk-tile:hover .rk-tile-ico { color: var(--blue-b); }
 
-.rk-tile-name {
-  flex: 1; font-size: 0.82rem; font-weight: 600;
-  color: var(--text); white-space: nowrap;
-  overflow: hidden; text-overflow: ellipsis;
-  transition: color 0.14s;
+html.etlab-reskin-light .rk-tile-ico {
+  background: #f1f5f9;
+  border-right-color: #e2e8f0;
+  color: var(--blue);
 }
-.rk-tile:hover .rk-tile-name { color: var(--text-b); }
+
+.rk-tile:hover .rk-tile-ico {
+  background: var(--blue-bg);
+  color: var(--blue-b);
+  border-right-color: rgba(59, 130, 246, 0.25);
+}
+
+.rk-tile-ico svg {
+  width: 19px;
+  height: 19px;
+  stroke: currentColor;
+}
+
+/* Text Side (Right Compartment) */
+.rk-tile-name {
+  flex: 1;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.15s;
+}
+
+.rk-tile:hover .rk-tile-name {
+  color: var(--text-s);
+}
 
 /* ── Tile action buttons (star + colour) — hover-only ─ */
 .rk-tile-acts {
-  position: absolute; top: 5px; right: 5px;
-  display: flex; align-items: center; gap: 3px;
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 3px;
   opacity: 0 !important;
   pointer-events: none;
   transition: opacity 0.14s !important;
@@ -574,13 +636,20 @@ html.etlab-reskin-light .rk-greeter-name {
 .rk-tile:hover .rk-tile-acts { opacity: 1 !important; pointer-events: auto !important; }
 
 .rk-abtn {
-  width: 16px; height: 16px;
+  width: 18px;
+  height: 18px;
   background: var(--surface2);
   border: 1px solid var(--bdr3);
   border-radius: 4px !important;
-  color: var(--text-m); font-size: 9px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; padding: 0; line-height: 1; font-family: inherit;
+  color: var(--text-m);
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  font-family: inherit;
   transition: background 0.12s, border-color 0.12s, color 0.12s;
 }
 .rk-abtn:hover { border-color: var(--text-m); color: var(--text-s); background: var(--surfhov); }
@@ -616,40 +685,19 @@ html.etlab-reskin-light .rk-sw { border-color: rgba(0,0,0,0.12); }
 }
 
 /* ── Colored Tile Styles ────────────────────────────────── */
-.rk-tile.rk-c-blue   { --t-clr: #3b82f6; --t-bg-tint: #0f1c30; }
-.rk-tile.rk-c-green  { --t-clr: #10b981; --t-bg-tint: #0b1d19; }
-.rk-tile.rk-c-amber  { --t-clr: #f59e0b; --t-bg-tint: #1c170d; }
-.rk-tile.rk-c-pink   { --t-clr: #ec4899; --t-bg-tint: #1c1018; }
-.rk-tile.rk-c-purple { --t-clr: #8b5cf6; --t-bg-tint: #161126; }
-.rk-tile.rk-c-cyan   { --t-clr: #06b6d4; --t-bg-tint: #091c24; }
+.rk-tile.rk-c-blue   .rk-tile-ico { color: #3b82f6 !important; background: rgba(59, 130, 246, 0.14) !important; border-right-color: rgba(59, 130, 246, 0.25) !important; }
+.rk-tile.rk-c-green  .rk-tile-ico { color: #10b981 !important; background: rgba(16, 185, 129, 0.14) !important; border-right-color: rgba(16, 185, 129, 0.25) !important; }
+.rk-tile.rk-c-amber  .rk-tile-ico { color: #f59e0b !important; background: rgba(245, 158, 11, 0.14) !important; border-right-color: rgba(245, 158, 11, 0.25) !important; }
+.rk-tile.rk-c-pink   .rk-tile-ico { color: #ec4899 !important; background: rgba(236, 72, 153, 0.14) !important; border-right-color: rgba(236, 72, 153, 0.25) !important; }
+.rk-tile.rk-c-purple .rk-tile-ico { color: #8b5cf6 !important; background: rgba(139, 92, 246, 0.14) !important; border-right-color: rgba(139, 92, 246, 0.25) !important; }
+.rk-tile.rk-c-cyan   .rk-tile-ico { color: #06b6d4 !important; background: rgba(6, 182, 212, 0.14) !important; border-right-color: rgba(6, 182, 212, 0.25) !important; }
 
-html.etlab-reskin-light .rk-tile.rk-c-blue   { --t-bg-tint: #eff6ff; }
-html.etlab-reskin-light .rk-tile.rk-c-green  { --t-bg-tint: #ecfdf5; }
-html.etlab-reskin-light .rk-tile.rk-c-amber  { --t-bg-tint: #fffbeb; }
-html.etlab-reskin-light .rk-tile.rk-c-pink   { --t-bg-tint: #fdf2f8; }
-html.etlab-reskin-light .rk-tile.rk-c-purple { --t-bg-tint: #f5f3ff; }
-html.etlab-reskin-light .rk-tile.rk-c-cyan   { --t-bg-tint: #ecfeff; }
-
-/* Apply styles to colored tiles */
-.rk-tile[class*="rk-c-"] {
-  border-left-color: var(--t-clr) !important;
-  background: var(--t-bg-tint) !important;
-}
-.rk-tile[class*="rk-c-"] .rk-tile-ico {
-  color: var(--t-clr) !important;
-}
-.rk-tile[class*="rk-c-"]:hover {
-  background: var(--surfhov) !important;
-  border-color: var(--t-clr) !important;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.2), 0 0 10px rgba(59,130,246,0.1) !important;
-}
-/* Individual color hovers */
-.rk-tile.rk-c-blue:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.2), 0 0 10px rgba(59,130,246,0.25) !important; }
-.rk-tile.rk-c-green:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.2), 0 0 10px rgba(16,185,129,0.25) !important; }
-.rk-tile.rk-c-amber:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.2), 0 0 10px rgba(245,158,11,0.25) !important; }
-.rk-tile.rk-c-pink:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.2), 0 0 10px rgba(236,72,153,0.25) !important; }
-.rk-tile.rk-c-purple:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.2), 0 0 10px rgba(139,92,246,0.25) !important; }
-.rk-tile.rk-c-cyan:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.2), 0 0 10px rgba(6,182,212,0.25) !important; }
+.rk-tile.rk-c-blue:hover   { border-color: #3b82f6 !important; box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25) !important; }
+.rk-tile.rk-c-green:hover  { border-color: #10b981 !important; box-shadow: 0 6px 20px rgba(16, 185, 129, 0.25) !important; }
+.rk-tile.rk-c-amber:hover  { border-color: #f59e0b !important; box-shadow: 0 6px 20px rgba(245, 158, 11, 0.25) !important; }
+.rk-tile.rk-c-pink:hover   { border-color: #ec4899 !important; box-shadow: 0 6px 20px rgba(236, 72, 153, 0.25) !important; }
+.rk-tile.rk-c-purple:hover { border-color: #8b5cf6 !important; box-shadow: 0 6px 20px rgba(139, 92, 246, 0.25) !important; }
+.rk-tile.rk-c-cyan:hover   { border-color: #06b6d4 !important; box-shadow: 0 6px 20px rgba(6, 182, 212, 0.25) !important; }
 
 
 
