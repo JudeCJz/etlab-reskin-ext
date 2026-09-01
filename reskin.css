@@ -557,9 +557,13 @@ html.etlab-reskin-light .rk-greeter-name {
   color: var(--text) !important;
   text-decoration: none !important;
   font-family: inherit;
-  overflow: hidden;
+  overflow: visible !important;
   cursor: pointer;
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+.rk-tile:has(.rk-pal-open) {
+  z-index: 100 !important;
 }
 
 html.etlab-reskin-light .rk-tile {
@@ -598,6 +602,7 @@ html.etlab-reskin-light .rk-tile:hover {
   padding: 12px 14px;
   background: rgba(255, 255, 255, 0.04);
   border-right: 1px solid var(--bdr);
+  border-radius: 9px 0 0 9px;
   color: var(--blue-t);
   flex-shrink: 0;
   transition: background 0.2s, color 0.2s, border-color 0.2s;
@@ -654,7 +659,11 @@ html.etlab-reskin-light .rk-tile-ico {
   transition: opacity 0.14s !important;
   z-index: 5;
 }
-.rk-tile:hover .rk-tile-acts { opacity: 1 !important; pointer-events: auto !important; }
+.rk-tile:hover .rk-tile-acts,
+.rk-tile:has(.rk-pal-open) .rk-tile-acts {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
 
 .rk-abtn {
   width: 18px;
@@ -680,24 +689,27 @@ html.etlab-reskin-light .rk-tile-ico {
 /* Colour palette popover */
 .rk-pal {
   display: none;
-  position: absolute; top: 22px; right: 0;
+  position: absolute;
+  top: calc(100% + 5px);
+  right: 0;
   background: var(--surface2);
   border: 1px solid var(--bdr3);
   border-radius: 6px !important;
-  padding: 4px; gap: 3px;
-  box-shadow: 0 6px 16px var(--shadow);
-  z-index: 100;
+  padding: 4px;
+  gap: 4px;
+  box-shadow: 0 8px 24px var(--shadow), 0 2px 6px rgba(0,0,0,0.3);
+  z-index: 99999 !important;
 }
 .rk-pal.rk-pal-open { display: flex !important; }
 
 .rk-sw {
-  width: 13px; height: 13px; flex-shrink: 0;
+  width: 14px; height: 14px; flex-shrink: 0;
   border-radius: 3px !important;
-  cursor: pointer; border: 1px solid rgba(255,255,255,0.15);
+  cursor: pointer; border: 1px solid rgba(255,255,255,0.2);
   font-style: normal; transition: transform 0.12s;
 }
-html.etlab-reskin-light .rk-sw { border-color: rgba(0,0,0,0.12); }
-.rk-sw:hover { transform: scale(1.3); }
+html.etlab-reskin-light .rk-sw { border-color: rgba(0,0,0,0.15); }
+.rk-sw:hover { transform: scale(1.25); }
 
 .rk-sw-reset {
   background: var(--bdr2) !important;
