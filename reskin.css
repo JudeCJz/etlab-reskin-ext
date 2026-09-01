@@ -596,6 +596,51 @@ td.rk-cc.event b { color: var(--text-s); font-weight: 700; }
 .rk-att-footer { font-size: 0.68rem; font-weight: 600; }
 .rk-att-status { color: var(--green-t); }
 
+/* ── Attendance month dropdown (hover reveal) ──────── */
+.rk-att-month-drop {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.25s ease, opacity 0.2s ease, margin-top 0.25s ease;
+  margin-top: 0;
+}
+.rk-att-panel:hover .rk-att-month-drop {
+  max-height: 80px;
+  opacity: 1;
+  margin-top: 4px;
+}
+.rk-att-month-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+.rk-att-month-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-m);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.rk-att-month-val {
+  font-size: 1rem;
+  font-weight: 800;
+}
+.rk-att-month-track {
+  width: 100%;
+  height: 6px;
+  background: var(--track);
+  border: 1px solid var(--bdr);
+  border-radius: 3px !important;
+  overflow: hidden;
+}
+.rk-att-month-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 3px !important;
+  transition: width 0.4s ease;
+}
+
 /* ── Redesign Toggle Button ─────────────────────────────── */
 #rk-page-toggle {
   position: fixed;

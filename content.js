@@ -546,97 +546,89 @@ function renderStats(el){
         +'<span class="rk-att-percent" id="rk-att-pct">--%</span>'
       +'</div>'
       +'<div class="rk-att-track"><div class="rk-att-fill" id="rk-att-bar"></div></div>'
-      +'<div class="rk-att-footer"><span class="rk-att-status" id="rk-att-status">Loading...</span></div>'
+      +'<div class="rk-att-footer">'
+        +'<span class="rk-att-status" id="rk-att-status">Loading...</span>'
+      +'</div>'
+      +'<div class="rk-att-month-drop" id="rk-att-month-drop"></div>'
     +'</div>';
 
-  const setPct=pct=>{
-    const p=Math.min(Math.max(Math.round(pct),0),100);
+  const setDisplay=(tillPct, monthPct, monthLabel)=>{
+    const p=Math.min(Math.max(Math.round(tillPct),0),100);
     const pE=el.querySelector('#rk-att-pct'),bE=el.querySelector('#rk-att-bar'),sE=el.querySelector('#rk-att-status');
+    const dropEl=el.querySelector('#rk-att-month-drop');
     if(pE)pE.textContent=p+'%';
     if(bE){bE.style.width=p+'%';bE.style.background=p>=85?'#10b981':p>=75?'#f59e0b':'#ef4444';}
     if(sE){
       sE.textContent=p>=85?'Good Standing':p>=75?'Warning':'Critical';
       sE.style.color=p>=85?'var(--green-t)':p>=75?'var(--amber-t)':'var(--red-t)';
     }
+    // Month dropdown (shown on hover)
+    if(dropEl && monthPct!==null){
+      const mp=Math.min(Math.max(Math.round(monthPct),0),100);
+      const mColor=mp>=85?'#10b981':mp>=75?'#f59e0b':'#ef4444';
+      dropEl.innerHTML=
+        '<div class="rk-att-month-row">'
+          +'<span class="rk-att-month-label">'+(monthLabel||'This Month')+'</span>'
+          +'<span class="rk-att-month-val" style="color:'+mColor+'">'+mp+'%</span>'
+        +'</div>'
+        +'<div class="rk-att-month-track"><div class="rk-att-month-fill" style="width:'+mp+'%;background:'+mColor+'"></div></div>';
+    }
   };
 
-  // Always fetch fresh attendance data (no-store) from the live ETLab page
-  fetch(BASE_URL+'/student/attendance',{credentials:'include', cache:'no-store'}).then(r=>r.text()).then(html=>{
+  // Fetch from ETLab's actual attendance page
+  fetch(BASE_URL+'/ktuacademics/student/attendance',{credentials:'include', cache:'no-store'}).then(r=>r.text()).then(html=>{
     const doc=new DOMParser().parseFromString(html,'text/html');
-    let pct=null;
+    let tillPct=null, monthPct=null, monthLabel='This Month';
 
-    // Method 1: Look for a row/element with "total attendance" or "overall" keywords
-    doc.querySelectorAll('tr,div,p,span,td,th').forEach(row=>{
-      if(pct!==null) return;
-      const txt = row.textContent.replace(/\s+/g,' ').trim();
-      if(/total\s*(attendance|percentage)|overall\s*(attendance|percentage)|aggregate\s*%?|total\s*%/i.test(txt)){
-        const m=txt.match(/(\d{1,3}(?:\.\d+)?)\s*%/);
-        if(m&&parseFloat(m[1])<=100) pct=parseFloat(m[1]);
+    // Primary: Parse table#itsthetable > tfoot for the exact values
+    const footerCells = doc.querySelectorAll('table#itsthetable > tfoot th, table#itsthetable > tfoot td, table#itsthetable tfoot th, table#itsthetable tfoot td');
+    footerCells.forEach(cell=>{
+      const text = cell.textContent.trim();
+      // "% Till September\n96%"
+      const tillMatch = text.match(/%\s*Till\s+(\w+)\s*[\n\r]+\s*(\d{1,3}(?:\.\d+)?)\s*%/i);
+      if(tillMatch){
+        tillPct = parseFloat(tillMatch[2]);
+        monthLabel = 'Till ' + tillMatch[1];
+      }
+      // "% For the month\n100%"
+      const monthMatch = text.match(/%\s*For\s+the\s+month\s*[\n\r]+\s*(\d{1,3}(?:\.\d+)?)\s*%/i);
+      if(monthMatch){
+        monthPct = parseFloat(monthMatch[1]);
       }
     });
 
-    // Method 2: Parse ETLab's subject-wise attendance table and compute average
-    if(pct===null){
-      const tables = doc.querySelectorAll('table');
-      for(const table of tables){
-        const rows = table.querySelectorAll('tbody tr, tr');
-        const pcts = [];
-        rows.forEach(tr=>{
-          const cells = tr.querySelectorAll('td');
-          // Look for percentage in the last few cells of each row
-          for(let i=cells.length-1;i>=Math.max(0,cells.length-3);i--){
-            const cellText = cells[i]?.textContent?.trim() || '';
-            const m = cellText.match(/^(\d{1,3}(?:\.\d+)?)\s*%?$/);
-            if(m){
-              const v = parseFloat(m[1]);
-              if(v>=0 && v<=100) pcts.push(v);
-              break;
-            }
-          }
-        });
-        // If we found multiple subject percentages, average them
-        if(pcts.length >= 2){
-          pct = pcts.reduce((a,b)=>a+b,0) / pcts.length;
-          break;
+    // Fallback: try parsing all tfoot content if specific patterns didn't match
+    if(tillPct===null){
+      const tfoot = doc.querySelector('table#itsthetable tfoot, table tfoot');
+      if(tfoot){
+        const tfText = tfoot.textContent;
+        const tillM = tfText.match(/Till\s+(\w+)\s*[:\s]*(\d{1,3}(?:\.\d+)?)\s*%/i);
+        if(tillM) { tillPct = parseFloat(tillM[2]); monthLabel = 'Till ' + tillM[1]; }
+        const monM = tfText.match(/For\s+the\s+month\s*[:\s]*(\d{1,3}(?:\.\d+)?)\s*%/i);
+        if(monM) monthPct = parseFloat(monM[1]);
+        // If still nothing, grab all percentages from tfoot
+        if(tillPct===null){
+          const allPcts = [...tfText.matchAll(/(\d{1,3}(?:\.\d+)?)\s*%/g)].map(m=>parseFloat(m[1])).filter(v=>v>=0&&v<=100);
+          if(allPcts.length>=2){ monthPct=allPcts[0]; tillPct=allPcts[1]; }
+          else if(allPcts.length===1){ tillPct=allPcts[0]; }
         }
       }
     }
 
-    // Method 3: Look for the last row (total/footer) in any table
-    if(pct===null){
-      doc.querySelectorAll('table').forEach(table=>{
-        if(pct!==null) return;
-        const allRows = table.querySelectorAll('tr');
-        if(allRows.length < 2) return;
-        const lastRow = allRows[allRows.length-1];
-        const lastRowText = lastRow.textContent.trim();
-        // Check if last row has "total" keyword
-        if(/total|overall|aggregate/i.test(lastRowText)){
-          const m = lastRowText.match(/(\d{1,3}(?:\.\d+)?)\s*%/);
-          if(m && parseFloat(m[1])<=100) pct = parseFloat(m[1]);
+    // Last resort fallback: look anywhere in the page for "total" or "overall" attendance
+    if(tillPct===null){
+      doc.querySelectorAll('tr,div,p,span,th,td').forEach(row=>{
+        if(tillPct!==null) return;
+        const txt=row.textContent.replace(/\s+/g,' ').trim();
+        if(/total\s*(attendance|percentage)|overall|aggregate/i.test(txt)){
+          const m=txt.match(/(\d{1,3}(?:\.\d+)?)\s*%/);
+          if(m&&parseFloat(m[1])<=100) tillPct=parseFloat(m[1]);
         }
       });
     }
 
-    // Method 4: Look in badges/labels but pick the most reasonable value
-    // (avoid 100% from unrelated elements — prefer values < 100)
-    if(pct===null){
-      let candidates = [];
-      doc.querySelectorAll('.badge,.label,b,strong').forEach(c=>{
-        const m=c.textContent.trim().match(/^(\d{1,3}(?:\.\d+)?)\s*%$/);
-        if(m){
-          const v=parseFloat(m[1]);
-          if(v>=0 && v<=100) candidates.push(v);
-        }
-      });
-      // Prefer values that aren't exactly 0 or 100 (likely real attendance)
-      const realistic = candidates.filter(v => v > 0 && v < 100);
-      if(realistic.length) pct = realistic.reduce((a,b)=>a+b,0) / realistic.length;
-      else if(candidates.length) pct = candidates[0];
-    }
-
-    setPct(pct??0);
-  }).catch(()=>setPct(0));
+    setDisplay(tillPct??0, monthPct, monthLabel);
+  }).catch(()=>setDisplay(0,null,null));
 }
 
 
