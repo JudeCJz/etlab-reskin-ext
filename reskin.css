@@ -138,13 +138,22 @@ body.rk-dash-page .page-header,
 body.rk-dash-page [class*="space-"],
 body.rk-dash-page .ui-sortable-handle { display: none !important; }
 
-/* Main content area offset for sidebar */
+/* Main content area offset for sidebar & top clearance */
 html.etlab-reskin-on .main-content,
 html.etlab-reskin-on #main-content,
 html.etlab-reskin-on .page-content,
-html.etlab-reskin-on #page-content {
+html.etlab-reskin-on #page-content,
+html.etlab-reskin-on .container-fluid {
   margin-left: 48px !important;
+  margin-top: 0 !important;
+  padding-top: 2px !important;
   transition: margin-left 0.25s ease !important;
+}
+
+body.rk-dash-page #main-container,
+body.rk-dash-page .main-container {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
 }
 
 /* ══════════════════════════════════════════════════════
@@ -304,8 +313,8 @@ html.etlab-reskin-on .sidebar:hover .rk-sb-inner {
 #rk-wrap {
   font-family: 'Plus Jakarta Sans', -apple-system, sans-serif !important;
   color: var(--text) !important;
-  /* Padding: left extra for sidebar, right/top/bottom breathing room */
-  padding: 16px 40px 24px 20px !important;
+  /* Shifted up: compact top padding */
+  padding: 4px 32px 24px 16px !important;
   margin: 0 !important;
   width: auto !important;
   max-width: 100% !important;
