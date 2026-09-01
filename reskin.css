@@ -42,11 +42,12 @@ html.etlab-reskin-on {
   --track:       #0a0e16;
   --scroll:      #2d3f58;
   --scrolltrack: #0a0e16;
-  --s-body:      #dfc8b4;
-  --s-body-text: #2b1f17;
-  --s-badge:     #a4764d;
-  --s-badge-ico: #fefcfb;
-  --s-place:     #7a6352;
+  --s-body:      var(--surface);
+  --s-body-text: var(--text-s);
+  --s-badge:     var(--surface2);
+  --s-badge-ico: var(--blue-b);
+  --s-place:     var(--text-m);
+  --s-bdr:       var(--bdr2);
 }
 
 /* ══════════════════════════════════════════════════════
@@ -86,11 +87,12 @@ html.etlab-reskin-on.etlab-reskin-light {
   --track:       #e5e7eb;
   --scroll:      #c4c9d4;
   --scrolltrack: #e5e7eb;
-  --s-body:      #e9dcce;
-  --s-body-text: #2b1f17;
-  --s-badge:     #9f7148;
-  --s-badge-ico: #fefcfb;
-  --s-place:     #7a6352;
+  --s-body:      var(--surface);
+  --s-body-text: var(--text-s);
+  --s-badge:     var(--surface2);
+  --s-badge-ico: var(--blue);
+  --s-place:     var(--text-m);
+  --s-bdr:       var(--bdr2);
 }
 
 /* ══════════════════════════════════════════════════════
@@ -333,23 +335,29 @@ html.etlab-reskin-on .sidebar:hover .rk-sb-inner {
   width: 44px;
   height: 32px;
   background: var(--s-badge);
+  border: 1px solid var(--s-bdr);
   border-radius: 6px 6px 18px 18px !important;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 3;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
-  transition: transform 0.18s ease, background 0.18s;
+  box-shadow: 0 2px 8px var(--shadow);
+  transition: transform 0.18s ease, border-color 0.2s, background 0.18s;
 }
 
 .rk-search:focus-within .rk-search-badge {
   transform: translateY(-1px) scale(1.04);
+  border-color: var(--blue);
 }
 
 .rk-search-badge .rk-search-ico {
   width: 15px;
   height: 15px;
   stroke: var(--s-badge-ico);
+  transition: stroke 0.15s;
+}
+.rk-search:focus-within .rk-search-badge .rk-search-ico {
+  stroke: var(--blue-b);
 }
 
 .rk-search-scoop {
@@ -359,6 +367,7 @@ html.etlab-reskin-on .sidebar:hover .rk-sb-inner {
   width: 84px;
   height: 48px;
   fill: var(--s-body);
+  filter: drop-shadow(0 2px 6px var(--shadow));
   z-index: 1;
   pointer-events: none;
 }
@@ -368,17 +377,20 @@ html.etlab-reskin-on .sidebar:hover .rk-sb-inner {
   width: 100%;
   height: 42px;
   background: var(--s-body);
+  border: 1px solid var(--s-bdr);
+  border-left: none;
   border-radius: 0 21px 21px 0 !important;
   display: flex;
   align-items: center;
   padding: 0 16px 0 84px;
   z-index: 2;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-  transition: box-shadow 0.2s ease, filter 0.2s ease;
+  box-shadow: 0 2px 10px var(--shadow);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .rk-search:focus-within .rk-search-body {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2), 0 0 0 2px var(--ring);
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--ring);
 }
 
 #rk-sinput,
@@ -393,7 +405,7 @@ html.etlab-reskin-on .sidebar:hover .rk-sb-inner {
   color: var(--s-body-text) !important;
   font-family: inherit !important;
   font-size: 0.88rem !important;
-  font-weight: 600 !important;
+  font-weight: 500 !important;
   width: 100% !important;
   padding: 0 !important;
   margin: 0 !important;
@@ -403,16 +415,16 @@ html.etlab-reskin-on .sidebar:hover .rk-sb-inner {
 
 #rk-sinput::placeholder {
   color: var(--s-place) !important;
-  font-weight: 500 !important;
+  font-weight: 400 !important;
 }
 
 .rk-sx {
   display: none;
   cursor: pointer;
-  background: rgba(0, 0, 0, 0.08);
-  border: none;
+  background: var(--hovbg);
+  border: 1px solid var(--bdr2);
   border-radius: 50% !important;
-  color: var(--s-body-text);
+  color: var(--text-m);
   font-size: 11px;
   font-weight: 700;
   width: 20px;
@@ -422,11 +434,12 @@ html.etlab-reskin-on .sidebar:hover .rk-sb-inner {
   align-items: center;
   justify-content: center;
   font-family: inherit;
-  transition: background 0.14s, transform 0.12s;
+  transition: background 0.14s, color 0.14s, transform 0.12s;
 }
 
 .rk-sx:hover {
-  background: rgba(0, 0, 0, 0.18);
+  background: var(--bdr2);
+  color: var(--text-s);
   transform: scale(1.1);
 }
 
