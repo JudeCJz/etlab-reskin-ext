@@ -42,6 +42,11 @@ html.etlab-reskin-on {
   --track:       #0a0e16;
   --scroll:      #2d3f58;
   --scrolltrack: #0a0e16;
+  --s-body:      #dfc8b4;
+  --s-body-text: #2b1f17;
+  --s-badge:     #a4764d;
+  --s-badge-ico: #fefcfb;
+  --s-place:     #7a6352;
 }
 
 /* ══════════════════════════════════════════════════════
@@ -81,6 +86,11 @@ html.etlab-reskin-on.etlab-reskin-light {
   --track:       #e5e7eb;
   --scroll:      #c4c9d4;
   --scrolltrack: #e5e7eb;
+  --s-body:      #e9dcce;
+  --s-body-text: #2b1f17;
+  --s-badge:     #9f7148;
+  --s-badge-ico: #fefcfb;
+  --s-place:     #7a6352;
 }
 
 /* ══════════════════════════════════════════════════════
@@ -300,44 +310,125 @@ html.etlab-reskin-on .sidebar:hover .rk-sb-inner {
 }
 
 
-/* ── Search bar ──────────────────────────────────────── */
+/* ── Search bar (Scooped Cradle Design) ───────────────── */
+.rk-search-wrap {
+  position: relative;
+  width: 100%;
+  margin-bottom: 18px;
+  padding-top: 6px;
+}
+
 .rk-search {
-  display: flex; align-items: center; gap: 10px;
-  background: var(--surface);
-  border: 1px solid var(--bdr2);
-  border-radius: 8px !important;
-  padding: 9px 14px;
-  margin-bottom: 14px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  height: 48px;
+  width: 100%;
 }
-.rk-search:focus-within {
-  border-color: var(--blue);
-  box-shadow: 0 0 0 3px var(--ring);
+
+.rk-search-badge {
+  position: absolute;
+  top: 0;
+  left: 12px;
+  width: 44px;
+  height: 32px;
+  background: var(--s-badge);
+  border-radius: 6px 6px 18px 18px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  transition: transform 0.18s ease, background 0.18s;
 }
-.rk-search-ico { width: 15px; height: 15px; flex-shrink: 0; stroke: var(--text-m); }
+
+.rk-search:focus-within .rk-search-badge {
+  transform: translateY(-1px) scale(1.04);
+}
+
+.rk-search-badge .rk-search-ico {
+  width: 15px;
+  height: 15px;
+  stroke: var(--s-badge-ico);
+}
+
+.rk-search-scoop {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 84px;
+  height: 48px;
+  fill: var(--s-body);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.rk-search-body {
+  position: relative;
+  width: 100%;
+  height: 42px;
+  background: var(--s-body);
+  border-radius: 0 21px 21px 0 !important;
+  display: flex;
+  align-items: center;
+  padding: 0 16px 0 84px;
+  z-index: 2;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transition: box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.rk-search:focus-within .rk-search-body {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2), 0 0 0 2px var(--ring);
+}
 
 #rk-sinput,
 #rk-sinput:focus,
 #rk-sinput:active,
 #rk-sinput:hover {
   background: transparent !important;
-  border: none !important; outline: none !important;
-  box-shadow: none !important; -webkit-box-shadow: none !important;
-  color: var(--text-s) !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  color: var(--s-body-text) !important;
   font-family: inherit !important;
-  font-size: 0.86rem !important; font-weight: 500 !important;
-  width: 100% !important; padding: 0 !important; margin: 0 !important;
-  height: 22px !important; line-height: 22px !important;
+  font-size: 0.88rem !important;
+  font-weight: 600 !important;
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  height: 26px !important;
+  line-height: 26px !important;
 }
-#rk-sinput::placeholder { color: var(--text-m) !important; }
+
+#rk-sinput::placeholder {
+  color: var(--s-place) !important;
+  font-weight: 500 !important;
+}
 
 .rk-sx {
-  display: none; cursor: pointer; background: transparent; border: none;
-  color: var(--text-m); font-size: 11px; font-weight: 700;
-  flex-shrink: 0; padding: 2px 4px; font-family: inherit;
-  transition: color 0.14s;
+  display: none;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.08);
+  border: none;
+  border-radius: 50% !important;
+  color: var(--s-body-text);
+  font-size: 11px;
+  font-weight: 700;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  transition: background 0.14s, transform 0.12s;
 }
-.rk-sx:hover { color: var(--text-s); }
+
+.rk-sx:hover {
+  background: rgba(0, 0, 0, 0.18);
+  transform: scale(1.1);
+}
 
 /* ── Layout: tiles left, calendar+stats right ──────── */
 .rk-layout {
