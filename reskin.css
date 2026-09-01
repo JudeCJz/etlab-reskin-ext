@@ -44,9 +44,9 @@ html.etlab-reskin-on {
   --scrolltrack: #0a0e16;
   --s-body:      var(--surface);
   --s-body-text: var(--text-s);
-  --s-badge:     #1e293b;
-  --s-badge-bdr: #3b82f6;
-  --s-badge-ico: #93c5fd;
+  --s-badge:     #1a2333;
+  --s-badge-bdr: #2b384e;
+  --s-badge-ico: #94a3b8;
   --s-place:     var(--text-m);
   --s-bdr:       var(--bdr2);
 }
@@ -90,9 +90,9 @@ html.etlab-reskin-on.etlab-reskin-light {
   --scrolltrack: #e5e7eb;
   --s-body:      var(--surface);
   --s-body-text: var(--text-s);
-  --s-badge:     #e0e7ff;
-  --s-badge-bdr: #818cf8;
-  --s-badge-ico: #4338ca;
+  --s-badge:     #f1f5f9;
+  --s-badge-bdr: #cbd5e1;
+  --s-badge-ico: #64748b;
   --s-place:     var(--text-m);
   --s-bdr:       var(--bdr2);
 }
@@ -344,14 +344,14 @@ html.etlab-reskin-on .sidebar:hover .rk-sb-inner {
 }
 
 .rk-search-wrap.rk-search-pop .rk-search-body {
-  box-shadow: 0 0 0 4px var(--ring), 0 8px 30px rgba(59, 130, 246, 0.28) !important;
+  box-shadow: 0 0 0 3px var(--ring), 0 4px 16px rgba(0, 0, 0, 0.2) !important;
   border-color: var(--blue) !important;
 }
 
 .rk-search-wrap.rk-search-pop .rk-search-badge {
   border-color: var(--blue) !important;
-  transform: translateY(-2px) scale(1.08) !important;
-  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35) !important;
+  transform: translateY(-1px) scale(1.04) !important;
+  box-shadow: 0 2px 8px var(--ring) !important;
 }
 
 .rk-search {
@@ -369,30 +369,30 @@ html.etlab-reskin-on .sidebar:hover .rk-sb-inner {
   width: 44px;
   height: 32px;
   background: var(--s-badge);
-  border: 1.5px solid var(--s-badge-bdr);
+  border: 1px solid var(--s-badge-bdr);
   border-radius: 6px 6px 18px 18px !important;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 3;
-  box-shadow: 0 4px 12px var(--shadow), 0 0 10px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 2px 6px var(--shadow);
   transition: transform 0.18s ease, border-color 0.2s, background 0.18s, box-shadow 0.2s;
 }
 
 .rk-search:focus-within .rk-search-badge {
-  transform: translateY(-1px) scale(1.05);
-  border-color: var(--blue-b);
-  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
+  transform: translateY(-1px) scale(1.02);
+  border-color: var(--blue);
+  box-shadow: 0 2px 8px var(--ring);
 }
 
 .rk-search-badge .rk-search-ico {
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
   stroke: var(--s-badge-ico);
   transition: stroke 0.15s;
 }
 .rk-search:focus-within .rk-search-badge .rk-search-ico {
-  stroke: #ffffff;
+  stroke: var(--blue-b);
 }
 
 .rk-search-scoop {
