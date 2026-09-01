@@ -587,6 +587,8 @@ html.etlab-reskin-light .rk-search-kbd {
   font-family: inherit;
   overflow: visible !important;
   cursor: pointer;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 52px;
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
 }
 
@@ -1324,4 +1326,13 @@ html:not(.etlab-reskin-on) #rk-page-toggle {
 
 .rk-spin {
   animation: rk-spin-anim 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ── Accessibility: Reduced Motion ───────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

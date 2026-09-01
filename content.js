@@ -1253,12 +1253,28 @@ function focusSearchPop(){
   }
 }
 
-// ── KEYBOARD SHORTCUTS ────────────────────────────────────────
+// ── KEYBOARD SHORTCUTS (Modern Web Best Practice) ────────────
 document.addEventListener('keydown',e=>{
+  // Close open popovers or blur search on Escape
+  if(e.key==='Escape'){
+    const palOpen=document.querySelector('.rk-pal.rk-pal-open');
+    if(palOpen){
+      document.querySelectorAll('.rk-pal').forEach(p=>p.classList.remove('rk-pal-open'));
+      return;
+    }
+    const inp=document.getElementById('rk-sinput');
+    if(inp && document.activeElement===inp){
+      inp.blur();
+      return;
+    }
+  }
+
+  // Ctrl+K / Cmd+K or "/" to focus search
+  const isTyping = ['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName) || document.activeElement?.isContentEditable;
   if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){
     e.preventDefault();
     focusSearchPop();
-  }else if(e.key==='/'&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName)){
+  }else if(e.key==='/' && !isTyping){
     e.preventDefault();
     focusSearchPop();
   }
