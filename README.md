@@ -1,113 +1,85 @@
-# 🌌 ETLab MITS — Modern Next-Gen Reskin Extension
+# ETLab MITS — Modern Reskin Extension
 
-<div align="center">
-
-![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue?style=for-the-badge&logo=googlechrome&logoColor=white)
-![Chrome Extension](https://img.shields.io/badge/Platform-Chrome%20%7C%20Edge%20%7C%20Brave%20%7C%20Kiwi-orange?style=for-the-badge)
-![Theme](https://img.shields.io/badge/Theme-Dark%20%7C%20Light-purple?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-
-**A complete modern redesign for MITS ETLab (`mits.etlab.app`).**  
-*Transforms the legacy portal into a high-performance, dark/light, glassmorphism dashboard with intelligent search, live KTU activity point tracking, unified academic calendar, and Concept 7 split badge tiles.*
-
-</div>
+A clean, modern interface overhaul for the MITS ETLab portal (`mits.etlab.app`). This extension replaces the legacy UI with a responsive dashboard, unified academic calendar, smart search, and live KTU activity point tracking.
 
 ---
 
-## 📸 Screenshots & Showcase
+## Screenshots
 
-### 🖥️ Dashboard Overview (Dark Mode)
+### Dashboard Overview
 <div align="center">
-  <img src="screenshots/screenshot-1.png" alt="ETLab Reskin Full Dashboard" width="100%" style="border-radius: 10px; border: 1px solid #1e2838;"/>
+  <img src="screenshots/screenshot-1.png" alt="ETLab Reskin Dashboard Overview" width="100%"/>
 </div>
 
 <br/>
 
-### 📊 Live Stats, Attendance & KTU Activity Points
+### Attendance, Calendar & KTU Activity Points
 <div align="center">
-  <img src="screenshots/screenshot-2.png" alt="Calendar and Attendance Stats" width="85%" style="border-radius: 8px; border: 1px solid #1e2838;"/>
+  <img src="screenshots/screenshot-2.png" alt="Calendar and Attendance Stats" width="85%"/>
 </div>
 
 <br/>
 
-### 🔍 Smart Search with `/` Shortcut & Concept 7 Badges
+### Search Bar & Concept 7 Badges
 <div align="center">
-  <img src="screenshots/screenshot-3.png" alt="Search Bar & Actions" width="70%" style="border-radius: 8px; border: 1px solid #1e2838;"/>
+  <img src="screenshots/screenshot-3.png" alt="Search Bar and Actions" width="70%"/>
 </div>
 
 ---
 
-## ✨ Key Features
+## Privacy, Security & How It Works
 
-### ⚡ Concept 7 Dual-Tone Split Badge Tiles
-- **Two-Tone Compartment Design**: Contrast-tinted icon box on the left, high-contrast action title and controls on the right.
-- **8 Outstanding Glowing Colors**: Customize any tile with vivid presets:
-  - ⚡ *Electric Blue*, 💎 *Neon Cyan*, 🌿 *Vivid Emerald*, ☀️ *Gold Amber*, 🔥 *Radiant Orange*, 🔴 *Crimson Red*, 🌸 *Hot Magenta*, 🔮 *Cyber Violet*.
-- **Favorite Starring**: Pin frequently used services to the top of your dashboard.
+### 100% Client-Side Execution
+- **Zero Data Collection**: This extension does not collect, log, or transmit any user data, credentials, or personal information. There are no remote servers, analytics trackers, or external APIs.
+- **Direct Local DOM Modification**: The extension operates entirely within your local browser environment. It injects a local stylesheet (`reskin.css`) and script (`content.js`) to restyle and enhance the existing `mits.etlab.app` webpage.
 
-### 🔍 Smart Search Bar with Keyboard Shortcuts
-- **Instant Keyword Matching & Normalization**: Strips spaces and matches acronyms (e.g. `time table` $\rightarrow$ **Timetable**, `gatepass` $\rightarrow$ **Gate Pass**).
-- **College Slang & Synonym Aliases**: Type `cgpa`, `marks`, `fees`, `notes`, `syllabus`, `mess`, or `bunk` to automatically surface the exact tile.
-- **Keyboard Hint**: Press <kbd>/</kbd> or <kbd>Ctrl</kbd> + <kbd>K</kbd> anywhere to focus search. Press <kbd>Esc</kbd> to dismiss.
+### Session Security & Credentials
+- **Authentication**: All login requests and session tokens are processed directly by the official ETLab servers (`mits.etlab.app`). The extension never intercepts, modifies, or stores passwords.
+- **Local Storage**: User preferences (such as light/dark mode, starred favorite tiles, and custom tile colors) are saved strictly on your local machine using the browser's `chrome.storage.local` API.
 
-### 📅 Unified Academic & Hostel Calendar
-- **Live Event Scraping**: Scrapes university holidays, college absents, and hostel leaves directly from ETLab endpoints.
-- **Interactive Date Preview**: Click on any date to pop open a detailed breakdown with vector SVG badges (Holidays 🌴, Absents ❌, Hostel Leaves 🛏️, Weekends ☕, Working Days 📚).
-
-### 📈 KTU Activity Points Live Tracker
-- Live meter showing your current KTU Activity Points out of 100 with progress bar and remaining points needed for graduation.
-
-### 🌌 Ambient Dotted Canvas Background
-- Fixed matrix dot grid across the entire canvas with high visual depth.
-
-### 🌙 Complete Dark & Light Themes
-- Carefully calibrated dark mode (`#0c1017`) and clean modern light mode (`#f0f2f5`) with smooth transitions.
-
-### 📱 New Extension Popup (`v1.2`)
-- High-res branding, 1-click power switch, dark/light theme switcher, and instant dashboard launcher.
+### Open Source & Auditable
+- The entire codebase contains plain JavaScript and CSS with no minified or obfuscated third-party tracking libraries.
 
 ---
 
-## ⌨️ Keyboard Shortcuts
+## Core Features
 
-| Shortcut | Action |
+- **Dual-Tone Split Badge Tiles**: Two-tone tile interface with dedicated icon compartments and customizable high-contrast color accents.
+- **Smart Search & Shortcuts**: Real-time filtering with support for common college aliases (e.g., searching "cgpa" finds Results, "notes" finds Study Materials). Press <kbd>/</kbd> or <kbd>Ctrl</kbd>+<kbd>K</kbd> to focus.
+- **Unified Academic Calendar**: Integrated display of college events, attendance absents, and hostel leaves with interactive date preview cards.
+- **KTU Activity Points Tracker**: Live meter scraping and displaying earned activity points out of 100 with remaining point calculations.
+- **Dark & Light Themes**: Calibrated dark theme and light theme with smooth transitions.
+- **Extension Popup Control**: Quick-access popup menu with 1-click power switch and theme toggle.
+
+---
+
+## Keyboard Shortcuts
+
+| Shortcut | Function |
 | :--- | :--- |
-| <kbd>/</kbd> | Focus & open smart search bar |
-| <kbd>Ctrl</kbd> + <kbd>K</kbd> / <kbd>⌘</kbd> + <kbd>K</kbd> | Focus search bar anywhere on the page |
-| <kbd>Esc</kbd> | Dismiss search focus and close color palettes |
+| <kbd>/</kbd> | Focus smart search bar |
+| <kbd>Ctrl</kbd> + <kbd>K</kbd> / <kbd>Cmd</kbd> + <kbd>K</kbd> | Focus search bar anywhere on the page |
+| <kbd>Esc</kbd> | Dismiss search focus and close open popovers |
 
 ---
 
-## 🚀 Installation Guide
+## Installation
 
-### Method 1: Google Chrome / Brave / Edge (Desktop)
-1. Clone or download this repository:
-   ```bash
-   git clone https://github.com/JudeCJz/etlab-reskin-ext.git
-   ```
-2. Open Chrome and navigate to `chrome://extensions/`.
-3. Enable **Developer mode** using the toggle in the top-right corner.
-4. Click **Load unpacked** in the top-left corner.
-5. Select the `etlab-reskin-ext` folder.
-6. Open [`https://mits.etlab.app/user/dashboard`](https://mits.etlab.app/user/dashboard) and enjoy!
+### Desktop (Chrome / Brave / Edge)
+1. Clone or download this repository.
+2. Open your browser and go to `chrome://extensions/`.
+3. Enable **Developer mode** in the top-right corner.
+4. Click **Load unpacked** and select the `etlab-reskin-ext` folder.
+5. Navigate to [`https://mits.etlab.app/user/dashboard`](https://mits.etlab.app/user/dashboard).
 
-### Method 2: Android (Kiwi / Lemur Browser)
+### Android (Kiwi / Lemur Browser)
 1. Install **Kiwi Browser** or **Lemur Browser** from Google Play.
-2. Download this repo as a `.zip` file to your phone.
-3. Open `kiwi://extensions`, enable **Developer mode**, and tap **+(from .zip/.crx)**.
-4. Select the `.zip` file — the extension will run automatically on your phone!
+2. Download this repository as a `.zip` archive to your device.
+3. Open `chrome://extensions` in the browser, enable **Developer mode**, and select **Load from .zip**.
+4. Log into `mits.etlab.app`.
 
 ---
 
-## 🛠️ Tech Stack & Standards
+## License
 
-- **Manifest V3** compliant Chrome Extension
-- **Vanilla CSS3** Design System with CSS Variables, container containment (`content-visibility: auto`), and glassmorphism
-- **Vanilla JS** with reactive storage sync and lightweight DOM mutation resilience
-- **SVG Vector Graphics** (zero raster emoji dependencies)
-
----
-
-<div align="center">
-Made for students of <b>Muthoot Institute of Technology and Science (MITS)</b>.
-</div>
+MIT License. Open source and free to use.
