@@ -809,7 +809,10 @@ function extractDashboard(){
     xBtn.addEventListener('click',()=>{inp.value='';doFilter();inp.focus();});
 
     if(location.hash==='#search'||location.search.includes('focus=search')){
-      setTimeout(focusSearchPop,150);
+      setTimeout(()=>{
+        focusSearchPop();
+        if(location.hash==='#search') history.replaceState(null,'',location.pathname+location.search);
+      },150);
     }
 
     wrap.querySelectorAll('.rk-star').forEach(btn=>{
@@ -1057,8 +1060,11 @@ function focusSearchPop(){
       inp.focus();
       inp.select();
     },60);
+    setTimeout(()=>{
+      searchWrap.classList.remove('rk-search-pop');
+    },600);
   }else{
-    location.href='/user/dashboard#search';
+    location.href='/user/dashboard';
   }
 }
 
