@@ -24,13 +24,48 @@ let _cachedLinks=null, _avatarCache=null, _theme='light', _globalClicked=false;
 let _calYear=new Date().getFullYear(), _calMonth=new Date().getMonth(), _calAbsent=new Set(), _calEl=null;
 let _hostelAbsentMonth=new Date().getMonth(), _hostelAbsentYear=new Date().getFullYear();
 let _origSidebarHTML=null; // saved before reskin so we can restore
-let _isInitialLoad=true;
-let _toggleFrame=0; // 0 to 9
-let _toggleInterval=null;
+
 
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DHDRS=['S','M','T','W','T','F','S'];
-const HMAP={'2026-7-12':'Karkidaka Vavu','2026-7-13':'1st Internal','2026-7-14':'1st Internal','2026-7-15':'Independence Day','2026-7-17':'1st Internal','2026-7-22':'Onam','2026-7-23':'Onam','2026-7-24':'Onam','2026-7-25':'Onam','2026-7-26':'Onam','2026-7-27':'Onam','2026-7-28':'Onam','2026-7-29':'Onam','2026-7-30':'Onam'};
+const HMAP = {
+  // Jan 2026
+  '2026-1-1':'New Year', '2026-1-26':'Republic Day',
+  '2026-01-01':'New Year', '2026-01-26':'Republic Day',
+  // Feb 2026
+  '2026-2-15':'Maha Shivratri', '2026-02-15':'Maha Shivratri',
+  // Mar 2026
+  '2026-3-4':'Holi', '2026-3-26':'Maundy Thursday', '2026-3-27':'Good Friday',
+  '2026-03-04':'Holi', '2026-03-26':'Maundy Thursday', '2026-03-27':'Good Friday',
+  // Apr 2026
+  '2026-4-5':'Easter', '2026-4-14':'Vishu', '2026-4-15':'Ambedkar Jayanti',
+  '2026-04-05':'Easter', '2026-04-14':'Vishu', '2026-04-15':'Ambedkar Jayanti',
+  // May 2026
+  '2026-5-1':'May Day', '2026-05-01':'May Day',
+  // Jun 2026
+  '2026-6-6':'Bakrid', '2026-06-06':'Bakrid',
+  // Jul 2026
+  '2026-7-6':'Muharram', '2026-7-24':'Karkidaka Vavu',
+  '2026-07-06':'Muharram', '2026-07-24':'Karkidaka Vavu',
+  // Aug 2026
+  '2026-8-12':'Karkidaka Vavu', '2026-8-13':'1st Internal', '2026-8-14':'1st Internal',
+  '2026-8-15':'Independence Day', '2026-8-17':'1st Internal', '2026-8-22':'Onam',
+  '2026-8-23':'Onam', '2026-8-24':'Onam', '2026-8-25':'Onam', '2026-8-26':'Onam',
+  '2026-8-27':'Onam', '2026-8-28':'Onam', '2026-8-29':'Sree Krishna Jayanthi', '2026-8-30':'Onam',
+  '2026-08-12':'Karkidaka Vavu', '2026-08-13':'1st Internal', '2026-08-14':'1st Internal',
+  '2026-08-15':'Independence Day', '2026-08-17':'1st Internal', '2026-08-22':'Onam',
+  '2026-08-23':'Onam', '2026-08-24':'Onam', '2026-08-25':'Onam', '2026-08-26':'Onam',
+  '2026-08-27':'Onam', '2026-08-28':'Onam', '2026-08-29':'Sree Krishna Jayanthi', '2026-08-30':'Onam',
+  // Sep 2026
+  '2026-9-1':'Thiruvonam', '2026-9-3':'Sree Narayana Guru Jayanthi', '2026-9-5':'Milad-i-Sherif', '2026-9-21':'Sree Narayana Guru Samadhi',
+  '2026-09-01':'Thiruvonam', '2026-09-03':'Sree Narayana Guru Jayanthi', '2026-09-05':'Milad-i-Sherif', '2026-09-21':'Sree Narayana Guru Samadhi',
+  // Oct 2026
+  '2026-10-2':'Gandhi Jayanti', '2026-10-19':'Mahanavami', '2026-10-20':'Vijayadasami',
+  // Nov 2026
+  '2026-11-8':'Deepavali',
+  // Dec 2026
+  '2026-12-25':'Christmas'
+};
 
 const SUN_ICO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
 const MOON_ICO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
@@ -115,14 +150,33 @@ function reskinSidebar(){
     uNav.style.display='none';
   }
 
+  const linkMap = {};
+  if (_origSidebarHTML) {
+    const temp = document.createElement('div');
+    temp.innerHTML = _origSidebarHTML;
+    temp.querySelectorAll('a[href]').forEach(a => {
+      const text = a.textContent.trim().toLowerCase();
+      const href = a.getAttribute('href') || '';
+      if (href) {
+        if (text.includes('dashboard') || text.includes('home')) linkMap['dashboard'] = href;
+        else if (text.includes('attendance')) linkMap['attendance'] = href;
+        else if (text.includes('result') || text.includes('cgpa')) linkMap['results'] = href;
+        else if (text.includes('timetable') || text.includes('schedule') || text.includes('time table')) linkMap['timetable'] = href;
+        else if (text.includes('assignment')) linkMap['assignments'] = href;
+        else if (text.includes('material') || text.includes('study')) linkMap['materials'] = href;
+        else if (text.includes('manual') || text.includes('guide')) linkMap['manual'] = href;
+      }
+    });
+  }
+
   const NAV=[
-    {t:'Dashboard',h:'/user/dashboard'},
-    {t:'Attendance',h:'/student/attendance'},
-    {t:'Results',h:'/student/results'},
-    {t:'TimeTable',h:'/student/timetable'},
-    {t:'Assignments',h:'/student/assignments'},
-    {t:'Materials',h:'/student/studymaterials'},
-    {t:'User Manual',h:'/student/usermanual'},
+    {t:'Dashboard',h:linkMap['dashboard'] || '/user/dashboard'},
+    {t:'Attendance',h:linkMap['attendance'] || '/student/attendance'},
+    {t:'Results',h:linkMap['results'] || '/student/results'},
+    {t:'TimeTable',h:linkMap['timetable'] || '/student/timetable'},
+    {t:'Assignments',h:linkMap['assignments'] || '/student/assignments'},
+    {t:'Materials',h:linkMap['materials'] || '/student/materials'},
+    {t:'User Manual',h:linkMap['manual'] || '/student/usermanual'},
   ];
   const cur=location.pathname;
   const curBase=cur.replace(/\/+\d+$/,'').replace(/\/+$/,'')||'/';
@@ -195,42 +249,219 @@ function _setAvatar(sb,url){
   if(av)av.innerHTML='<img src="'+esc(url)+'" alt="" style="width:100%;height:100%;object-fit:cover;display:block;">';
 }
 
-// ── HOSTEL ATTENDANCE ─────────────────────────────────────────
-async function fetchHostelAbsent(){
-  try{
-    const r=await fetch(BASE_URL+'/hostel/student/viewhostelattendance',{credentials:'include'});
-    if(!r.ok)return new Set();
-    const doc=new DOMParser().parseFromString(await r.text(),'text/html');
-    const days=new Set();
-    
-    // Parse month and year from the page header if possible
-    let parsedMonth = new Date().getMonth();
-    let parsedYear = new Date().getFullYear();
-    const headerEl = doc.querySelector('.calendar-container, .calendar, table, h3, h4, .widget-header');
-    if (headerEl) {
-      const txt = headerEl.textContent;
-      for (let m = 0; m < 12; m++) {
-        if (new RegExp(MONTHS[m], 'i').test(txt)) {
-          parsedMonth = m;
-          break;
-        }
-      }
-      const yMatch = txt.match(/\b(20\d{2})\b/);
-      if (yMatch) {
-        parsedYear = parseInt(yMatch[1], 10);
-      }
-    }
-    _hostelAbsentMonth = parsedMonth;
-    _hostelAbsentYear = parsedYear;
+// ── HOSTEL & CALENDAR DATA SCRAPER ────────────────────────────
+let _calCache = {}; // key: "year-month" -> { absents: Set, holidays: Map }
+let _calLoading = {}; // key: "year-month" -> Promise
 
-    doc.querySelectorAll('.calendar-container td,.calendar td,table td').forEach(td=>{
-      if(/absent/i.test(td.textContent)){
-        const m=td.textContent.trim().match(/(\d{1,2})/);
-        if(m){const n=parseInt(m[1],10);if(n>=1&&n<=31)days.add(n);}
+function parseHostelAbsentFromDoc(doc) {
+  const days = new Set();
+  if (!doc) return days;
+
+  const container = doc.querySelector('.calendar-container, .calendar, #calendar, .widget-main');
+  if (!container) return days;
+
+  container.querySelectorAll('td, div, li, p, span').forEach(el => {
+    if (el.children.length > 2) return;
+    const text = el.textContent.trim();
+    if (!text || text.length > 40) return;
+
+    const m = text.match(/^(\d{1,2})\s*absent/i) || text.match(/^(\d{1,2})\b[\s\S]{0,10}\babsent\b/i);
+    if (m) {
+      const n = parseInt(m[1], 10);
+      if (n >= 1 && n <= 31) days.add(n);
+    }
+  });
+
+  return days;
+}
+
+async function fetchHostelAbsentFor(year, month) {
+  try {
+    const baseRes = await fetch(BASE_URL + '/hostel/student/viewhostelattendance', {credentials: 'include'});
+    if (!baseRes.ok) return new Set();
+    const htmlText = await baseRes.text();
+    const doc = new DOMParser().parseFromString(htmlText, 'text/html');
+
+    if (doc.querySelector('input[name*="LoginForm"]') || doc.title.toLowerCase().includes('login')) {
+      return new Set();
+    }
+
+    const baseDays = parseHostelAbsentFromDoc(doc);
+    if (baseDays.size > 0) return baseDays;
+    
+    const form = doc.querySelector('form[action*="viewhostelattendance"], form[action*="attendance"], form');
+    let targetUrl = BASE_URL + '/hostel/student/viewhostelattendance';
+    let method = 'GET';
+    let params = new URLSearchParams();
+    
+    if (form) {
+      const actionAttr = form.getAttribute('action');
+      if (actionAttr) targetUrl = absUrl(actionAttr);
+      method = (form.getAttribute('method') || 'GET').toUpperCase();
+      
+      form.querySelectorAll('input, select').forEach(el => {
+        const name = el.getAttribute('name');
+        if (!name) return;
+        let val = el.value || '';
+        if (/month/i.test(name)) val = String(month + 1);
+        else if (/year/i.test(name)) val = String(year);
+        params.append(name, val);
+      });
+    } else {
+      params.append('month', String(month + 1));
+      params.append('year', String(year));
+    }
+    
+    let fetchUrl = targetUrl;
+    let fetchOpts = { credentials: 'include' };
+    if (method === 'POST') {
+      fetchOpts.method = 'POST';
+      fetchOpts.body = params;
+    } else {
+      fetchUrl = targetUrl + '?' + params.toString();
+    }
+    
+    const r = await fetch(fetchUrl, fetchOpts);
+    if (!r.ok) return new Set();
+    
+    const resDoc = new DOMParser().parseFromString(await r.text(), 'text/html');
+    return parseHostelAbsentFromDoc(resDoc);
+  } catch(e) {
+    return new Set();
+  }
+}
+
+function isCleanEvent(t) {
+  if (!t || t.length < 2) return false;
+  if (/absent|present|notification|click|see the|view/i.test(t)) return false;
+  return true;
+}
+
+function parseCollegeDoc(doc, data) {
+  if (!doc) return;
+
+  // 1. jQuery UI Datepicker calendar (.ui-datepicker-inline, .ui-datepicker-calendar)
+  doc.querySelectorAll('.ui-datepicker-calendar, .ui-datepicker-inline table, .ui-datepicker table').forEach(table => {
+    table.querySelectorAll('tbody td, tr td').forEach(td => {
+      const a = td.querySelector('a, span');
+      const text = (a ? a.textContent : td.textContent).trim();
+      const dayNum = parseInt(text, 10);
+      if (!dayNum || isNaN(dayNum) || dayNum < 1 || dayNum > 31) return;
+
+      const title = td.getAttribute('title') || a?.getAttribute('title') || td.getAttribute('data-event') || '';
+      if (isCleanEvent(title)) {
+        data.holidays[dayNum] = title.trim();
+      }
+
+      if (/absent|danger|bg-red/i.test(td.className)) {
+        data.collegeAbsents.add(dayNum);
       }
     });
-    return days;
-  }catch{return new Set();}
+  });
+
+  // 2. Standard calendar tables
+  doc.querySelectorAll('table.calendar, table.cal, table[class*="cal"], .widget-main table, .calendar-table').forEach(table => {
+    table.querySelectorAll('tbody td, tr td').forEach(td => {
+      if (td.closest('thead, tfoot')) return;
+      const textContent = td.textContent.replace(/\s+/g, ' ').trim();
+      const m = textContent.match(/^(\d{1,2})\b/);
+      if (!m) return;
+      const dayNum = parseInt(m[1], 10);
+      if (dayNum < 1 || dayNum > 31) return;
+
+      const hasAbsentClass = /absent|danger|bg-red/i.test(td.className);
+      const hasAbsentBadge = !!td.querySelector('.badge-danger, .label-danger, .absent');
+      if (hasAbsentClass || hasAbsentBadge) {
+        data.collegeAbsents.add(dayNum);
+      }
+
+      let eventText = '';
+      const evEl = td.querySelector('a, em, span[class*="event"], div[class*="event"], .badge, .label');
+      if (evEl && isCleanEvent(evEl.textContent)) {
+        eventText = evEl.textContent.trim();
+      } else {
+        const raw = textContent.replace(new RegExp('^' + dayNum), '').trim();
+        if (isCleanEvent(raw)) {
+          eventText = raw;
+        }
+      }
+
+      if (isCleanEvent(eventText)) {
+        data.holidays[dayNum] = eventText;
+      }
+    });
+  });
+}
+
+async function fetchCollegeCalendarFor(year, month) {
+  const data = { holidays: {}, collegeAbsents: new Set() };
+  const m1 = month + 1;
+
+  for (const key in HMAP) {
+    const parts = key.split('-').map(Number);
+    if (parts.length === 3) {
+      const [hY, hM, hD] = parts;
+      if (hY === year && (hM === m1 || hM === month)) {
+        data.holidays[hD] = HMAP[key];
+      }
+    }
+  }
+
+  if (isDash()) {
+    parseCollegeDoc(document, data);
+  }
+
+  const padMonth = String(m1).padStart(2, '0');
+  const urls = [
+    BASE_URL + '/user/dashboard?date=' + year + '-' + padMonth + '-01',
+    BASE_URL + '/user/dashboard?month=' + m1 + '&year=' + year,
+    BASE_URL + '/student?month=' + m1 + '&year=' + year,
+    BASE_URL + '/ktuacademics/student/academiccalendar'
+  ];
+
+  for (const url of urls) {
+    try {
+      const r = await fetch(url, { credentials: 'include' });
+      if (r.ok) {
+        const text = await r.text();
+        const doc = new DOMParser().parseFromString(text, 'text/html');
+        parseCollegeDoc(doc, data);
+      }
+    } catch(e) {}
+  }
+
+  return data;
+}
+
+async function fetchEventsAndAbsentsFor(year, month) {
+  const key = year + '-' + month;
+  if (_calCache[key]) return _calCache[key];
+  if (_calLoading[key]) return _calLoading[key];
+
+  _calLoading[key] = (async () => {
+    const data = { absents: new Set(), collegeAbsents: new Set(), holidays: {} };
+
+    try {
+      const [collegeData, hostelAbsents] = await Promise.all([
+        fetchCollegeCalendarFor(year, month),
+        fetchHostelAbsentFor(year, month)
+      ]);
+
+      data.holidays = collegeData.holidays || {};
+      data.collegeAbsents = collegeData.collegeAbsents || new Set();
+      data.absents = hostelAbsents || new Set();
+    } catch(e) {}
+
+    _calCache[key] = data;
+    delete _calLoading[key];
+    return data;
+  })();
+
+  return _calLoading[key];
+}
+
+function prefetchSurroundingMonths(currentYear, currentMonth) {
+  // Disabled: Current month only
 }
 
 // ── CALENDAR ──────────────────────────────────────────────────
@@ -249,29 +480,41 @@ function buildCalGrid(year,month){
 function renderCalMonth(el){
   if(!el)return;
   const now=new Date(),todayD=now.getDate(),todayM=now.getMonth(),todayY=now.getFullYear();
+  _calYear = todayY;
+  _calMonth = todayM;
   const grid=buildCalGrid(_calYear,_calMonth);
+  const key = _calYear + '-' + _calMonth;
+  const cache = _calCache[key];
+  const isLoading = !!_calLoading[key];
+
   let rows='';
   grid.forEach(week=>{
     rows+='<tr>';
     week.forEach(d=>{
       const n=+d;
       const isToday=n===todayD&&_calMonth===todayM&&_calYear===todayY;
-      const key=_calYear+'-'+_calMonth+'-'+n;
-      const hol=n?HMAP[key]:null;
-      // Only show hostel absent for the month the data was actually fetched for
-      const habsent=n&&_calMonth===_hostelAbsentMonth&&_calYear===_hostelAbsentYear?_calAbsent.has(n):false;
+      const hol=cache?.holidays?.[n] || null;
+      const cabsent=cache?.collegeAbsents?.has(n) || false;
+      const habsent=cache?.absents?.has(n) || false;
       let cls='rk-cc';
       if(isToday)cls+=' today';
-      else if(hol||habsent)cls+=' event';
-      rows+='<td class="'+cls+'">'+(d?('<b>'+d+'</b>'+(hol?'<em>'+esc(hol)+'</em>':'')+(habsent?'<em class="abs">Hostel Absent</em>':'')):'' )+'</td>';
+      else if(hol||cabsent||habsent)cls+=' event';
+
+      let inner = d ? '<b>'+d+'</b>' : '';
+      if(hol) inner += '<em>'+esc(hol)+'</em>';
+      if(cabsent) inner += '<em class="abs">College Absent</em>';
+      if(habsent) inner += '<em class="abs">Hostel Absent</em>';
+
+      rows+='<td class="'+cls+'">'+(d ? inner : '')+'</td>';
     });
     rows+='</tr>';
   });
+
+  const titleSuffix = isLoading ? ' <span style="font-size:0.68rem;font-weight:normal;color:var(--text-m)">⌛</span>' : '';
+
   el.innerHTML=
     '<div class="rk-cal-h">'
-      +'<button class="rk-cal-nav" id="rk-cal-prev">&#8249;</button>'
-      +'<span class="rk-cal-title">'+MONTHS[_calMonth]+' '+_calYear+'</span>'
-      +'<button class="rk-cal-nav" id="rk-cal-next">&#8250;</button>'
+      +'<span class="rk-cal-title">'+MONTHS[_calMonth]+' '+_calYear+titleSuffix+'</span>'
     +'</div>'
     +'<div class="rk-cal-leg">'
       +'<span><i class="rk-dot-today"></i>Today</span>'
@@ -279,19 +522,14 @@ function renderCalMonth(el){
     +'</div>'
     +'<table class="rk-cal"><thead><tr>'+DHDRS.map(d=>'<th>'+d+'</th>').join('')+'</tr></thead><tbody>'+rows+'</tbody></table>';
 
-  el.querySelector('#rk-cal-prev')?.addEventListener('click',e=>{
-    e.preventDefault();
-    if(--_calMonth<0){_calMonth=11;_calYear--;}
-    renderCalMonth(el);
-  });
-  el.querySelector('#rk-cal-next')?.addEventListener('click',e=>{
-    e.preventDefault();
-    if(++_calMonth>11){_calMonth=0;_calYear++;}
-    renderCalMonth(el);
-  });
+  if (!cache && !isLoading) {
+    fetchEventsAndAbsentsFor(_calYear, _calMonth).then(() => {
+      renderCalMonth(el);
+    });
+  }
 }
 
-function renderCal(el,absent){_calAbsent=absent||new Set();_calEl=el;renderCalMonth(el);}
+function renderCal(el){_calEl=el;renderCalMonth(el);}
 
 // ── ATTENDANCE BAR ────────────────────────────────────────────
 function renderStats(el){
@@ -339,7 +577,7 @@ const FALLBACK_LINKS=[
   {title:'Results & CGPA',href:'/student/results'},
   {title:'Timetable',href:'/student/timetable'},
   {title:'Assignments',href:'/student/assignments'},
-  {title:'Study Materials',href:'/student/studymaterials'},
+  {title:'Study Materials',href:'/student/materials'},
   {title:'Academic Analysis',href:'/ktuacademics/student/studentacademics'},
   {title:'Activity Points',href:'/activity/studentactivitypoint'},
   {title:'Hostel Attendance',href:'/hostel/student/viewhostelattendance'},
@@ -525,8 +763,8 @@ function extractDashboard(){
     }
 
     const cal=wrap.querySelector('#rk-cal');
-    renderCal(cal,new Set());
-    fetchHostelAbsent().then(abs=>{_calAbsent=abs;renderCalMonth(_calEl||cal);});
+    renderCal(cal);
+    prefetchSurroundingMonths(_calYear, _calMonth);
     renderStats(wrap.querySelector('#rk-stats'));
   });
 }
@@ -540,6 +778,7 @@ function removeFooter(){
 }
 
 // ── APPLY / UNAPPLY ───────────────────────────────────────────
+// ── APPLY / UNAPPLY ───────────────────────────────────────────
 function apply(){
   document.documentElement.classList.add('etlab-reskin-on');
   document.body?.classList.add('etlab-reskin-on');
@@ -548,56 +787,9 @@ function apply(){
   removeFooter();
   if(isDash())extractDashboard();
   addDashToggle();
-  animateToggle(9);
 }
 
-// ── TOGGLE VISUALS & ANIMATIONS ──────────────────────────────
-function updateToggleVisual() {
-  const btn = document.getElementById('rk-page-toggle');
-  if (!btn) return;
-  const frameEl = btn.querySelector('.rk-toggle-frame');
-  if (frameEl) {
-    const pct = (_toggleFrame * 100 / 9).toFixed(3);
-    frameEl.style.backgroundPosition = pct + '% 0%';
-  }
-}
-
-function animateToggle(target){
-  const btn = document.getElementById('rk-page-toggle');
-  if (btn) {
-    btn.setAttribute('aria-checked', target === 9 ? 'true' : 'false');
-  }
-
-  // Respect prefers-reduced-motion
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reducedMotion || _isInitialLoad) {
-    _toggleFrame = target;
-    updateToggleVisual();
-    return;
-  }
-
-  if (_toggleInterval) {
-    clearInterval(_toggleInterval);
-    _toggleInterval = null;
-  }
-
-  _toggleInterval = setInterval(() => {
-    if (_toggleFrame < target) {
-      _toggleFrame++;
-    } else if (_toggleFrame > target) {
-      _toggleFrame--;
-    }
-
-    updateToggleVisual();
-
-    if (_toggleFrame === target) {
-      clearInterval(_toggleInterval);
-      _toggleInterval = null;
-    }
-  }, 40); // 9 steps * 40ms = ~360ms total duration
-}
-
-// ── DASHBOARD TOGGLE BUTTON (sprite sheet) ────────────────────
+// ── DASHBOARD TOGGLE BUTTON (circular, spins on click) ────────
 function addDashToggle(){
   let btn=document.getElementById('rk-page-toggle');
   if(!btn){
@@ -606,15 +798,31 @@ function addDashToggle(){
     btn.type='button';
     btn.setAttribute('role', 'checkbox');
     btn.title='Toggle ETLab Reskin';
-    btn.innerHTML = '<div class="rk-toggle-frame" style="width:100%;height:100%;background-repeat:no-repeat;background-size:1000% 100%;background-position:0% 0%;"></div>';
     
+    let imgUrl = '';
     try {
-      const imgUrl = chrome.runtime.getURL('icons/toggle_sheet.png');
-      btn.querySelector('.rk-toggle-frame').style.backgroundImage = 'url(' + imgUrl + ')';
+      imgUrl = chrome.runtime.getURL('icons/toggle.png');
     } catch(e) {}
+
+    if (imgUrl) {
+      btn.innerHTML = '<img src="' + esc(imgUrl) + '" alt="Toggle Reskin" class="rk-toggle-img">';
+    } else {
+      btn.innerHTML = '<span style="font-size:20px;font-weight:bold;color:#3b82f6;">✦</span>';
+    }
     
     document.body.appendChild(btn);
     btn.addEventListener('click',()=>{
+      const img = btn.querySelector('.rk-toggle-img');
+      if (img) {
+        img.classList.remove('rk-spin');
+        void img.offsetWidth; // Trigger reflow to restart animation
+        img.classList.add('rk-spin');
+      } else {
+        btn.classList.remove('rk-spin');
+        void btn.offsetWidth;
+        btn.classList.add('rk-spin');
+      }
+
       try{
         chrome.storage.local.get({reskinEnabled:true},r=>{
           const next=!r.reskinEnabled;
@@ -625,11 +833,23 @@ function addDashToggle(){
         if(state)unapply();else apply();
       }
     });
-    const isActive=document.documentElement.classList.contains('etlab-reskin-on');
-    _toggleFrame = isActive ? 9 : 0;
-    btn.setAttribute('aria-checked', isActive ? 'true' : 'false');
-    updateToggleVisual();
+
+    const animatedEl = btn.querySelector('.rk-toggle-img') || btn;
+    animatedEl.addEventListener('animationend', () => {
+      animatedEl.classList.remove('rk-spin');
+    });
   }
+
+  const isActive=document.documentElement.classList.contains('etlab-reskin-on');
+  btn.setAttribute('aria-checked', isActive ? 'true' : 'false');
+  btn.style.cssText='position:fixed;bottom:20px;right:20px;z-index:9999999;'+
+    'width:48px;height:48px;display:flex;align-items:center;justify-content:center;'+
+    'cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.18);transition:all 0.25s ease;'+
+    'border-radius:50% !important;padding:0 !important;margin:0 !important;'+
+    (isActive
+      ? 'background:var(--surface,#141a26);border:1px solid var(--bdr2,#2b3648);'
+      : 'background:#ffffff;border:1px solid #d1d5db;'
+    );
 }
 
 function unapply(){
@@ -664,7 +884,6 @@ function unapply(){
 
   // Refresh dashboard toggle button styles so it stays styled for off state
   addDashToggle();
-  animateToggle(0);
 }
 
 // ── INIT ──────────────────────────────────────────────────────

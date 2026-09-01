@@ -549,13 +549,13 @@ table.rk-cal td em {
   color: var(--red-t); line-height: 1.1; margin-top: 1px;
 }
 table.rk-cal td em.abs {
-  color: var(--red-t); font-weight: 700;
+  color: var(--amber-t); font-weight: 700;
 }
 
 td.rk-cc.today { background: var(--blue-bg); border: 1.5px solid var(--blue); }
 td.rk-cc.today b { color: var(--blue-t); font-weight: 800; }
-td.rk-cc.event { background: var(--red-bg); }
-td.rk-cc.event b { color: var(--red-t); font-weight: 700; }
+td.rk-cc.event { background: var(--blue-bg); }
+td.rk-cc.event b { color: var(--text-s); font-weight: 700; }
 
 /* ── Attendance bar ─────────────────────────────────── */
 .rk-att-panel { display: flex; flex-direction: column; gap: 10px; }
@@ -589,26 +589,24 @@ td.rk-cc.event b { color: var(--red-t); font-weight: 700; }
   bottom: 20px;
   right: 20px;
   z-index: 9999999;
-  width: 88px !important;
-  height: 40px !important;
-  background: transparent !important;
-  border: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
+  width: 48px !important;
+  height: 48px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   outline: none !important;
-  box-shadow: none !important;
-  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  display: block !important;
-  border-radius: 20px !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18) !important;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s, background 0.25s;
+  border-radius: 50% !important;
 }
 
 #rk-page-toggle:hover {
-  transform: scale(1.05);
+  transform: scale(1.08);
 }
 
 #rk-page-toggle:active {
-  transform: scale(0.95);
+  transform: scale(0.92);
 }
 
 #rk-page-toggle:focus-visible {
@@ -616,11 +614,24 @@ td.rk-cc.event b { color: var(--red-t); font-weight: 700; }
   outline-offset: 2px;
 }
 
-.rk-toggle-frame {
-  width: 100%;
-  height: 100%;
-  background-repeat: no-repeat;
-  background-size: 1000% 100%;
-  background-position: 0% 0%;
+.rk-toggle-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
   pointer-events: none;
+  border-radius: 0 !important;
+  display: block;
+  transition: transform 0.15s ease;
 }
+
+/* ── Spin Animation ─────────────────────────────────────── */
+@keyframes rk-spin-anim {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.rk-spin {
+  animation: rk-spin-anim 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+

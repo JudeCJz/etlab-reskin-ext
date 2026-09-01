@@ -5,13 +5,11 @@ A premium, modern reskin extension for MITS ETLab (`mits.etlab.app`) that overri
 ## Features
 
 - **Modern Grey/White Light Theme & Premium Dark Theme**: Toggle between light and dark modes instantly with the floating toggle or sidebar switch.
-- **Smart Search Bar**: Quickly filter dashboard action tiles using normal text queries or smart alias keywords (e.g. searching "cgpa" or "grade" shows "Results").
-- **Unified Hostel Calendar**: Parsed hostel attendance data merged directly into the dashboard calendar.
-- **Dynamic Month Navigation**: Browse forward and backward through months directly on the dashboard calendar.
-- **Compact Today's Classes Timeline**: Timeline preview of today's periods fetched automatically from your timetable.
-- **Quick Links Resources**: Quick access portals for KTU Portal, MITS Library OPAC, and Academic Calendar.
+- **Smart Search Bar**: Quickly filter dashboard action tiles using normal text queries or smart alias keywords (e.g. searching "cgpa" or "grade" shows "Results", "materials" or "notes" shows "Study Materials").
+- **Unified Academic & Hostel Calendar**: Synchronized college calendar events, holidays, college absents, and hostel attendance data merged into the dashboard calendar.
+- **Dynamic Month Navigation & Background Prefetching**: Instant navigation between months with current month prioritised and surrounding 6 months prefetched seamlessly.
 - **Tile Custom Color Customizer**: Star your favorite tiles and highlight specific actions with custom theme colors.
-- **Dashboard Toggle Button**: A floating paint-brush button on the page itself to turn the reskin on or off in a single click.
+- **Floating Reskin Toggle Button**: A circular toggle button with smooth spin animation to toggle the reskin on/off.
 
 ## Installation
 
@@ -20,9 +18,16 @@ A premium, modern reskin extension for MITS ETLab (`mits.etlab.app`) that overri
 3. Enable **Developer mode** (top-right toggle).
 4. Click **Load unpacked** (top-left button).
 5. Select this `etlab-reskin-ext` folder.
-6. Open MITS ETLab and watch the magic happen!
+6. Open MITS ETLab (`mits.etlab.app`) and watch the magic happen!
 
-## Preview
+## Previews
 
-![ETLab Reskin Dashboard](screenshot.png)
+### Dark Theme Overview
+![ETLab Reskin Dashboard Overview](screenshot.png)
+
+### Light Theme Overview
+![ETLab Reskin Light Mode](screenshot-light.png)
+
+### Compact Responsive View
+![ETLab Reskin Compact Dashboard](screenshot-compact.png)
 
