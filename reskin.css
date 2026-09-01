@@ -641,22 +641,111 @@ td.rk-cc.event b { color: var(--text-s); font-weight: 700; }
   transition: width 0.4s ease;
 }
 
-/* ── Redesign Toggle Button ─────────────────────────────── */
-#rk-page-toggle {
+/* ── Toggle Wrapper (holds toggle btn + theme pill) ──── */
+#rk-toggle-wrap {
   position: fixed;
   bottom: 20px;
   right: 20px;
   z-index: 9999999;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+/* ── Theme Pill (slides out on hover) ──────────────── */
+#rk-theme-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 12px 0 10px;
+  height: 36px;
+  background: var(--surface, #141a26);
+  border: 1px solid var(--bdr2, #2b3648);
+  border-right: none;
+  border-radius: 18px 0 0 18px !important;
+  color: var(--text-s, #e8f0fb);
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  opacity: 0;
+  max-width: 0;
+  overflow: hidden;
+  transform: translateX(10px);
+  pointer-events: none;
+  transition: max-width 0.25s ease, opacity 0.2s ease, transform 0.2s ease, padding 0.25s ease, background 0.15s, border-color 0.15s;
+}
+
+html.etlab-reskin-light #rk-theme-pill {
+  background: #ffffff;
+  border-color: #d1d5db;
+  color: #374151;
+}
+
+#rk-toggle-wrap:hover #rk-theme-pill {
+  max-width: 120px;
+  opacity: 1;
+  transform: translateX(0);
+  padding: 0 12px 0 10px;
+  pointer-events: auto;
+}
+
+#rk-theme-pill:hover {
+  background: var(--surfhov, #1a2233);
+}
+html.etlab-reskin-light #rk-theme-pill:hover {
+  background: #f3f4f6;
+}
+
+.rk-tp-ico {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.rk-tp-ico svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+}
+.rk-tp-lbl {
+  flex-shrink: 0;
+}
+
+/* ── Redesign Toggle Button ─────────────────────────────── */
+#rk-page-toggle {
+  position: relative;
   width: 48px !important;
   height: 48px !important;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   outline: none !important;
+  background: var(--surface, #141a26);
+  border: 1px solid var(--bdr2, #2b3648);
   box-shadow: 0 4px 16px rgba(0,0,0,0.18) !important;
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s, background 0.25s;
   border-radius: 50% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+html.etlab-reskin-light #rk-page-toggle {
+  background: #ffffff;
+  border-color: #d1d5db;
+}
+
+/* When reskin is off (no etlab-reskin-on class) */
+html:not(.etlab-reskin-on) #rk-page-toggle {
+  background: #ffffff;
+  border-color: #d1d5db;
+}
+html:not(.etlab-reskin-on) #rk-theme-pill {
+  background: #ffffff;
+  border-color: #d1d5db;
+  color: #374151;
 }
 
 #rk-page-toggle:hover {
@@ -691,5 +780,3 @@ td.rk-cc.event b { color: var(--text-s); font-weight: 700; }
 .rk-spin {
   animation: rk-spin-anim 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-
-

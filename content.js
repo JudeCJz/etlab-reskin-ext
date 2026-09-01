@@ -854,14 +854,32 @@ function apply(){
 
 // ── DASHBOARD TOGGLE BUTTON (circular, spins on click) ────────
 function addDashToggle(){
-  let btn=document.getElementById('rk-page-toggle');
-  if(!btn){
-    btn=document.createElement('button');
+  let wrap=document.getElementById('rk-toggle-wrap');
+  if(!wrap){
+    wrap=document.createElement('div');
+    wrap.id='rk-toggle-wrap';
+
+    // Theme toggle pill (slides out on hover)
+    const themePill=document.createElement('button');
+    themePill.id='rk-theme-pill';
+    themePill.type='button';
+    themePill.title='Toggle Light/Dark Mode';
+    themePill.innerHTML='<span class="rk-tp-ico">'+(_theme==='dark'?SUN_ICO:MOON_ICO)+'</span><span class="rk-tp-lbl">'+(_theme==='dark'?'Light':'Dark')+'</span>';
+    themePill.addEventListener('click',e=>{
+      e.stopPropagation();
+      cycleTheme();
+      // Update pill content
+      themePill.innerHTML='<span class="rk-tp-ico">'+(_theme==='dark'?SUN_ICO:MOON_ICO)+'</span><span class="rk-tp-lbl">'+(_theme==='dark'?'Light':'Dark')+'</span>';
+    });
+    wrap.appendChild(themePill);
+
+    // Main toggle button
+    const btn=document.createElement('button');
     btn.id='rk-page-toggle';
     btn.type='button';
     btn.setAttribute('role', 'checkbox');
     btn.title='Toggle ETLab Reskin';
-    
+
     let imgUrl = '';
     try {
       imgUrl = chrome.runtime.getURL('icons/toggle.png');
@@ -872,13 +890,12 @@ function addDashToggle(){
     } else {
       btn.innerHTML = '<span style="font-size:20px;font-weight:bold;color:#3b82f6;">✦</span>';
     }
-    
-    document.body.appendChild(btn);
+
     btn.addEventListener('click',()=>{
       const img = btn.querySelector('.rk-toggle-img');
       if (img) {
         img.classList.remove('rk-spin');
-        void img.offsetWidth; // Trigger reflow to restart animation
+        void img.offsetWidth;
         img.classList.add('rk-spin');
       } else {
         btn.classList.remove('rk-spin');
@@ -901,18 +918,19 @@ function addDashToggle(){
     animatedEl.addEventListener('animationend', () => {
       animatedEl.classList.remove('rk-spin');
     });
+
+    wrap.appendChild(btn);
+    document.body.appendChild(wrap);
   }
 
+  // Update state
+  const btn=wrap.querySelector('#rk-page-toggle');
+  const pill=wrap.querySelector('#rk-theme-pill');
   const isActive=document.documentElement.classList.contains('etlab-reskin-on');
-  btn.setAttribute('aria-checked', isActive ? 'true' : 'false');
-  btn.style.cssText='position:fixed;bottom:20px;right:20px;z-index:9999999;'+
-    'width:48px;height:48px;display:flex;align-items:center;justify-content:center;'+
-    'cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.18);transition:all 0.25s ease;'+
-    'border-radius:50% !important;padding:0 !important;margin:0 !important;'+
-    (isActive
-      ? 'background:var(--surface,#141a26);border:1px solid var(--bdr2,#2b3648);'
-      : 'background:#ffffff;border:1px solid #d1d5db;'
-    );
+  if(btn) btn.setAttribute('aria-checked', isActive ? 'true' : 'false');
+  if(pill){
+    pill.innerHTML='<span class="rk-tp-ico">'+(_theme==='dark'?SUN_ICO:MOON_ICO)+'</span><span class="rk-tp-lbl">'+(_theme==='dark'?'Light':'Dark')+'</span>';
+  }
 }
 
 function unapply(){
