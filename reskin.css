@@ -6,47 +6,47 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 /* ══════════════════════════════════════════════════════
-   CSS VARIABLES — Proper Black Theme (Default)
+   CSS VARIABLES — Pure OLED Black Theme (Default)
    ══════════════════════════════════════════════════════ */
 html.etlab-reskin-on {
-  --bg:          #080a0f;
-  --surface:     #11141c;
-  --surface2:    #171c26;
-  --surfhov:     #1f2634;
-  --bdr:         #1d2433;
-  --bdr2:        #2a354a;
-  --bdr3:        #3a4863;
-  --text:        #ccd7e6;
-  --text-s:      #edf3fa;
+  --bg:          #000000;
+  --surface:     #0c0c0e;
+  --surface2:    #141417;
+  --surfhov:     #1c1c22;
+  --bdr:         #1e1e24;
+  --bdr2:        #2d2d36;
+  --bdr3:        #3f3f4c;
+  --text:        #e2e8f0;
+  --text-s:      #ffffff;
   --text-b:      #ffffff;
-  --text-m:      #6e7f99;
-  --text-f:      #4a576d;
+  --text-m:      #8592a6;
+  --text-f:      #505b6e;
   --blue:        #3b82f6;
   --blue-b:      #60a5fa;
   --blue-t:      #93c5fd;
-  --blue-bg:     rgba(59, 130, 246, 0.12);
-  --blue-bdr:    rgba(59, 130, 246, 0.35);
-  --ring:        rgba(59, 130, 246, 0.22);
-  --shadow:      rgba(0,0,0,0.65);
-  --hovbg:       rgba(255, 255, 255, 0.04);
-  --hovbdr:      #2a354a;
+  --blue-bg:     rgba(59, 130, 246, 0.14);
+  --blue-bdr:    rgba(59, 130, 246, 0.4);
+  --ring:        rgba(59, 130, 246, 0.25);
+  --shadow:      rgba(0,0,0,0.9);
+  --hovbg:       rgba(255, 255, 255, 0.05);
+  --hovbdr:      #2d2d36;
   --amber:       #f59e0b;
   --amber-t:     #fbbf24;
   --star-bg:     #221900;
   --red:         #ef4444;
   --red-t:       #f87171;
-  --red-bg:      rgba(239,68,68,0.1);
-  --red-bdr:     rgba(239,68,68,0.3);
+  --red-bg:      rgba(239,68,68,0.12);
+  --red-bdr:     rgba(239,68,68,0.35);
   --green-t:     #34d399;
-  --avatar-bg:   #1d2433;
-  --track:       #06080c;
-  --scroll:      #263145;
-  --scrolltrack: #06080c;
+  --avatar-bg:   #141417;
+  --track:       #000000;
+  --scroll:      #222228;
+  --scrolltrack: #000000;
   --s-body:      var(--surface);
   --s-body-text: var(--text-s);
-  --s-badge:     #171c26;
-  --s-badge-bdr: #2a354a;
-  --s-badge-ico: #8da0bc;
+  --s-badge:     #141417;
+  --s-badge-bdr: #24242c;
+  --s-badge-ico: #8592a6;
   --s-place:     var(--text-m);
   --s-bdr:       var(--bdr2);
 }
