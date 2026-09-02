@@ -1263,6 +1263,226 @@ html.etlab-reskin-light .rk-pill-sep {
   stroke: currentColor;
 }
 
+/* ── Theme Popout Panel (Color Slider & Wheel) ──────────── */
+.rk-theme-pill-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.rk-theme-popout {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  right: -20px;
+  width: 220px;
+  background: var(--surface2, #141417);
+  border: 1px solid var(--bdr2, #2d2d36);
+  border-radius: 12px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.75), 0 0 1px rgba(255, 255, 255, 0.2);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px) scale(0.96);
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              visibility 0.2s;
+  z-index: 100000;
+  pointer-events: none;
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  user-select: none;
+}
+
+html.etlab-reskin-light .rk-theme-popout {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+.rk-theme-pill-wrap:hover .rk-theme-popout,
+.rk-theme-popout.rk-tp-open,
+.rk-theme-popout:hover {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* Popout Arrow */
+.rk-theme-popout::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  right: 28px;
+  width: 10px;
+  height: 10px;
+  background: var(--surface2, #141417);
+  border-right: 1px solid var(--bdr2, #2d2d36);
+  border-bottom: 1px solid var(--bdr2, #2d2d36);
+  transform: rotate(45deg);
+}
+html.etlab-reskin-light .rk-theme-popout::after {
+  background: #ffffff;
+  border-color: #e2e8f0;
+}
+
+.rk-tp-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.rk-tp-mode-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--surface, #0c0c0e);
+  border: 1px solid var(--bdr, #1e1e24);
+  border-radius: 7px !important;
+  color: var(--text-s, #ffffff);
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: inherit;
+  padding: 5px 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.rk-tp-mode-btn:hover {
+  background: var(--surfhov, #1c1c22);
+  border-color: var(--bdr2, #2d2d36);
+}
+
+html.etlab-reskin-light .rk-tp-mode-btn {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #1e293b;
+}
+html.etlab-reskin-light .rk-tp-mode-btn:hover {
+  background: #f1f5f9;
+}
+
+/* Color Wheel / Eyedropper Button */
+.rk-tp-wheel-btn {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px !important;
+  background: var(--surface, #0c0c0e);
+  border: 1px solid var(--bdr, #1e1e24);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: transform 0.14s, border-color 0.14s;
+}
+.rk-tp-wheel-btn:hover {
+  transform: scale(1.1);
+  border-color: var(--bdr3, #444454);
+}
+
+.rk-wheel-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: conic-gradient(red, yellow, lime, aqua, blue, magenta, red);
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+}
+
+.rk-hidden-color-inp {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+/* Hue Slider */
+.rk-tp-slider-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rk-hue-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 10px;
+  border-radius: 5px;
+  background: linear-gradient(to right, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+  outline: none;
+  cursor: pointer;
+  margin: 2px 0;
+}
+.rk-hue-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #000000;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.rk-hue-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+/* Swatches Row */
+.rk-tp-swatches {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  padding-top: 2px;
+}
+
+.rk-tp-sw {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px !important;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+  transition: transform 0.14s;
+}
+.rk-tp-sw:hover {
+  transform: scale(1.25);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+}
+
+.rk-tp-sw-white {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+
+.rk-tp-reset {
+  background: var(--bdr, #1e1e24) !important;
+  border: 1px solid var(--bdr2, #30303c) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--text-m, #94a3b8);
+}
+.rk-tp-reset:hover {
+  color: #ffffff;
+  border-color: var(--text-s, #ffffff) !important;
+}
+
 /* ── Redesign Toggle Button ─────────────────────────────── */
 #rk-page-toggle {
   position: relative;

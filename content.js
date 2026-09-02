@@ -107,14 +107,107 @@ function ico(t){t=(t||'').toLowerCase();
   if(t.includes('survey'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>';
   if(t.includes('challenge'))return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
   return'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>';
+}let _customAccent = '';
+
+function hexToRgbValues(hex) {
+  if (!hex || hex === '#ffffff' || hex === '#fff') return { r: 255, g: 255, b: 255 };
+  hex = hex.replace('#', '');
+  if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+  const num = parseInt(hex, 16);
+  return {
+    r: (num >> 16) & 255,
+    g: (num >> 8) & 255,
+    b: num & 255
+  };
 }
 
-// ── THEME ─────────────────────────────────────────────────────
-function syncTheme(theme){
-  _theme=(theme==='dark')?'dark':'light';
+function hslToHex(h, s, l) {
+  l /= 100;
+  const a = s * Math.min(l, 1 - l) / 100;
+  const f = n => {
+    const k = (n + h / 30) % 12;
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color).toString(16).padStart(2, '0');
+  };
+  return `#${f(0)}${f(8)}${f(4)}`;
+}
+
+function applyCustomAccent(hex, save = true) {
+  _customAccent = hex || '';
+  let styleEl = document.getElementById('rk-custom-accent');
+
+  if (!hex) {
+    if (styleEl) styleEl.remove();
+    if (save) {
+      try { chrome.storage.local.remove('customAccent'); } catch(e){}
+    }
+    return;
+  }
+
+  const { r, g, b } = hexToRgbValues(hex);
+  const css = `
+    :root, html.etlab-reskin-on {
+      --blue: ${hex} !important;
+      --blue-b: ${hex} !important;
+      --blue-t: ${hex} !important;
+      --blue-bg: rgba(${r}, ${g}, ${b}, 0.14) !important;
+      --blue-bdr: rgba(${r}, ${g}, ${b}, 0.42) !important;
+      --ring: rgba(${r}, ${g}, ${b}, 0.28) !important;
+    }
+    html.etlab-reskin-on .rk-tile:hover {
+      border-color: ${hex} !important;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.7), 0 0 14px rgba(${r}, ${g}, ${b}, 0.25) !important;
+    }
+    html.etlab-reskin-on .rk-tile-ico {
+      color: ${hex} !important;
+    }
+    html.etlab-reskin-on .rk-tile:hover .rk-tile-ico {
+      background: rgba(${r}, ${g}, ${b}, 0.14) !important;
+      border-right-color: rgba(${r}, ${g}, ${b}, 0.42) !important;
+      color: ${hex} !important;
+    }
+    html.etlab-reskin-on .rk-greeter-name {
+      color: ${hex} !important;
+      background: linear-gradient(135deg, #ffffff 0%, ${hex} 100%) !important;
+      -webkit-background-clip: text !important;
+    }
+    html.etlab-reskin-on .rk-search:focus-within .rk-search-body {
+      border-color: ${hex} !important;
+      box-shadow: 0 0 0 2px rgba(${r}, ${g}, ${b}, 0.25) !important;
+    }
+    html.etlab-reskin-on .rk-search:focus-within .rk-search-badge {
+      border-color: ${hex} !important;
+    }
+    html.etlab-reskin-on .rk-search:focus-within .rk-search-badge .rk-search-ico {
+      stroke: ${hex} !important;
+    }
+    html.etlab-reskin-on #rk-page-toggle:focus-visible {
+      outline-color: ${hex} !important;
+    }
+  `;
+
+  if (!styleEl) {
+    styleEl = document.createElement('style');
+    styleEl.id = 'rk-custom-accent';
+    document.head.appendChild(styleEl);
+  }
+  styleEl.textContent = css;
+
+  if (save) {
+    try { chrome.storage.local.set({ customAccent: hex }); } catch(e){}
+  }
+}
+
+// ── THEME SYNC ────────────────────────────────────────────────
+function syncTheme(t){
+  _theme=t||'dark';
   document.documentElement.classList.toggle('etlab-reskin-light',_theme==='light');
   const pill=document.querySelector('#rk-theme-pill');
   if(pill) pill.innerHTML='<span class="rk-tp-ico">'+(_theme==='dark'?SUN_ICO:MOON_ICO)+'</span>';
+  const modeTxt=document.querySelector('#rk-tp-mode-txt');
+  if(modeTxt) modeTxt.textContent=_theme==='dark'?'Dark Mode':'Light Mode';
+  const modeIco=document.querySelector('#rk-tp-mode-icon');
+  if(modeIco) modeIco.textContent=_theme==='dark'?'🌙':'☀️';
 }
 function cycleTheme(){
   const n=_theme==='dark'?'light':'dark';
@@ -1123,19 +1216,87 @@ function addDashToggle(){
     sep2.className='rk-pill-sep';
     pillMenu.appendChild(sep2);
 
-    // Theme toggle button
+    // Theme & Custom Accent Popout Container
+    const themeWrap=document.createElement('div');
+    themeWrap.className='rk-theme-pill-wrap';
+    themeWrap.id='rk-theme-pill-wrap';
+
     const themeBtn=document.createElement('button');
     themeBtn.id='rk-theme-pill';
     themeBtn.className='rk-pill-btn';
     themeBtn.type='button';
-    themeBtn.title='Toggle Theme';
+    themeBtn.title='Theme & Accent Color Picker';
     themeBtn.innerHTML='<span class="rk-tp-ico">'+(_theme==='dark'?SUN_ICO:MOON_ICO)+'</span>';
     themeBtn.addEventListener('click',e=>{
       e.stopPropagation();
       cycleTheme();
-      themeBtn.innerHTML='<span class="rk-tp-ico">'+(_theme==='dark'?SUN_ICO:MOON_ICO)+'</span>';
     });
-    pillMenu.appendChild(themeBtn);
+    themeWrap.appendChild(themeBtn);
+
+    // Popout Panel (opens on hover or click)
+    const themePopout=document.createElement('div');
+    themePopout.className='rk-theme-popout';
+    themePopout.id='rk-theme-popout';
+    themePopout.innerHTML=
+      '<div class="rk-tp-row">'
+        +'<button type="button" class="rk-tp-mode-btn" id="rk-tp-mode">'
+          +'<span id="rk-tp-mode-icon">'+(_theme==='dark'?'🌙':'☀️')+'</span>'
+          +'<span id="rk-tp-mode-txt">'+(_theme==='dark'?'Dark Mode':'Light Mode')+'</span>'
+        +'</button>'
+        +'<label class="rk-tp-wheel-btn" title="Pick Custom Color / Eyedropper">'
+          +'<div class="rk-wheel-icon"></div>'
+          +'<input type="color" id="rk-color-wheel-inp" value="'+(_customAccent||'#ffffff')+'" class="rk-hidden-color-inp">'
+        +'</label>'
+      +'</div>'
+      +'<div class="rk-tp-slider-wrap" title="Slide to adjust theme accent hue">'
+        +'<input type="range" min="0" max="360" value="0" id="rk-hue-slider" class="rk-hue-slider">'
+      +'</div>'
+      +'<div class="rk-tp-swatches">'
+        +'<span class="rk-tp-sw rk-tp-sw-white" data-c="#ffffff" title="Monochrome White"></span>'
+        +'<span class="rk-tp-sw" data-c="#3b82f6" style="background:#3b82f6" title="Electric Blue"></span>'
+        +'<span class="rk-tp-sw" data-c="#06b6d4" style="background:#06b6d4" title="Neon Cyan"></span>'
+        +'<span class="rk-tp-sw" data-c="#10b981" style="background:#10b981" title="Emerald Mint"></span>'
+        +'<span class="rk-tp-sw" data-c="#f59e0b" style="background:#f59e0b" title="Gold Amber"></span>'
+        +'<span class="rk-tp-sw" data-c="#ef4444" style="background:#ef4444" title="Fiery Crimson"></span>'
+        +'<span class="rk-tp-sw" data-c="#ff007f" style="background:#ff007f" title="Hot Magenta"></span>'
+        +'<span class="rk-tp-sw" data-c="#8b5cf6" style="background:#8b5cf6" title="Cyber Violet"></span>'
+        +'<span class="rk-tp-sw rk-tp-reset" data-c="" title="Reset to Default">&#x2715;</span>'
+      +'</div>';
+
+    // Event listeners inside popout
+    themePopout.addEventListener('click',e=>e.stopPropagation());
+
+    const modeBtn=themePopout.querySelector('#rk-tp-mode');
+    if(modeBtn) modeBtn.addEventListener('click',()=>cycleTheme());
+
+    const wheelInp=themePopout.querySelector('#rk-color-wheel-inp');
+    if(wheelInp){
+      wheelInp.addEventListener('input',e=>{
+        applyCustomAccent(e.target.value, true);
+      });
+    }
+
+    const hueSlider=themePopout.querySelector('#rk-hue-slider');
+    if(hueSlider){
+      hueSlider.addEventListener('input',e=>{
+        const h=parseInt(e.target.value,10);
+        const hex=hslToHex(h, 90, 55);
+        if(wheelInp) wheelInp.value=hex;
+        applyCustomAccent(hex, true);
+      });
+    }
+
+    themePopout.querySelectorAll('.rk-tp-sw').forEach(sw=>{
+      sw.addEventListener('click',e=>{
+        e.preventDefault();
+        const c=sw.getAttribute('data-c');
+        if(wheelInp && c) wheelInp.value=c;
+        applyCustomAccent(c, true);
+      });
+    });
+
+    themeWrap.appendChild(themePopout);
+    pillMenu.appendChild(themeWrap);
 
     wrap.appendChild(pillMenu);
 
@@ -1290,10 +1451,13 @@ function init(){
   // Read stored preferences FIRST, then apply with correct theme
   // This prevents the light-mode flash on pages where user chose dark
   try{
-    chrome.storage.local.get({reskinEnabled:true,theme:'dark'},r=>{
+    chrome.storage.local.get({reskinEnabled:true,theme:'dark',customAccent:''},r=>{
       // Set theme before apply() so the first render is correct
       _theme = (r.theme === 'light') ? 'light' : 'dark';
       syncTheme(_theme);
+      if(r.customAccent){
+        applyCustomAccent(r.customAccent, false);
+      }
       if(r.reskinEnabled !== false){
         apply();
       }
@@ -1303,6 +1467,7 @@ function init(){
       if(area!=='local')return;
       if('reskinEnabled' in changes)changes.reskinEnabled.newValue?apply():unapply();
       if('theme' in changes)syncTheme(changes.theme.newValue);
+      if('customAccent' in changes)applyCustomAccent(changes.customAccent.newValue, false);
     });
   }catch(e){
     // Fallback if chrome.storage is unavailable — apply with default theme
