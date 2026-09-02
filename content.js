@@ -1229,7 +1229,7 @@ function addDashToggle(){
     themeBtn.innerHTML='<span class="rk-tp-ico">'+(_theme==='dark'?SUN_ICO:MOON_ICO)+'</span>';
     themeBtn.addEventListener('click',e=>{
       e.stopPropagation();
-      cycleTheme();
+      themePopout.classList.toggle('rk-tp-open');
     });
     themeWrap.appendChild(themeBtn);
 
@@ -1293,6 +1293,12 @@ function addDashToggle(){
         if(wheelInp && c) wheelInp.value=c;
         applyCustomAccent(c, true);
       });
+    });
+
+    document.addEventListener('click',ev=>{
+      if(!themeWrap.contains(ev.target)){
+        themePopout.classList.remove('rk-tp-open');
+      }
     });
 
     themeWrap.appendChild(themePopout);
