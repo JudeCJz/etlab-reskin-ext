@@ -1164,6 +1164,10 @@ function apply(){
 // ── DASHBOARD TOGGLE BUTTON (circular, spins on click) ────────
 function addDashToggle(){
   let wrap=document.getElementById('rk-toggle-wrap');
+  if(wrap && !wrap.querySelector('#rk-theme-popout')){
+    wrap.remove();
+    wrap=null;
+  }
   if(!wrap){
     wrap=document.createElement('div');
     wrap.id='rk-toggle-wrap';
@@ -1227,10 +1231,6 @@ function addDashToggle(){
     themeBtn.type='button';
     themeBtn.title='Theme & Accent Color Picker';
     themeBtn.innerHTML='<span class="rk-tp-ico">'+(_theme==='dark'?SUN_ICO:MOON_ICO)+'</span>';
-    themeBtn.addEventListener('click',e=>{
-      e.stopPropagation();
-      themePopout.classList.toggle('rk-tp-open');
-    });
     themeWrap.appendChild(themeBtn);
 
     // Popout Panel (opens on hover or click)
@@ -1263,7 +1263,21 @@ function addDashToggle(){
         +'<span class="rk-tp-sw rk-tp-reset" data-c="" title="Reset to Default">&#x2715;</span>'
       +'</div>';
 
-    // Event listeners inside popout
+    // Click on button toggles popout
+    themeBtn.addEventListener('click',e=>{
+      e.stopPropagation();
+      themePopout.classList.toggle('rk-tp-open');
+    });
+
+    // Hover on wrap opens popout
+    themeWrap.addEventListener('mouseenter',()=>{
+      themePopout.classList.add('rk-tp-open');
+    });
+    themeWrap.addEventListener('mouseleave',()=>{
+      themePopout.classList.remove('rk-tp-open');
+    });
+
+    // Prevent click inside popout from closing it
     themePopout.addEventListener('click',e=>e.stopPropagation());
 
     const modeBtn=themePopout.querySelector('#rk-tp-mode');
