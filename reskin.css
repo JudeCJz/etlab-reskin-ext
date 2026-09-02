@@ -6,30 +6,30 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 /* ══════════════════════════════════════════════════════
-   CSS VARIABLES — Pure OLED Black Theme (Default)
+   CSS VARIABLES — Pure OLED Black & Crisp White Theme
    ══════════════════════════════════════════════════════ */
 html.etlab-reskin-on {
   --bg:          #000000;
   --surface:     #0c0c0e;
   --surface2:    #141417;
   --surfhov:     #1c1c22;
-  --bdr:         #1e1e24;
-  --bdr2:        #2d2d36;
-  --bdr3:        #3f3f4c;
+  --bdr:         #202028;
+  --bdr2:        #30303c;
+  --bdr3:        #444454;
   --text:        #e2e8f0;
   --text-s:      #ffffff;
   --text-b:      #ffffff;
-  --text-m:      #8592a6;
-  --text-f:      #505b6e;
-  --blue:        #3b82f6;
-  --blue-b:      #60a5fa;
-  --blue-t:      #93c5fd;
-  --blue-bg:     rgba(59, 130, 246, 0.14);
-  --blue-bdr:    rgba(59, 130, 246, 0.4);
-  --ring:        rgba(59, 130, 246, 0.25);
-  --shadow:      rgba(0,0,0,0.9);
-  --hovbg:       rgba(255, 255, 255, 0.05);
-  --hovbdr:      #2d2d36;
+  --text-m:      #94a3b8;
+  --text-f:      #64748b;
+  --blue:        #ffffff;
+  --blue-b:      #ffffff;
+  --blue-t:      #ffffff;
+  --blue-bg:     rgba(255, 255, 255, 0.08);
+  --blue-bdr:    rgba(255, 255, 255, 0.35);
+  --ring:        rgba(255, 255, 255, 0.22);
+  --shadow:      rgba(0,0,0,0.95);
+  --hovbg:       rgba(255, 255, 255, 0.06);
+  --hovbdr:      #30303c;
   --amber:       #f59e0b;
   --amber-t:     #fbbf24;
   --star-bg:     #221900;
@@ -40,13 +40,13 @@ html.etlab-reskin-on {
   --green-t:     #34d399;
   --avatar-bg:   #141417;
   --track:       #000000;
-  --scroll:      #222228;
+  --scroll:      #24242c;
   --scrolltrack: #000000;
   --s-body:      var(--surface);
   --s-body-text: var(--text-s);
   --s-badge:     #141417;
-  --s-badge-bdr: #24242c;
-  --s-badge-ico: #8592a6;
+  --s-badge-bdr: #262630;
+  --s-badge-ico: #ffffff;
   --s-place:     var(--text-m);
   --s-bdr:       var(--bdr2);
 }
@@ -358,14 +358,14 @@ html.etlab-reskin-on .sidebar:hover .rk-sb-inner {
   line-height: 1.2;
 }
 .rk-greeter-name {
-  color: var(--blue-t);
-  background: linear-gradient(135deg, var(--blue-b) 0%, var(--blue-t) 100%);
+  color: #ffffff;
+  background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: 800;
 }
 html.etlab-reskin-light .rk-greeter-name {
-  background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -614,9 +614,9 @@ html.etlab-reskin-light .rk-tile {
 
 .rk-tile:hover {
   background-color: var(--surface2);
-  border-color: var(--blue);
+  border-color: rgba(255, 255, 255, 0.6) !important;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), 0 0 12px rgba(59, 130, 246, 0.18);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7), 0 0 12px rgba(255, 255, 255, 0.15);
 }
 
 html.etlab-reskin-light .rk-tile:hover {
@@ -633,7 +633,7 @@ html.etlab-reskin-light .rk-tile:hover {
   background: rgba(255, 255, 255, 0.04);
   border-right: 1px solid var(--bdr);
   border-radius: 9px 0 0 9px;
-  color: var(--blue-t);
+  color: #ffffff !important;
   flex-shrink: 0;
   transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
@@ -645,9 +645,9 @@ html.etlab-reskin-light .rk-tile-ico {
 }
 
 .rk-tile:hover .rk-tile-ico {
-  background: var(--blue-bg);
-  color: var(--blue-b);
-  border-right-color: rgba(59, 130, 246, 0.25);
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff !important;
+  border-right-color: rgba(255, 255, 255, 0.35);
 }
 
 .rk-tile-ico svg {
