@@ -6,76 +6,76 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 /* ══════════════════════════════════════════════════════
-   CSS VARIABLES — Dark (default)
+   CSS VARIABLES — Dark (Base: #524646, #A8A492, #FCF2E5, #EC5B38)
    ══════════════════════════════════════════════════════ */
 html.etlab-reskin-on {
-  --bg:          #0c1017;
-  --surface:     #141a26;
-  --surface2:    #0f141e;
-  --surfhov:     #1a2233;
-  --bdr:         #1e2838;
-  --bdr2:        #2b3648;
-  --bdr3:        #334155;
-  --text:        #c8d4e3;
-  --text-s:      #e8f0fb;
-  --text-b:      #f8fafc;
-  --text-m:      #6b7f99;
-  --text-f:      #48596e;
-  --blue:        #3b82f6;
-  --blue-b:      #60a5fa;
-  --blue-t:      #93c5fd;
-  --blue-bg:     rgba(59,130,246,0.12);
-  --blue-bdr:    rgba(59,130,246,0.35);
-  --ring:        rgba(59,130,246,0.22);
-  --shadow:      rgba(0,0,0,0.45);
-  --hovbg:       rgba(255,255,255,0.04);
-  --hovbdr:      #2b3648;
+  --bg:          #241f1f;
+  --surface:     #383030;
+  --surface2:    #524646;
+  --surfhov:     #635555;
+  --bdr:         #5c4f4f;
+  --bdr2:        #736363;
+  --bdr3:        #A8A492;
+  --text:        #FCF2E5;
+  --text-s:      #ffffff;
+  --text-b:      #ffffff;
+  --text-m:      #A8A492;
+  --text-f:      #8a8575;
+  --blue:        #EC5B38;
+  --blue-b:      #ff7554;
+  --blue-t:      #ffa088;
+  --blue-bg:     rgba(236, 91, 56, 0.16);
+  --blue-bdr:    rgba(236, 91, 56, 0.45);
+  --ring:        rgba(236, 91, 56, 0.28);
+  --shadow:      rgba(0,0,0,0.55);
+  --hovbg:       rgba(252, 242, 229, 0.06);
+  --hovbdr:      #736363;
   --amber:       #f59e0b;
   --amber-t:     #fbbf24;
-  --star-bg:     #221900;
+  --star-bg:     #382410;
   --red:         #ef4444;
   --red-t:       #f87171;
-  --red-bg:      rgba(239,68,68,0.1);
-  --red-bdr:     rgba(239,68,68,0.3);
+  --red-bg:      rgba(239,68,68,0.14);
+  --red-bdr:     rgba(239,68,68,0.35);
   --green-t:     #34d399;
-  --avatar-bg:   #1e2d45;
-  --track:       #0a0e16;
-  --scroll:      #2d3f58;
-  --scrolltrack: #0a0e16;
+  --avatar-bg:   #EC5B38;
+  --track:       #1c1818;
+  --scroll:      #524646;
+  --scrolltrack: #1c1818;
   --s-body:      var(--surface);
   --s-body-text: var(--text-s);
-  --s-badge:     #1a2333;
-  --s-badge-bdr: #2b384e;
-  --s-badge-ico: #94a3b8;
+  --s-badge:     #524646;
+  --s-badge-bdr: #736363;
+  --s-badge-ico: #A8A492;
   --s-place:     var(--text-m);
   --s-bdr:       var(--bdr2);
 }
 
 /* ══════════════════════════════════════════════════════
-   CSS VARIABLES — Light
+   CSS VARIABLES — Light (Base: #FCF2E5, #524646, #A8A492, #EC5B38)
    ══════════════════════════════════════════════════════ */
 html.etlab-reskin-on.etlab-reskin-light {
-  --bg:          #f0f2f5;
+  --bg:          #f7eee3;
   --surface:     #ffffff;
-  --surface2:    #f8f9fa;
-  --surfhov:     #f3f4f6;
-  --bdr:         #e2e5ea;
-  --bdr2:        #d1d5db;
-  --bdr3:        #c4c9d4;
-  --text:        #374151;
-  --text-s:      #111827;
-  --text-b:      #0f172a;
-  --text-m:      #6b7280;
-  --text-f:      #9ca3af;
-  --blue:        #3b82f6;
-  --blue-b:      #2563eb;
-  --blue-t:      #1d4ed8;
-  --blue-bg:     #eff6ff;
-  --blue-bdr:    #bfdbfe;
-  --ring:        rgba(59,130,246,0.12);
-  --shadow:      rgba(0,0,0,0.07);
-  --hovbg:       #f3f4f6;
-  --hovbdr:      #d1d5db;
+  --surface2:    #FCF2E5;
+  --surfhov:     #f2e4d2;
+  --bdr:         #e2d5c3;
+  --bdr2:        #cdbfa9;
+  --bdr3:        #A8A492;
+  --text:        #524646;
+  --text-s:      #302626;
+  --text-b:      #1a1313;
+  --text-m:      #7a6e62;
+  --text-f:      #A8A492;
+  --blue:        #EC5B38;
+  --blue-b:      #d44522;
+  --blue-t:      #b83313;
+  --blue-bg:     #fdf1ec;
+  --blue-bdr:    #fac3b5;
+  --ring:        rgba(236, 91, 56, 0.2);
+  --shadow:      rgba(82, 70, 70, 0.08);
+  --hovbg:       #f5eae0;
+  --hovbdr:      #cdbfa9;
   --amber:       #f59e0b;
   --amber-t:     #d97706;
   --star-bg:     #fffbeb;
@@ -84,15 +84,15 @@ html.etlab-reskin-on.etlab-reskin-light {
   --red-bg:      #fef2f2;
   --red-bdr:     #fecaca;
   --green-t:     #059669;
-  --avatar-bg:   #3b82f6;
-  --track:       #e5e7eb;
-  --scroll:      #c4c9d4;
-  --scrolltrack: #e5e7eb;
+  --avatar-bg:   #EC5B38;
+  --track:       #e8ddcf;
+  --scroll:      #A8A492;
+  --scrolltrack: #e8ddcf;
   --s-body:      var(--surface);
   --s-body-text: var(--text-s);
-  --s-badge:     #f1f5f9;
-  --s-badge-bdr: #cbd5e1;
-  --s-badge-ico: #64748b;
+  --s-badge:     #FCF2E5;
+  --s-badge-bdr: #e2d5c3;
+  --s-badge-ico: #7a6e62;
   --s-place:     var(--text-m);
   --s-bdr:       var(--bdr2);
 }
@@ -365,7 +365,7 @@ html.etlab-reskin-on .sidebar:hover .rk-sb-inner {
   font-weight: 800;
 }
 html.etlab-reskin-light .rk-greeter-name {
-  background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+  background: linear-gradient(135deg, #d44522 0%, #EC5B38 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
